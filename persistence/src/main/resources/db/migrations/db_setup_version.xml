@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+
+    <changeSet id="setup_pg_casts" author="Miha Jamsek">
+        <sql dbms="postgresql" endDelimiter="\nGO" splitStatements="true"
+             stripComments="true">
+            DROP CAST IF EXISTS (VARCHAR AS UUID);
+            DROP FUNCTION IF EXISTS varchar_to_uuid(VARCHAR);
+
+            CREATE FUNCTION varchar_to_uuid(VARCHAR) RETURNS uuid AS $$
+
+            SELECT uuid_in($1::cstring);
+
+            $$ LANGUAGE sql immutable;
+
+            CREATE CAST (VARCHAR AS UUID) WITH FUNCTION varchar_to_uuid(VARCHAR) AS IMPLICIT;
+        </sql>
+        <sql dbms="postgresql" endDelimiter="\nGO" splitStatements="true"
+             stripComments="true">
+            DROP CAST IF EXISTS (VARCHAR AS json);
+            DROP FUNCTION IF EXISTS varchar_to_json(VARCHAR);
+
+            CREATE OR REPLACE FUNCTION varchar_to_json(VARCHAR) RETURNS json AS $$
+            SELECT json_in($1::cstring);
+            $$ LANGUAGE SQL IMMUTABLE;
+
+            CREATE CAST (VARCHAR AS json) WITH FUNCTION varchar_to_json(VARCHAR) AS IMPLICIT;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
