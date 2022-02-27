@@ -14,6 +14,26 @@ modules.
 
 To build docker image, run previous maven command first and then `docker build -t scrum-service .` in root of a project. 
 
+### Run locally
+
+#### via CLI
+
+1. Build project: `mvn clean package`
+2. Move to `api` module: `cd ./v1/api/`
+3. Run `api` module: `java -cp target/classes:target/dependency/* com.kumuluz.ee.EeApplication` (Linux) 
+   or `java -cp "target/classes;target/dependency/*" com.kumuluz.ee.EeApplication` (Windows)
+
+#### via IntelliJ IDEA
+
+1. Click on `Add Configuration...` button.
+2. Click on `plus` button and then select `Application`
+3. Enter name, then where it says `-cp <no module>` select `scrum-service-api-v1` module.
+4. For main class enter `com.kumuluz.ee.EeApplication`
+5. Working directory stays at project root
+6. (optional) If needed, you can also configure environment variables by clicking on icon next to `Environment variables` line.
+7. Save.
+8. Where you previously had `Add Configuration...` you should now see your configuration and click green play button.
+
 ## Project structure
 
 * `persistence`: module containing DB related code - schemas, migrations, entities
