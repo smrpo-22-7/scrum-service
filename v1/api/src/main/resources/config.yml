@@ -38,7 +38,7 @@ kumuluzee:
         type: liveness
   datasources:
     - jndi-name: jdbc/mainDB
-      connection-url: jdbc:postgresql://localhost:5432/scrum-service
+      connection-url: jdbc:postgresql://localhost:5432/scrum-db
       username: postgres
       password: postgres
       pool:

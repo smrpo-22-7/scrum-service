@@ -1,0 +1,36 @@
+version: "3.3"
+
+networks:
+  scrum-net:
+
+services:
+  scrum-postgres:
+    image: postgres:12
+    environment:
+      POSTGRES_DB: scrum-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    networks:
+      - scrum-net
+    restart: always
+  scrum-service:
+    image: scrum-service:latest
+    environment:
+      KUMULUZEE_SERVER_BASEURL: http://localhost:8080
+      KUMULUZEE_DATASOURCES0_CONNECTIONURL: jdbc:postgresql://postgres:5432/scrum-db
+      KUMULUZEE_DATASOURCES0_PASSWORD: postgres
+      KUMULUZEE_DATASOURCES0_USERNAME: postgres
+    ports:
+      - "8080:8080"
+    networks:
+      - scrum-net
+    depends_on:
+      - scrum-postgres
+    restart: always
+
+volumes:
+  pg-data:
