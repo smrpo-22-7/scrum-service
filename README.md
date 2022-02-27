@@ -31,8 +31,13 @@ To build docker image, run previous maven command first and then `docker build -
 4. For main class enter `com.kumuluz.ee.EeApplication`
 5. Working directory stays at project root
 6. (optional) If needed, you can also configure environment variables by clicking on icon next to `Environment variables` line.
+
+![idea1](./docs/idea1.png)
+
 7. Save.
 8. Where you previously had `Add Configuration...` you should now see your configuration and click green play button.
+
+![idea1](./docs/idea2.png)
 
 ## Project structure
 
