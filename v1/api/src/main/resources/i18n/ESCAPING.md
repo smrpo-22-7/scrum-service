@@ -13,3 +13,8 @@ Example: 200 -> \200
 | Č      | 200        | u010C   |
 | Š      | 169        | u0160   |
 | Ž      | 174        | u017D   |
+
+
+### Read more
+
+[https://sl.wikipedia.org/wiki/Kodiranje_%C5%A1umnikov](https://sl.wikipedia.org/wiki/Kodiranje_%C5%A1umnikov)
