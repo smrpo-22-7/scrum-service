@@ -23,6 +23,11 @@
             <artifactId>scrum-service-lib-v1</artifactId>
         </dependency>
         <dependency>
+            <groupId>si.smrpo.scrum.integrations.messaging</groupId>
+            <artifactId>messaging-module</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>com.kumuluz.ee</groupId>
             <artifactId>kumuluzee-cdi-weld</artifactId>
             <scope>provided</scope>
@@ -32,11 +37,13 @@
             <artifactId>kumuluzee-jax-rs-jersey</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>com.kumuluz.ee.logs</groupId>
             <artifactId>kumuluzee-logs-log4j2</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>

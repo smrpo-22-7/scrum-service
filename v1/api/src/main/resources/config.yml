@@ -43,3 +43,10 @@ kumuluzee:
       password: postgres
       pool:
         max-size: 20
+notifications:
+  email:
+    host: smtp.host.com
+    port: 465
+    display-name: SMRPO
+    username: user@host.com
+    password: userpassword
