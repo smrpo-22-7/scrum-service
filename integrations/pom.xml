@@ -16,6 +16,7 @@
 
     <modules>
         <module>auth-module</module>
+        <module>messaging-module</module>
     </modules>
 
 </project>
