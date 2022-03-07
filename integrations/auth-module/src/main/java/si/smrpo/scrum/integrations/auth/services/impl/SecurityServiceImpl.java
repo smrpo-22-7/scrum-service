@@ -168,7 +168,8 @@ public class SecurityServiceImpl implements SecurityService {
         claims.put(FAMILY_NAME_CLAIM, user.getLastName());
         claims.put(NAME_CLAIM, user.getFirstName() + " " + user.getLastName());
         claims.put(EMAIL_CLAIM, user.getEmail());
-        
+        claims.put(PREFERRED_USERNAME_CLAIM, user.getUsername());        
+      
         JWTClaimsSet.Builder commonBuilder = new JWTClaimsSet.Builder()
             .subject(user.getId())
             .issueTime(new Date())

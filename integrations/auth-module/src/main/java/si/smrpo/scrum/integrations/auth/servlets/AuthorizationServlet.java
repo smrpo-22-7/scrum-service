@@ -117,10 +117,12 @@ public class AuthorizationServlet extends HttpServlet {
             AuthorizationRequestEntity request = authorizationService.initializeSessionRequest(session.getId(), req.getRemoteAddr(), pkceChallenge, PKCEMethod.S256);
             LOG.trace("Session associated with request");
             silentAuthentication(resp, session, request);
+            return;
         } else if (prompt != null && prompt.equals("login")) {
             // Client explicitly demands a new login prompt
             LOG.debug("New login prompt demanded explicitly");
             resp.sendRedirect(LOGIN_SERVLET + HttpUtil.formatQueryParams(req.getParameterMap()));
+            return;
         }
         
         // If no prompt specified otherwise, try to perform silent authentication
