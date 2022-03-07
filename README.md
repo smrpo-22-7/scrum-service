@@ -1,4 +1,5 @@
 # scrum-service
+[![Build](https://github.com/smrpo-22-7/scrum-service/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/smrpo-22-7/scrum-service/actions/workflows/ci.yml)
 
 ## Requirements
 
