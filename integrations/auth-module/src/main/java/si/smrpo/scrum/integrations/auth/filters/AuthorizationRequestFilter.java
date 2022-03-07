@@ -49,6 +49,20 @@ public class AuthorizationRequestFilter implements Filter {
             return;
         }
         
+        String redirectUri = request.getParameter(REDIRECT_URI_PARAM);
+        if (redirectUri == null) {
+            LOG.debug("Missing redirect URI argument!");
+            response.sendRedirect(ERROR_SERVLET + ServletUtil.buildErrorParams(ErrorCode.UNAUTHORIZED.code()));
+            return;
+        } else {
+            if (!HttpUtil.isValidRedirectUri(redirectUri)) {
+                LOG.debug("Invalid redirect URI!");
+                response.sendRedirect(ERROR_SERVLET + ServletUtil.buildErrorParams(ErrorCode.UNAUTHORIZED.code()));
+                return;
+            }
+            LOG.trace("Redirect URI is valid");
+        }
+        
         // Validate PKCE params are present
         String pkceChallenge = request.getParameter(CODE_CHALLENGE_PARAM);
         String pkceMethod = request.getParameter(CODE_CHALLENGE_METHOD_PARAM);

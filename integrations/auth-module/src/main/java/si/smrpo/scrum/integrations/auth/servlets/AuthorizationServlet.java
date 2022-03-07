@@ -53,9 +53,9 @@ public class AuthorizationServlet extends HttpServlet {
         try {
             processAuthorizationFlow(req, resp);
         } catch (UnauthorizedException e) {
-            returnErrorToClient(resp, ErrorCode.UNAUTHORIZED.code());
+            returnErrorToClient(req, resp, ErrorCode.UNAUTHORIZED.code());
         } catch (Exception e) {
-            returnErrorToClient(resp, ErrorCode.SERVER_ERROR.code());
+            returnErrorToClient(req, resp, ErrorCode.SERVER_ERROR.code());
         }
     }
     
@@ -83,7 +83,7 @@ public class AuthorizationServlet extends HttpServlet {
         // are provided, return error to user instead
         if (prompt != null && prompt.equals("none")) {
             LOG.trace("No valid session exists and prompt is set to 'none', therefore return error");
-            returnErrorToClient(resp, ErrorCode.LOGIN_REQUIRED.code());
+            returnErrorToClient(req, resp, ErrorCode.LOGIN_REQUIRED.code());
             return;
         }
     
@@ -116,7 +116,7 @@ public class AuthorizationServlet extends HttpServlet {
             LOG.trace("Performing silent authentication");
             AuthorizationRequestEntity request = authorizationService.initializeSessionRequest(session.getId(), req.getRemoteAddr(), pkceChallenge, PKCEMethod.S256);
             LOG.trace("Session associated with request");
-            silentAuthentication(resp, session, request);
+            silentAuthentication(req, resp, session, request);
             return;
         } else if (prompt != null && prompt.equals("login")) {
             // Client explicitly demands a new login prompt
@@ -128,18 +128,18 @@ public class AuthorizationServlet extends HttpServlet {
         // If no prompt specified otherwise, try to perform silent authentication
         LOG.trace("No prompt specified - performing silent authentication");
         AuthorizationRequestEntity request = authorizationService.initializeSessionRequest(session.getId(), req.getRemoteAddr(), pkceChallenge, PKCEMethod.S256);
-        silentAuthentication(resp, session, request);
+        silentAuthentication(req, resp, session, request);
     }
     
-    private void silentAuthentication(HttpServletResponse resp, SessionEntity session, AuthorizationRequestEntity request) throws IOException {
+    private void silentAuthentication(HttpServletRequest req, HttpServletResponse resp, SessionEntity session, AuthorizationRequestEntity request) throws IOException {
         LOG.trace("Performing silent authentication");
-        String redirectUri = authConfig.getWebClientUrl() + authConfig.getClientRedirectUri();
+        String redirectUri = req.getParameter(REDIRECT_URI_PARAM) + authConfig.getClientRedirectUri();
         resp.addCookie(ServletUtil.createSessionCookie(session.getId()));
         resp.sendRedirect(redirectUri + ServletUtil.buildRedirectUriParams(request, session));
     }
     
-    private void returnErrorToClient(HttpServletResponse resp, String error) throws IOException {
-        String redirectUri = authConfig.getWebClientUrl() + authConfig.getClientRedirectUri();
+    private void returnErrorToClient(HttpServletRequest req, HttpServletResponse resp, String error) throws IOException {
+        String redirectUri = req.getParameter(REDIRECT_URI_PARAM) + authConfig.getClientRedirectUri();
         resp.sendRedirect(redirectUri + ServletUtil.buildErrorParams(error));
     }
 }

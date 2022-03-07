@@ -54,10 +54,12 @@ public class LoginServlet extends HttpServlet {
         LOG.debug("Processing GET login servlet...");
         String requestId = req.getParameter(REQUEST_ID_PARAM);
         String error = req.getParameter(ERROR_PARAM);
+        String redirectUri = req.getParameter(REDIRECT_URI_PARAM);
     
         Map<String, Object> params = new HashMap<>();
         params.put("requestId", requestId);
         params.put("error", error);
+        params.put("redirectUri", redirectUri);
         String htmlContent = templatingService.renderHtml("login", params);
     
         ServletUtil.renderHtml(htmlContent, resp);
@@ -69,8 +71,19 @@ public class LoginServlet extends HttpServlet {
         String username = req.getParameter(USERNAME_PARAM);
         String password = req.getParameter(PASSWORD_PARAM);
         String requestId = req.getParameter(REQUEST_ID_PARAM);
+        String redirectUri = req.getParameter(REDIRECT_URI_PARAM);
     
         try {
+            if (redirectUri == null) {
+                LOG.debug("Redirect URI is not set. Returning error");
+                throw new UnauthorizedException("error.unauthorized");
+            } else {
+                if (!HttpUtil.isValidRedirectUri(redirectUri)) {
+                    LOG.debug("Redirect URI is not valid!");
+                    throw new UnauthorizedException("error.unauthorized");
+                }
+            }
+            
             if (requestId == null) {
                 LOG.debug("Request id is not set. Returning error");
                 throw new UnauthorizedException("error.unauthorized");
@@ -90,7 +103,7 @@ public class LoginServlet extends HttpServlet {
             LOG.trace("Associated user with session");
             resp.addCookie(sessionCookie);
             
-            redirectSuccessfullyBackToClient(resp, requestId, user.getId(), session);
+            redirectSuccessfullyBackToClient(redirectUri, resp, requestId, user.getId(), session);
         } catch (UnauthorizedException e) {
             LOG.trace(e);
             resp.sendRedirect(LOGIN_SERVLET + ServletUtil.buildErrorParams(ErrorCode.INVALID_CREDENTIALS.code(), req.getParameterMap()));
@@ -100,8 +113,8 @@ public class LoginServlet extends HttpServlet {
         }
     }
     
-    private void redirectSuccessfullyBackToClient(HttpServletResponse resp, String requestId, String userId, SessionEntity session) throws IOException {
-        String redirectUri = authConfig.getWebClientUrl() + authConfig.getClientRedirectUri();
+    private void redirectSuccessfullyBackToClient(String redirectUrl, HttpServletResponse resp, String requestId, String userId, SessionEntity session) throws IOException {
+        String redirectUri = redirectUrl + authConfig.getClientRedirectUri();
         LOG.trace("Redirecting back to client with authorization code");
         AuthorizationRequestEntity request = authorizationService.createAuthorizationCode(requestId, userId);
         resp.sendRedirect(redirectUri + ServletUtil.buildRedirectUriParams(request, session));
