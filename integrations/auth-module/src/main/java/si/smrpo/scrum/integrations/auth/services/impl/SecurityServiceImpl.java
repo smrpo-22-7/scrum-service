@@ -117,6 +117,10 @@ public class SecurityServiceImpl implements SecurityService {
             if (this.isNotPublic(context.getMethod())) {
                 this.validateSysRoles(sysRoles);
             }
+        } else {
+            if (this.isNotPublic(context.getMethod())) {
+                this.validateAuthenticated();
+            }
         }
     }
     
