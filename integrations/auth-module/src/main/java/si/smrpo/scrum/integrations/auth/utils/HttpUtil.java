@@ -121,7 +121,7 @@ public class HttpUtil {
         ConfigurationUtil configUtil = ConfigurationUtil.getInstance();
         return configUtil.getBoolean("config.session.cookie.secure")
             .orElseGet(() -> configUtil.get("kumuluzee.env.name")
-                .map(envName -> !envName.equals("dev"))
+                .map(envName -> envName.equals("prod"))
                 .orElse(true));
     }
     
