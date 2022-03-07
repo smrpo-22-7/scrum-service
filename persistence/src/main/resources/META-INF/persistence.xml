@@ -4,9 +4,14 @@
 
         <non-jta-data-source>jdbc/mainDB</non-jta-data-source>
 
+        <class>si.smrpo.scrum.persistence.users.UserEntity</class>
+        <class>si.smrpo.scrum.persistence.auth.AuthorizationRequestEntity</class>
+        <class>si.smrpo.scrum.persistence.auth.SessionEntity</class>
+        <class>si.smrpo.scrum.persistence.auth.SigningKeyEntity</class>
+
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect"/>
-            <property name="hibernate.hbm2ddl.auto" value="none"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
             <property name="hibernate.show_sql" value="true"/>
             <property name="javax.persistence.schema-generation.create-source" value="metadata"/>
             <property name="javax.persistence.schema-generation.drop-source" value="metadata"/>

@@ -20,8 +20,11 @@ public class BaseMapper {
     
     public static <T extends BaseType, E extends BaseEntity> T fromEntity(E entity, T type) {
         type.setId(entity.getId());
-        if (entity.getTimestamp() != null) {
-            type.setTimestamp(entity.getTimestamp());
+        if (entity.getCreatedAt() != null) {
+            type.setCreatedAt(entity.getCreatedAt());
+        }
+        if (entity.getUpdatedAt() != null) {
+            type.setUpdatedAt(entity.getUpdatedAt());
         }
         return type;
     }

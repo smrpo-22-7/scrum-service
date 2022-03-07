@@ -26,6 +26,10 @@
             <groupId>si.smrpo.scrum.integrations.messaging</groupId>
             <artifactId>messaging-module</artifactId>
         </dependency>
+        <dependency>
+            <groupId>si.smrpo.scrum.integrations.templating</groupId>
+            <artifactId>templating-module</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.kumuluz.ee</groupId>
@@ -43,6 +47,11 @@
             <artifactId>kumuluzee-logs-log4j2</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.kumuluz.ee.rest</groupId>
+            <artifactId>kumuluzee-rest-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -53,6 +62,14 @@
             <groupId>com.mjamsek.rest</groupId>
             <artifactId>rest-utils</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
         </dependency>
     </dependencies>
 

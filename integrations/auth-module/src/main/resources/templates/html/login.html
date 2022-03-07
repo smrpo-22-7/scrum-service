@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Scrum | Login</title>
+    </head>
+    <!--/*@thymesVar id="requestId" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="error" type="java.lang.String"*/-->
+    <body>
+
+        <form action="/login" enctype="application/x-www-form-urlencoded" method="POST">
+
+            <p class="error-container" th:if="${error != null}" th:text="${error}"></p>
+
+            <input type="hidden" name="request_id" th:value="${requestId}"/>
+
+            <input name="username" type="text" />
+
+            <br/>
+
+            <input name="password" type="password"/>
+
+
+            <button type="submit">Log in</button>
+        </form>
+
+    </body>
+</html>

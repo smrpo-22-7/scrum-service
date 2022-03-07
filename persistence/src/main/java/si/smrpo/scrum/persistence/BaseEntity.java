@@ -14,12 +14,23 @@ public class BaseEntity {
     protected String id;
     
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "timestamp")
-    protected Date timestamp;
+    @Column(name = "created_at")
+    protected Date createdAt;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "updated_at")
+    protected Date updatedAt;
     
     @PrePersist
     private void onCreate() {
-        this.timestamp = new Date();
+        Date now = new Date();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+    
+    @PreUpdate
+    private void onUpdate() {
+        this.updatedAt = new Date();
     }
     
     public String getId() {
@@ -30,12 +41,19 @@ public class BaseEntity {
         this.id = id;
     }
     
-    public Date getTimestamp() {
-        return timestamp;
+    public Date getCreatedAt() {
+        return createdAt;
     }
     
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+    public void setCreatedAt(Date timestamp) {
+        this.createdAt = timestamp;
     }
     
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+    
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

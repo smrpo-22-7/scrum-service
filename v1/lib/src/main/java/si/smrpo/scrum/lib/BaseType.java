@@ -6,7 +6,9 @@ public class BaseType {
     
     private String id;
     
-    private Date timestamp;
+    private Date createdAt;
+    
+    private Date updatedAt;
     
     public String getId() {
         return id;
@@ -16,11 +18,19 @@ public class BaseType {
         this.id = id;
     }
     
-    public Date getTimestamp() {
-        return timestamp;
+    public Date getCreatedAt() {
+        return createdAt;
     }
     
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+    
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+    
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

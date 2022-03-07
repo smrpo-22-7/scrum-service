@@ -17,6 +17,7 @@
     <modules>
         <module>auth-module</module>
         <module>messaging-module</module>
+        <module>templating-module</module>
     </modules>
 
 </project>

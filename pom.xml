@@ -34,6 +34,9 @@
         <jackson.version>2.12.3</jackson.version>
         <postgres.version>42.2.21</postgres.version>
         <rest-utils.version>2.2.0</rest-utils.version>
+        <jbcrypt.version>0.4</jbcrypt.version>
+        <thymeleaf.version>3.0.12.RELEASE</thymeleaf.version>
+        <jose.version>9.11.1</jose.version>
 
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <download-maven-plugin.version>1.4.2</download-maven-plugin.version>
@@ -64,6 +67,11 @@
             <dependency>
                 <groupId>si.smrpo.scrum.integrations.auth</groupId>
                 <artifactId>auth-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>si.smrpo.scrum.integrations.templating</groupId>
+                <artifactId>templating-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -135,6 +143,21 @@
                 <groupId>com.mjamsek.rest</groupId>
                 <artifactId>rest-utils</artifactId>
                 <version>${rest-utils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mindrot</groupId>
+                <artifactId>jbcrypt</artifactId>
+                <version>${jbcrypt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nimbusds</groupId>
+                <artifactId>nimbus-jose-jwt</artifactId>
+                <version>${jose.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.thymeleaf</groupId>
+                <artifactId>thymeleaf</artifactId>
+                <version>${thymeleaf.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

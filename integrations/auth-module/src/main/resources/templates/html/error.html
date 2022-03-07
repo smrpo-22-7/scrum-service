@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Error</title>
+        <style>
+            .wrapper {
+                display: flex;
+                justify-content: center;
+                margin-top: 100px;
+            }
+            .error {
+                width: 500px;
+            }
+            .error-desc {
+                text-align: center;
+                font-size: 1.1rem;
+            }
+        </style>
+    </head>
+    <!--/*@thymesVar id="error" type="java.lang.String"*/-->
+    <body>
+
+        <div class="wrapper">
+
+            <div class="error">
+                <p class="error-desc">Error!</p>
+                <p class="error-desc" th:text="${error}"></p>
+            </div>
+
+        </div>
+
+    </body>
+</html>
