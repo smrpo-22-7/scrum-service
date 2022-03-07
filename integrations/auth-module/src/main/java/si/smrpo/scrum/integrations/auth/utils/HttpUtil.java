@@ -8,6 +8,7 @@ import javax.ws.rs.core.HttpHeaders;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static si.smrpo.scrum.integrations.auth.AuthConstants.ERROR_PARAM;
 
@@ -130,14 +131,11 @@ public class HttpUtil {
     }
     
     public static Set<String> getAllowedOrigins() {
-        Set<String> origins = new HashSet<>();
         ConfigurationUtil configUtil = ConfigurationUtil.getInstance();
-        int size = configUtil.getListSize("web-ui.allowed-origins").orElse(0);
-        for (int i = 0; i < size; i++) {
-            String key = "web-ui.allowed-origins[" + i + "]";
-            origins.add(configUtil.get(key).get());
-        }
-        return origins;
+        return new HashSet<>(Arrays.asList(configUtil.get("web-ui.allowed-origins").orElse("")
+            .split(",")))
+            .stream().map(String::trim)
+            .collect(Collectors.toSet());
     }
     
 }

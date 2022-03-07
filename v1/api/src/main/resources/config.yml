@@ -52,9 +52,7 @@ notifications:
     password: userpassword
 web-ui:
   url: http://localhost:4200
-  allowed-origins:
-    - http://localhost:4200
-    - https://scrum-web.netlify.app
+  allowed-origins: http://localhost:4200, https://scrum-web.netlify.app
   oidc-callback: /callback/oidc
 templates:
   cache-enabled: false
