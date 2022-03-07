@@ -2,6 +2,7 @@ package si.smrpo.scrum.integrations.auth.services.impl;
 
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
+import com.mjamsek.rest.exceptions.ForbiddenException;
 import com.mjamsek.rest.exceptions.RestException;
 import com.mjamsek.rest.exceptions.UnauthorizedException;
 import com.mjamsek.rest.utils.DatetimeUtil;
@@ -9,10 +10,9 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import si.smrpo.scrum.integrations.auth.JWSConstants;
 import si.smrpo.scrum.integrations.auth.config.AuthConfig;
-import si.smrpo.scrum.integrations.auth.models.AuthorizationGrantRequest;
-import si.smrpo.scrum.integrations.auth.models.PasswordGrantRequest;
-import si.smrpo.scrum.integrations.auth.models.RefreshTokenGrantRequest;
-import si.smrpo.scrum.integrations.auth.models.TokenResponse;
+import si.smrpo.scrum.integrations.auth.models.*;
+import si.smrpo.scrum.integrations.auth.models.annotations.PublicResource;
+import si.smrpo.scrum.integrations.auth.models.annotations.SysRolesRequired;
 import si.smrpo.scrum.integrations.auth.models.errors.InvalidJwtException;
 import si.smrpo.scrum.integrations.auth.services.*;
 import si.smrpo.scrum.lib.enums.PKCEMethod;
@@ -22,6 +22,8 @@ import si.smrpo.scrum.persistence.users.UserEntity;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.interceptor.InvocationContext;
+import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -49,6 +51,9 @@ public class SecurityServiceImpl implements SecurityService {
     
     @Inject
     private AuthConfig authConfig;
+    
+    @Inject
+    private AuthContext authContext;
     
     @Override
     public TokenResponse authorizationGrant(AuthorizationGrantRequest req) {
@@ -102,6 +107,16 @@ public class SecurityServiceImpl implements SecurityService {
         } catch (InvalidJwtException e) {
             LOG.debug("Invalid JWT token", e);
             throw new UnauthorizedException("error.unauthorized");
+        }
+    }
+    
+    @Override
+    public void processSecurity(InvocationContext context) throws UnauthorizedException, ForbiddenException {
+        SysRolesRequired sysRoles = getSysRolesRequiredAnnotation(context.getMethod());
+        if (sysRoles != null) {
+            if (this.isNotPublic(context.getMethod())) {
+                this.validateSysRoles(sysRoles);
+            }
         }
     }
     
@@ -192,6 +207,45 @@ public class SecurityServiceImpl implements SecurityService {
         } catch (ParseException e) {
             LOG.debug("Token claims are malformed");
             throw new InvalidJwtException();
+        }
+    }
+    
+    private SysRolesRequired getSysRolesRequiredAnnotation(Method method) {
+        SysRolesRequired sysRoles = method.getAnnotation(SysRolesRequired.class);
+        if (sysRoles == null) {
+            return method.getDeclaringClass().getAnnotation(SysRolesRequired.class);
+        }
+        return sysRoles;
+    }
+    
+    private boolean classAnnotatedScopes(Method method) {
+        SysRolesRequired scopes = method.getAnnotation(SysRolesRequired.class);
+        return scopes == null;
+    }
+    
+    private <T> boolean isNotPublic(Method method) {
+        if (classAnnotatedScopes(method)) {
+            PublicResource publicResource = method.getDeclaredAnnotation(PublicResource.class);
+            return publicResource == null;
+        }
+        return true;
+    }
+    
+    private void validateAuthenticated() throws UnauthorizedException {
+        if (!authContext.isAuthenticated()) {
+            throw new UnauthorizedException("error.unauthorized");
+        }
+    }
+    
+    private void validateSysRoles(SysRolesRequired annotation) throws UnauthorizedException, ForbiddenException {
+        this.validateAuthenticated();
+        
+        Set<String> allowedRoles = Set.of(annotation.value());
+        Set<String> userRoles = authContext.getSysRoles();
+        
+        boolean hasRole = !Collections.disjoint(userRoles, allowedRoles);
+        if (!hasRole) {
+            throw new ForbiddenException("error.forbidden");
         }
     }
 }
