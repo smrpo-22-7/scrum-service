@@ -7,9 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.HttpHeaders;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static si.smrpo.scrum.integrations.auth.AuthConstants.ERROR_PARAM;
 
@@ -124,6 +122,22 @@ public class HttpUtil {
             .orElseGet(() -> configUtil.get("kumuluzee.env.name")
                 .map(envName -> !envName.equals("dev"))
                 .orElse(true));
+    }
+    
+    public static boolean isValidRedirectUri(String redirectUri) {
+        Set<String> allowedOrigins = getAllowedOrigins();
+        return allowedOrigins.contains(redirectUri);
+    }
+    
+    public static Set<String> getAllowedOrigins() {
+        Set<String> origins = new HashSet<>();
+        ConfigurationUtil configUtil = ConfigurationUtil.getInstance();
+        int size = configUtil.getListSize("web-ui.allowed-origins").orElse(0);
+        for (int i = 0; i < size; i++) {
+            String key = "web-ui.allowed-origins[" + i + "]";
+            origins.add(configUtil.get(key).get());
+        }
+        return origins;
     }
     
 }
