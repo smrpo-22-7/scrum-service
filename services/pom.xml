@@ -21,6 +21,10 @@
             <groupId>si.smrpo.scrum</groupId>
             <artifactId>scrum-service-lib-v1</artifactId>
         </dependency>
+        <dependency>
+            <groupId>si.smrpo.scrum.integrations.auth</groupId>
+            <artifactId>auth-module</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.kumuluz.ee</groupId>

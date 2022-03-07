@@ -50,3 +50,8 @@ notifications:
     display-name: SMRPO
     username: user@host.com
     password: userpassword
+web-ui:
+  url: http://localhost:4200
+  oidc-callback: /callback/oidc
+templates:
+  cache-enabled: false

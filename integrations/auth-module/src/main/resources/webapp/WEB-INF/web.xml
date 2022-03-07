@@ -1,0 +1,56 @@
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/</location>
+    </error-page>
+
+    <context-param>
+        <param-name>org.eclipse.jetty.servlet.SessionIdPathParameterName</param-name>
+        <param-value>none</param-value>
+    </context-param>
+
+<!--    <listener>-->
+<!--        <listener-class>com.mjamsek.auth.api.listeners.OnStartupListener</listener-class>-->
+<!--    </listener>-->
+
+
+<!--    <servlet>-->
+<!--        <servlet-name>check-sso-iframe-servlet</servlet-name>-->
+<!--        <jsp-file>/check_sso_iframe.html</jsp-file>-->
+<!--    </servlet>-->
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>check-sso-iframe-servlet</servlet-name>-->
+<!--        <url-pattern>/protocol/oidc/check-sso.html</url-pattern>-->
+<!--    </servlet-mapping>-->
+
+    <servlet>
+        <servlet-name>error-servlet</servlet-name>
+        <jsp-file>/error.html</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>error-servlet</servlet-name>
+        <url-pattern>/error</url-pattern>
+    </servlet-mapping>
+
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>default</servlet-name>-->
+<!--        <url-pattern>/static/*</url-pattern>-->
+<!--        <url-pattern>/static/js/*</url-pattern>-->
+<!--        <url-pattern>/static/css/*</url-pattern>-->
+<!--        <url-pattern>/auth/*</url-pattern>-->
+<!--    </servlet-mapping>-->
+
+<!--    <servlet>-->
+<!--        <servlet-name>admin-client-servlet</servlet-name>-->
+<!--        <jsp-file>/auth/index.html</jsp-file>-->
+<!--    </servlet>-->
+<!--    <servlet-mapping>-->
+<!--        <servlet-name>admin-client-servlet</servlet-name>-->
+<!--        <url-pattern>/auth</url-pattern>-->
+<!--    </servlet-mapping>-->
+
+</web-app>
