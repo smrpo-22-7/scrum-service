@@ -4,14 +4,16 @@ import com.kumuluz.ee.common.Extension;
 import com.kumuluz.ee.common.ServletServer;
 import com.kumuluz.ee.common.config.EeConfig;
 import com.kumuluz.ee.common.dependencies.*;
+import com.kumuluz.ee.common.utils.ResourceUtils;
 import com.kumuluz.ee.common.wrapper.KumuluzServerWrapper;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import si.smrpo.scrum.integrations.auth.filters.AuthorizationRequestFilter;
-import si.smrpo.scrum.integrations.auth.servlets.AuthorizationServlet;
-import si.smrpo.scrum.integrations.auth.servlets.ErrorServlet;
-import si.smrpo.scrum.integrations.auth.servlets.LoginServlet;
-import si.smrpo.scrum.integrations.auth.servlets.TokenServlet;
+import si.smrpo.scrum.integrations.auth.servlets.*;
+
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 @EeExtensionDef(name = "ScrumAuth", group = EeExtensionGroup.SECURITY)
 @EeComponentDependencies({
@@ -38,6 +40,15 @@ public class AuthModuleExtension implements Extension {
             servletServer.registerServlet(TokenServlet.class, "/protocol/oidc/token");
             servletServer.registerServlet(LoginServlet.class, "/login");
             servletServer.registerServlet(ErrorServlet.class, "/error");
+    
+            URL staticFolder = ResourceUtils.class.getClassLoader().getResource("webapp/static");
+            if (staticFolder != null ) {
+                Map<String, String> staticResourceParams = new HashMap<>();
+                staticResourceParams.put("resourceBase", staticFolder.toString());
+                servletServer.registerServlet(StaticFilesServlet.class, "/static/*", staticResourceParams);
+            } else {
+                LOG.warn("Unable to find static files folder!");
+            }
     
             servletServer.registerFilter(AuthorizationRequestFilter.class, "/protocol/oidc/auth");
             LOG.info("Auth module Initialized!");

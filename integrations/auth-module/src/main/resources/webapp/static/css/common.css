@@ -1,0 +1,24 @@
+:root {
+    --white-color: white;
+    --red-color: #710606;
+    --green-color: #006300;
+    --black-color: #1d1d1d;
+    --light-grey-color: #ccc;
+    --roboto-font: 'Roboto', sans-serif;
+    --montserrat-font: 'Montserrat', sans-serif;
+}
+* {
+    font-family: var(--montserrat-font);
+    color: var(--black-color);
+}
+h1, h2, h3, h4 {
+    font-family: var(--roboto-font);
+    margin: 0;
+}
+
+.page-wrapper {
+    display: flex;
+    align-items: center;
+    margin-top: 15vh;
+    flex-direction: column;
+}

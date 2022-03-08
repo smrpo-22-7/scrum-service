@@ -1,30 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
         <title>Scrum | Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,700|Roboto:300,400,700" rel="stylesheet">
+
+        <link rel="stylesheet" href="/static/css/common.css"/>
+        <link rel="stylesheet" href="/static/css/login.css"/>
     </head>
     <!--/*@thymesVar id="requestId" type="java.lang.String"*/-->
     <!--/*@thymesVar id="error" type="java.lang.String"*/-->
     <!--/*@thymesVar id="redirectUri" type="java.lang.String"*/-->
     <body>
 
-        <form action="/login" enctype="application/x-www-form-urlencoded" method="POST">
+        <div class="page-wrapper">
 
-            <p class="error-container" th:if="${error != null}" th:text="${error}"></p>
+            <div class="header">
+                <h1>Scrum - Log in</h1>
+            </div>
 
-            <input type="hidden" name="request_id" th:value="${requestId}"/>
-            <input type="hidden" name="redirect_uri" th:value="${redirectUri}"/>
+            <form action="/login" enctype="application/x-www-form-urlencoded" method="POST">
 
-            <input name="username" type="text" />
+                <p class="error-container" th:if="${error != null}" th:text="${error}"></p>
 
-            <br/>
+                <input type="hidden" name="request_id" th:value="${requestId}"/>
+                <input type="hidden" name="redirect_uri" th:value="${redirectUri}"/>
 
-            <input name="password" type="password"/>
+                <div class="form-element">
+                    <label for="username">Username:</label>
+                    <input name="username" type="text" id="username" class="form-control"/>
+                </div>
+
+                <div class="form-element">
+                    <label for="password">Password:</label>
+                    <input name="password" type="password" id="password" class="form-control"/>
+                    <div class="password-toggler">
+                        <div id="show-password-btn">
+                            <img id="show-password-img" src="/static/img/show_pass.svg" alt="Show password"/>
+                        </div>
+                        <span>Show password?</span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit">Log in</button>
+                </div>
+            </form>
 
 
-            <button type="submit">Log in</button>
-        </form>
+
+        </div>
 
     </body>
+
+    <script src="/static/js/login.js"></script>
 </html>
