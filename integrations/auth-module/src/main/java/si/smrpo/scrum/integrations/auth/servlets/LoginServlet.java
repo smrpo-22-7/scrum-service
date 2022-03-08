@@ -55,7 +55,13 @@ public class LoginServlet extends HttpServlet {
         String requestId = req.getParameter(REQUEST_ID_PARAM);
         String error = req.getParameter(ERROR_PARAM);
         String redirectUri = req.getParameter(REDIRECT_URI_PARAM);
-    
+        
+        if (error != null) {
+            error = ErrorCode.fromCode(error)
+                .map(ErrorCode::description)
+                .orElse("Unknown error!");
+        }
+        
         Map<String, Object> params = new HashMap<>();
         params.put("requestId", requestId);
         params.put("error", error);
@@ -106,10 +112,18 @@ public class LoginServlet extends HttpServlet {
             redirectSuccessfullyBackToClient(redirectUri, resp, requestId, user.getId(), session);
         } catch (UnauthorizedException e) {
             LOG.trace(e);
-            resp.sendRedirect(LOGIN_SERVLET + ServletUtil.buildErrorParams(ErrorCode.INVALID_CREDENTIALS.code(), req.getParameterMap()));
+            resp.sendRedirect(LOGIN_SERVLET +
+                ServletUtil.buildErrorParams(
+                    ErrorCode.INVALID_CREDENTIALS.code(),
+                    sanitizeParameters(req.getParameterMap())
+                ));
         } catch (Exception e) {
             LOG.error(e);
-            resp.sendRedirect(LOGIN_SERVLET + ServletUtil.buildErrorParams(ErrorCode.SERVER_ERROR.code(), req.getParameterMap()));
+            resp.sendRedirect(LOGIN_SERVLET +
+                ServletUtil.buildErrorParams(
+                    ErrorCode.SERVER_ERROR.code(),
+                    sanitizeParameters(req.getParameterMap())
+                ));
         }
     }
     
@@ -118,5 +132,12 @@ public class LoginServlet extends HttpServlet {
         LOG.trace("Redirecting back to client with authorization code");
         AuthorizationRequestEntity request = authorizationService.createAuthorizationCode(requestId, userId);
         resp.sendRedirect(redirectUri + ServletUtil.buildRedirectUriParams(request, session));
+    }
+    
+    private Map<String, String[]> sanitizeParameters(Map<String, String[]> paramsMap) {
+        Map<String, String[]> params = new HashMap<>(paramsMap);
+        params.remove(USERNAME_PARAM);
+        params.remove(PASSWORD_PARAM);
+        return params;
     }
 }
