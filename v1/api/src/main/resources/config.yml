@@ -4,6 +4,10 @@ kumuluzee:
   env:
     prod: false
     name: dev
+  dev:
+    scan-libraries:
+      - rest-utils
+      - lib
   server:
     show-server-info: false
     base-url: http://localhost:8080
@@ -21,6 +25,8 @@ kumuluzee:
     ui:
       enabled: true
       mapping: /openapi/ui
+      server-auto-config:
+        enabled: false
   logs:
     loggers:
       - name: ''
@@ -56,3 +62,7 @@ web-ui:
   oidc-callback: /callback/oidc
 templates:
   cache-enabled: false
+users:
+  password:
+    min-length: 12
+    max-length: 128
