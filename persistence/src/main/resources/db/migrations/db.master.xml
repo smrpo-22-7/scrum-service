@@ -4,5 +4,6 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
 
     <include file="src/main/resources/db/migrations/db_setup_version.xml"/>
+    <include file="src/main/resources/db/migrations/2022-03-09-01-changelog.xml"/>
 
 </databaseChangeLog>

@@ -49,6 +49,13 @@ kumuluzee:
       password: postgres
       pool:
         max-size: 20
+  database-schema-migrations:
+    liquibase:
+      changelogs:
+        - jndi-name: jdbc/mainDB
+          file: db/migrations/db.master.xml
+          startup:
+            update: true
 notifications:
   email:
     host: smtp.host.com
