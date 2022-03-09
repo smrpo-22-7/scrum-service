@@ -3,6 +3,7 @@ package si.smrpo.scrum.persistence.users;
 import si.smrpo.scrum.persistence.BaseEntity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "users", indexes = {
@@ -35,6 +36,10 @@ public class UserEntity extends BaseEntity {
     
     @Column(name = "avatar")
     private String avatar;
+    
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "last_login_at")
+    private Date lastLoginAt;
     
     public String getUsername() {
         return username;
@@ -90,5 +95,13 @@ public class UserEntity extends BaseEntity {
     
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+    
+    public Date getLastLoginAt() {
+        return lastLoginAt;
+    }
+    
+    public void setLastLoginAt(Date lastLoginAt) {
+        this.lastLoginAt = lastLoginAt;
     }
 }
