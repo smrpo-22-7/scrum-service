@@ -50,6 +50,7 @@ kumuluzee:
       pool:
         max-size: 20
   database-schema-migrations:
+    enabled: true
     liquibase:
       changelogs:
         - jndi-name: jdbc/mainDB
@@ -71,5 +72,5 @@ templates:
   cache-enabled: false
 users:
   password:
-    min-length: 8
+    min-length: 12
     max-length: 128

@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd">
+
+    <changeSet id="signing-keys" author="mihaj">
+        <insert tableName="signing_keys">
+            <column name="id">a610637f-d09a-4d3b-96cd-95d7e81df63e2</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="algorithm">RS256</column>
+            <column name="private_key">MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCtjrv1pc9YdqGBvYRaa3viAvzqUBqxt+HMKpYC3uqNLazjCjLJwOeLK8eAGuOZ7UVAHwOR8phot9ZEDEtJnR+/NCNdiCewzWDjHNcZZVN1uxtepxBlG2otIzkIwuYakO3ZlWujdTgn8TucNHAAumtT/JCxbVKWFErIkomdFVKQS0ywGTuy18BK719Qj867ieh8FVf8G2p/OJYp+8yKFTc3wj5x+wdy3iJ5fMvvGInzC1SLLwRhR4sf30ea6RcrpdjqrTx2FBqURTjkGa5USTnf1Ifxz+dQO0OawpMBmqEzfB/e6PXKR3rvRtu5juHMBY4GodwyyemJfj3geuNvHlefAgMBAAECggEBAKKtuGZ/fcOIpsgKUOXD+8GUVWZ3oR3VovMRM70LH0Une/bv1z0e8KmVZpEgIxhju1Zn+5uwjcUSE+eCsosUmO5Ku59vAO0LBPa8UK5AOKOQtw3YgFiVAse+TTZ2IOLj193r3ZHATNu7lMlMqXM1SWbWxPVZ6GA+Mv6fxBeWJeaS7rjx1YX69matXauh0KwJ8lbcMHJHeb3kSh/RwLdu8PQS0QsC11DfP+y5M5QnOHSblF8VVvdsn2X4AnK8HAbdnMTPg4cmpj64kuGaZLCI1UjLL2XLg7ZrrNWXC2/ePY3MsedCObEVXOQ2wdvWvawl/Dpg5InrItbaPb5f6LxNN8kCgYEA8+H292aCjnu2YTkcEm5JFLQDn8i7Qf6ZdVzIGiMWlufB2Wxp7Eg0/U8fd0gRwZc2XViW1MXof/mNmBXnl4jZziFyJNCc05dmrSw05ToCqNIfxKYDg+/Hr940ZYlBLv5C+nHDEedfo5hb/l2wqLfj2GEfYL/WivB8GUA3zCTpVuMCgYEAti5HJX1AhLi9i0NCBn++Nv3jn1xndIw/oKyL7mh6yuybBISHDH1+eMJ9xMANeiZMExQ7Xn/n0qyzJJu2Ngod9mW2Osuzgdv49vQWL1I81zNz29m+uJvk0kFFdMZgkQR1lD8TpCtjo3C5ON9tNo276i3t8HZhvYPFWby0w9lbnRUCgYBPq1SDM1CY/R7yGbbq6m4jPj8k1m0dvO8ioMGZkDbT6zevMDRWBKySx2MvEzMBu8T9r2/uaAxwqfQwZ491ODZ2mQRxtFhW4tGe5p8M9uthfOr10Ym6cv0XnY4eUT0i/dqhd8JSufPLPH1o1fBc3V2oFOosL98FGlRf51OS88fqIwKBgQCannBXyxQlEL4eIfk5ltWTyquTp1NOwXGHJqqkrxv4ehOfI/OSkDf0ue0QPYeysipCzxsMOzY/wb9RRK7C8pc3dl/RSu2RO2b0AXmKtBta8hpU71tFR1pPcIJId82hhs1cAqTi4shwAM3TDR2d/XENcenN+ks+E0Y9wUESL7nneQKBgBYlzUrOUvGC+EiWdtJiFW0IzkjN68w0uKgD+OYcuFY/v3qyZKIx4qRsol3zcd//7twu/zxvc9lTuJXMi1X+BT9IxF/DFZQCXSs5hpg46UHACWp9sUVhFcwJUyqzbjOa5puoBZmRFYvX/7ALVzok7CCH8GKPsLBzFzxm4s21uiIC</column>
+            <column name="public_key">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArY679aXPWHahgb2EWmt74gL86lAasbfhzCqWAt7qjS2s4woyycDniyvHgBrjme1FQB8DkfKYaLfWRAxLSZ0fvzQjXYgnsM1g4xzXGWVTdbsbXqcQZRtqLSM5CMLmGpDt2ZVro3U4J/E7nDRwALprU/yQsW1SlhRKyJKJnRVSkEtMsBk7stfASu9fUI/Ou4nofBVX/BtqfziWKfvMihU3N8I+cfsHct4ieXzL7xiJ8wtUiy8EYUeLH99HmukXK6XY6q08dhQalEU45BmuVEk539SH8c/nUDtDmsKTAZqhM3wf3uj1ykd670bbuY7hzAWOBqHcMsnpiX494Hrjbx5XnwIDAQAB</column>
+        </insert>
+    </changeSet>
+
+    <changeSet id="roles-data" author="mihaj">
+
+        <insert tableName="sys_roles">
+            <column name="id">68d5de4a-2662-47a7-a35f-e587551b86f2</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="role_id">admin</column>
+            <column name="name">Admin</column>
+        </insert>
+
+        <insert tableName="sys_roles">
+            <column name="id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="role_id">user</column>
+            <column name="name">User</column>
+        </insert>
+    </changeSet>
+
+    <changeSet id="users-data" author="mihaj">
+
+        <insert tableName="users">
+            <column name="id">6a3c5b08-9a2b-4126-acc3-fd946ce2b01c</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="username">admin</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">admin@mail.com</column>
+            <column name="first_name">Admin</column>
+            <column name="last_name">Person</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">b615cdae-65bb-4f2a-819b-42bb01a6273e</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="username">user1</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">user1@mail.com</column>
+            <column name="first_name">User</column>
+            <column name="last_name">One</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">cfebbbe9-0b00-4f65-9cd1-c8d0249b9148</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="username">user2</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">user2@mail.com</column>
+            <column name="first_name">User</column>
+            <column name="last_name">Two</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">1ca0cd34-be14-4b7e-b0df-ba1d7ae1007f</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="username">user3</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">user3@mail.com</column>
+            <column name="first_name">User</column>
+            <column name="last_name">Three</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">505d2586-563f-49fc-983d-3baa0416d60e</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="username">user4</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">user4@mail.com</column>
+            <column name="first_name">User</column>
+            <column name="last_name">Four</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">a7ff50e3-d388-4364-9c2d-002c74c8d2ed</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="username">user5</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">user5@mail.com</column>
+            <column name="first_name">User</column>
+            <column name="last_name">Five</column>
+        </insert>
+    </changeSet>
+
+    <changeSet id="user-roles" author="mihaj">
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">b615cdae-65bb-4f2a-819b-42bb01a6273e</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+        <insert tableName="user_sys_roles">
+            <column name="user_id">6a3c5b08-9a2b-4126-acc3-fd946ce2b01c</column>
+            <column name="sys_role_id">68d5de4a-2662-47a7-a35f-e587551b86f2</column>
+        </insert>
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">6a3c5b08-9a2b-4126-acc3-fd946ce2b01c</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+        <insert tableName="user_sys_roles">
+            <column name="user_id">cfebbbe9-0b00-4f65-9cd1-c8d0249b9148</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+        <insert tableName="user_sys_roles">
+            <column name="user_id">1ca0cd34-be14-4b7e-b0df-ba1d7ae1007f</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+        <insert tableName="user_sys_roles">
+            <column name="user_id">505d2586-563f-49fc-983d-3baa0416d60e</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+        <insert tableName="user_sys_roles">
+            <column name="user_id">a7ff50e3-d388-4364-9c2d-002c74c8d2ed</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+
+
+    </changeSet>
+
+
+</databaseChangeLog>
