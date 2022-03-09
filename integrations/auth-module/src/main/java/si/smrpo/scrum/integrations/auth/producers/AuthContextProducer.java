@@ -3,6 +3,7 @@ package si.smrpo.scrum.integrations.auth.producers;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import com.mjamsek.rest.exceptions.UnauthorizedException;
+import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.jwt.JWTClaimsSet;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.integrations.auth.models.errors.InvalidJwtException;
@@ -17,6 +18,7 @@ import javax.ws.rs.core.HttpHeaders;
 import java.text.ParseException;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static si.smrpo.scrum.integrations.auth.JWSConstants.*;
 
@@ -31,7 +33,6 @@ public class AuthContextProducer {
     @Inject
     private SigningService signingService;
     
-    @SuppressWarnings("unchecked")
     @Produces
     @RequestScoped
     public AuthContext produceAuthContext() {
@@ -60,7 +61,12 @@ public class AuthContextProducer {
                     contextBuilder.id(claims.getSubject());
                     contextBuilder.email((String) claims.getClaim(EMAIL_CLAIM));
                     contextBuilder.username((String) claims.getClaim(PREFERRED_USERNAME_CLAIM));
-                    contextBuilder.sysRoles((Set<String>) claims.getClaim("roles"));
+                    
+                    JSONArray sysRoles = (JSONArray) claims.getClaim("roles");
+                    Set<String> sysRolesSet = sysRoles.stream()
+                        .map(Object::toString)
+                        .collect(Collectors.toSet());
+                    contextBuilder.sysRoles(sysRolesSet);
                     return Optional.of(contextBuilder.build());
                 } catch (ParseException e) {
                     LOG.debug("Error parsing JWT claims!", e);

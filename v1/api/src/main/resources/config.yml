@@ -64,5 +64,5 @@ templates:
   cache-enabled: false
 users:
   password:
-    min-length: 12
+    min-length: 8
     max-length: 128

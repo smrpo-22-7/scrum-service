@@ -8,6 +8,8 @@
         <class>si.smrpo.scrum.persistence.auth.AuthorizationRequestEntity</class>
         <class>si.smrpo.scrum.persistence.auth.SessionEntity</class>
         <class>si.smrpo.scrum.persistence.auth.SigningKeyEntity</class>
+        <class>si.smrpo.scrum.persistence.users.SysRoleEntity</class>
+        <class>si.smrpo.scrum.persistence.users.UserSysRolesEntity</class>
 
         <properties>
             <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL10Dialect"/>

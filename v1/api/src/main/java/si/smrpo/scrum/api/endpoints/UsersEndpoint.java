@@ -1,11 +1,13 @@
 package si.smrpo.scrum.api.endpoints;
 
-import com.kumuluz.ee.rest.beans.QueryParameters;
 import si.smrpo.scrum.api.endpoints.defs.UsersEndpointDef;
 import si.smrpo.scrum.integrations.auth.Roles;
+import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
 import si.smrpo.scrum.integrations.auth.models.annotations.SysRolesRequired;
 import si.smrpo.scrum.integrations.auth.services.UserService;
+import si.smrpo.scrum.lib.UserProfile;
+import si.smrpo.scrum.lib.requests.ChangePasswordRequest;
 import si.smrpo.scrum.lib.requests.UserRegisterRequest;
 import si.smrpo.scrum.lib.requests.UsernameCheckRequest;
 
@@ -25,10 +27,16 @@ import javax.ws.rs.core.Response;
 public class UsersEndpoint implements UsersEndpointDef {
     
     @Inject
-    private QueryParameters queryParameters;
+    private UserService userService;
     
     @Inject
-    private UserService userService;
+    private AuthContext authContext;
+    
+    @Override
+    public Response getUserProfile() {
+        UserProfile profile = userService.getUserProfile(authContext.getId());
+        return Response.ok(profile).build();
+    }
     
     @SysRolesRequired({Roles.ADMIN_ROLE})
     @Override
@@ -43,6 +51,12 @@ public class UsersEndpoint implements UsersEndpointDef {
         if (exists) {
             Response.status(Response.Status.CONFLICT).build();
         }
+        return Response.noContent().build();
+    }
+    
+    @Override
+    public Response updateUserCredentials(ChangePasswordRequest request) {
+        userService.changePassword(authContext.getId(), request);
         return Response.noContent().build();
     }
 }

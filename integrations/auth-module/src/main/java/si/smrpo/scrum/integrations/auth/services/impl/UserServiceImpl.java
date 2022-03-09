@@ -9,8 +9,11 @@ import com.mjamsek.rest.services.Validator;
 import org.mindrot.jbcrypt.BCrypt;
 import si.smrpo.scrum.integrations.auth.Roles;
 import si.smrpo.scrum.integrations.auth.config.UsersConfig;
+import si.smrpo.scrum.integrations.auth.mappers.UserMapper;
 import si.smrpo.scrum.integrations.auth.services.RoleService;
 import si.smrpo.scrum.integrations.auth.services.UserService;
+import si.smrpo.scrum.lib.UserProfile;
+import si.smrpo.scrum.lib.requests.ChangePasswordRequest;
 import si.smrpo.scrum.lib.requests.UserRegisterRequest;
 import si.smrpo.scrum.persistence.identifiers.UserRoleId;
 import si.smrpo.scrum.persistence.users.SysRoleEntity;
@@ -68,25 +71,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public void registerUser(UserRegisterRequest request) {
         validator.assertNotBlank(request.getUsername());
-        validator.assertNotBlank(request.getPassword());
         validator.assertNotBlank(request.getFirstName());
         validator.assertNotBlank(request.getLastName());
         validator.assertNotBlank(request.getEmail());
         validator.assertEmail(request.getEmail());
-        
-        if (request.getPassword().length() < usersConfig.getMinPasswordLength()) {
-            throw new ValidationException("users.validation.error.password.short").isValidationError();
-        }
-        
-        if (request.getPassword().length() >= usersConfig.getMaxPasswordLength()) {
-            throw new ValidationException("users.validation.error.password.long").isValidationError();
-        }
+        validateCredentials(request.getPassword());
         
         UserEntity entity = new UserEntity();
         entity.setFirstName(request.getFirstName().trim());
         entity.setLastName(request.getLastName().trim());
         entity.setUsername(request.getUsername().trim());
-        entity.setPassword(request.getPassword());
+        entity.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
         entity.setEmail(request.getEmail().trim());
     
         Set<SysRoleEntity> userRoles;
@@ -119,8 +114,32 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
+    public void changePassword(String userId, ChangePasswordRequest request) {
+        validateCredentials(request.getNewPassword());
+        UserEntity user = checkUserPassword(userId, request.getPassword());
+        
+        try {
+            em.getTransaction().begin();
+            user.setPassword(BCrypt.hashpw(request.getNewPassword(), BCrypt.gensalt()));
+            em.merge(user);
+            em.flush();
+            em.getTransaction().commit();
+        } catch (PersistenceException e) {
+            LOG.error("Error updating password!", e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
     public boolean usernameExists(String username) {
         return getUserEntityByUsername(username).isPresent();
+    }
+    
+    @Override
+    public UserProfile getUserProfile(String userId) {
+        return getUserEntityById(userId)
+            .map(UserMapper::toProfile)
+            .orElseThrow(() -> new UnauthorizedException("error.unauthorized"));
     }
     
     @Override
@@ -132,13 +151,34 @@ public class UserServiceImpl implements UserService {
                 return new UnauthorizedException("error.unauthorized");
             });
         LOG.trace("User successfully retrieved based on username");
-        boolean validCredentials = BCrypt.checkpw(password, entity.getPassword());
+        return checkUserCredentials(entity, password);
+    }
+    
+    private UserEntity checkUserPassword(String userId, String password) throws UnauthorizedException {
+        UserEntity user = getUserEntityById(userId)
+            .orElseThrow(() -> new UnauthorizedException("error.unauthorized"));
+        return checkUserCredentials(user, password);
+    }
+    
+    private UserEntity checkUserCredentials(UserEntity user, String password) throws UnauthorizedException {
+        boolean validCredentials = BCrypt.checkpw(password, user.getPassword());
         LOG.trace("Given credentials are " + (validCredentials ? "valid" : "invalid"));
         if (!validCredentials) {
             LOG.debug("Invalid user credentials provided!");
             throw new UnauthorizedException("error.unauthorized");
         }
         LOG.trace("Credentials checked");
-        return entity;
+        return user;
+    }
+    
+    private void validateCredentials(String password) throws ValidationException {
+        validator.assertNotBlank(password);
+        if (password.length() < usersConfig.getMinPasswordLength()) {
+            throw new ValidationException("users.validation.error.password.short").isValidationError();
+        }
+    
+        if (password.length() >= usersConfig.getMaxPasswordLength()) {
+            throw new ValidationException("users.validation.error.password.long").isValidationError();
+        }
     }
 }
