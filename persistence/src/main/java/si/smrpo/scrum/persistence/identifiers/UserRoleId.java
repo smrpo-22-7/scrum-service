@@ -13,11 +13,11 @@ import java.util.Objects;
 public class UserRoleId implements Serializable {
     
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
     
     @ManyToOne
-    @JoinColumn(name = "sys_role_id")
+    @JoinColumn(name = "sys_role_id", nullable = false)
     private SysRoleEntity sysRole;
     
     public UserEntity getUser() {

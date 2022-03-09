@@ -7,7 +7,8 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "sessions", indexes = {
-    @Index(name = "IDX_SESSIONS_SEARCH", columnList = "ip_address")
+    @Index(name = "IDX_SESSIONS_SEARCH", columnList = "ip_address"),
+    @Index(name = "IDX_UNIQUE_IP_USER", columnList = "ip_address,user_id", unique = true)
 })
 @NamedQueries({
     @NamedQuery(name = SessionEntity.GET_SESSION, query = "SELECT s FROM SessionEntity s WHERE s.id = :sessionId AND s.ipAddress = :ip")
@@ -16,7 +17,7 @@ public class SessionEntity extends BaseEntity {
     
     public static final String GET_SESSION = "SessionEntity.getSession";
     
-    @Column(name = "ip_address")
+    @Column(name = "ip_address", nullable = false)
     private String ipAddress;
     
     @ManyToOne
