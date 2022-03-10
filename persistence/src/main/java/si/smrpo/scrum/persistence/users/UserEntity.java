@@ -16,19 +16,19 @@ public class UserEntity extends BaseEntity {
     
     public static final String GET_BY_USERNAME = "UserEntity.getByUsername";
     
-    @Column(name = "username")
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
     
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
     
-    @Column(name = "email")
+    @Column(name = "email", nullable = false)
     private String email;
     
-    @Column(name = "first_name")
+    @Column(name = "first_name", nullable = false)
     private String firstName;
     
-    @Column(name = "last_name")
+    @Column(name = "last_name", nullable = false)
     private String lastName;
     
     @Column(name = "phone_number")

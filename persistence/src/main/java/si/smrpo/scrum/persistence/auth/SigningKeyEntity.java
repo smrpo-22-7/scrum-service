@@ -15,13 +15,13 @@ public class SigningKeyEntity extends BaseEntity {
     public static final String CHECK_KEY_EXISTS = "SigningKeyEntity.checkKeyExists";
     public static final String REMOVE_KEYS = "SigningKeyEntity.removeKeys";
 
-    @Column(name = "algorithm")
+    @Column(name = "algorithm", nullable = false)
     private String algorithm;
     
-    @Column(name = "private_key", columnDefinition = "TEXT")
+    @Column(name = "private_key", columnDefinition = "TEXT", nullable = false)
     private String privateKey;
     
-    @Column(name = "public_key", columnDefinition = "TEXT")
+    @Column(name = "public_key", columnDefinition = "TEXT", nullable = false)
     private String publicKey;
     
     public String getAlgorithm() {

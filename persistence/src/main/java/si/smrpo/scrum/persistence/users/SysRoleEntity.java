@@ -17,7 +17,7 @@ public class SysRoleEntity extends BaseEntity {
     public static final String GET_BY_ROLE_ID = "SysRoleEntity.getByRoleId";
     public static final String GET_BY_ROLE_IDS = "SysRoleEntity.getByRoleIds";
     
-    @Column(name = "role_id")
+    @Column(name = "role_id", nullable = false)
     private String roleId;
     
     @Column(name = "name")

@@ -29,6 +29,7 @@
         <kumuluzee-rest-client.version>1.4.1.2</kumuluzee-rest-client.version>
         <kumuluzee-openapi-mp.version>1.4.0</kumuluzee-openapi-mp.version>
         <kumuluzee-config-mp.version>1.4.1</kumuluzee-config-mp.version>
+        <kumuluzee-migrations.version>1.0.0-SNAPSHOT</kumuluzee-migrations.version>
 
         <swagger-ui.version>3.46.0</swagger-ui.version>
         <jackson.version>2.12.3</jackson.version>
@@ -122,6 +123,11 @@
                 <groupId>com.kumuluz.ee.logs</groupId>
                 <artifactId>kumuluzee-logs-log4j2</artifactId>
                 <version>${kumuluzee-logs.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kumuluz.ee.database-schema-migrations</groupId>
+                <artifactId>kumuluzee-database-schema-migrations-liquibase</artifactId>
+                <version>${kumuluzee-migrations.version}</version>
             </dependency>
 
             <dependency>
@@ -224,4 +230,32 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <repositories>
+        <repository>
+            <id>sonatype-snapshots</id>
+            <name>Sonatype Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>sonatype-snapshots</id>
+            <name>Sonatype Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 </project>

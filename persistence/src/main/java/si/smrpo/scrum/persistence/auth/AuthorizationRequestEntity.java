@@ -26,16 +26,16 @@ public class AuthorizationRequestEntity extends BaseEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
     
-    @Column(name = "ip_address")
+    @Column(name = "ip_address", nullable = false)
     private String ipAddress;
     
     @Column(name = "code")
     private String code;
     
-    @Column(name = "pkce_challenge")
+    @Column(name = "pkce_challenge", nullable = false)
     private String pkceChallenge;
     
-    @Column(name = "pkce_method")
+    @Column(name = "pkce_method", nullable = false)
     @Enumerated(EnumType.STRING)
     private PKCEMethod pkceMethod;
     
