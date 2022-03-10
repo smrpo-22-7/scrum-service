@@ -1,6 +1,6 @@
 kumuluzee:
   name: scrum-service
-  version: 1.0.1-SNAPSHOT
+  version: 1.0.2-SNAPSHOT
   env:
     prod: false
     name: dev
