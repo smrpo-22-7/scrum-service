@@ -1,5 +1,7 @@
 package si.smrpo.scrum.lib;
 
+import si.smrpo.scrum.lib.enums.SimpleStatus;
+
 public class User extends BaseType {
     
     private String username;
@@ -13,6 +15,8 @@ public class User extends BaseType {
     private String phoneNumber;
     
     private String avatar;
+    
+    private SimpleStatus status;
     
     public String getUsername() {
         return username;
@@ -60,5 +64,13 @@ public class User extends BaseType {
     
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+    
+    public SimpleStatus getStatus() {
+        return status;
+    }
+    
+    public void setStatus(SimpleStatus status) {
+        this.status = status;
     }
 }

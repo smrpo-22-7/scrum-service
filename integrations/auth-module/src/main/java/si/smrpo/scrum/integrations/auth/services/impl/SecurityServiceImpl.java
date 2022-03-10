@@ -16,6 +16,7 @@ import si.smrpo.scrum.integrations.auth.models.annotations.SysRolesRequired;
 import si.smrpo.scrum.integrations.auth.models.errors.InvalidJwtException;
 import si.smrpo.scrum.integrations.auth.services.*;
 import si.smrpo.scrum.lib.enums.PKCEMethod;
+import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.enums.TokenType;
 import si.smrpo.scrum.persistence.auth.AuthorizationRequestEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
@@ -101,6 +102,11 @@ public class SecurityServiceImpl implements SecurityService {
                     LOG.debug("User matching JWT subject cannot be found");
                     return new UnauthorizedException("error.unauthorized");
                 });
+            if (user.getStatus().equals(SimpleStatus.DISABLED)) {
+                LOG.debug("Refused issuing refresh token to disabled user.");
+                throw new UnauthorizedException("error.unauthorized");
+            }
+            
             Set<String> userRoles = roleService.getUserRoles(user.getId());
             
             return createToken(user, userRoles);

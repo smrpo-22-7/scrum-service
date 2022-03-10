@@ -6,5 +6,6 @@
     <include file="db_setup_version.xml" relativeToChangelogFile="true"/>
     <include file="2022-03-09-01-changelog.xml" relativeToChangelogFile="true"/>
     <include file="2022-03-09-02-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="2022-03-10-01-changelog.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
