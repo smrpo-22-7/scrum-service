@@ -13,6 +13,7 @@ import si.smrpo.scrum.integrations.auth.mappers.UserMapper;
 import si.smrpo.scrum.integrations.auth.services.RoleService;
 import si.smrpo.scrum.integrations.auth.services.UserService;
 import si.smrpo.scrum.lib.UserProfile;
+import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.ChangePasswordRequest;
 import si.smrpo.scrum.lib.requests.UserRegisterRequest;
 import si.smrpo.scrum.persistence.identifiers.UserRoleId;
@@ -83,6 +84,7 @@ public class UserServiceImpl implements UserService {
         entity.setUsername(request.getUsername().trim());
         entity.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
         entity.setEmail(request.getEmail().trim());
+        entity.setStatus(SimpleStatus.ACTIVE);
     
         Set<SysRoleEntity> userRoles;
         if (request.getGrantedRoles() != null && request.getGrantedRoles().size() > 0) {
@@ -117,7 +119,7 @@ public class UserServiceImpl implements UserService {
     public void changePassword(String userId, ChangePasswordRequest request) {
         validateCredentials(request.getNewPassword());
         UserEntity user = checkUserPassword(userId, request.getPassword());
-        
+        // TODO: can disabled user change password?
         try {
             em.getTransaction().begin();
             user.setPassword(BCrypt.hashpw(request.getNewPassword(), BCrypt.gensalt()));
@@ -138,6 +140,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserProfile getUserProfile(String userId) {
         return getUserEntityById(userId)
+            .flatMap(entity -> {
+                if (entity.getStatus().equals(SimpleStatus.DISABLED)) {
+                    return Optional.empty();
+                }
+                return Optional.of(entity);
+            })
             .map(UserMapper::toProfile)
             .orElseThrow(() -> new UnauthorizedException("error.unauthorized"));
     }
@@ -150,6 +158,11 @@ public class UserServiceImpl implements UserService {
                 LOG.debug("Invalid username provided!");
                 return new UnauthorizedException("error.unauthorized");
             });
+        
+        if (entity.getStatus().equals(SimpleStatus.DISABLED)) {
+            LOG.debug("User is disabled!");
+            throw new UnauthorizedException("error.unauthorized");
+        }
         LOG.trace("User successfully retrieved based on username");
         return checkUserCredentials(entity, password);
     }

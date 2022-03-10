@@ -1,5 +1,6 @@
 package si.smrpo.scrum.persistence.users;
 
+import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.persistence.BaseEntity;
 
 import javax.persistence.*;
@@ -36,6 +37,10 @@ public class UserEntity extends BaseEntity {
     
     @Column(name = "avatar")
     private String avatar;
+    
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SimpleStatus status;
     
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "last_login_at")
@@ -103,5 +108,13 @@ public class UserEntity extends BaseEntity {
     
     public void setLastLoginAt(Date lastLoginAt) {
         this.lastLoginAt = lastLoginAt;
+    }
+    
+    public SimpleStatus getStatus() {
+        return status;
+    }
+    
+    public void setStatus(SimpleStatus status) {
+        this.status = status;
     }
 }
