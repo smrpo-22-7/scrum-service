@@ -4,7 +4,6 @@ import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import com.mjamsek.rest.exceptions.UnauthorizedException;
 import si.smrpo.scrum.integrations.auth.AuthConstants;
-import si.smrpo.scrum.integrations.auth.config.AuthConfig;
 import si.smrpo.scrum.integrations.auth.services.AuthorizationService;
 import si.smrpo.scrum.integrations.auth.services.SessionService;
 import si.smrpo.scrum.integrations.auth.utils.HttpUtil;
@@ -39,9 +38,6 @@ public class AuthorizationServlet extends HttpServlet {
     
     @Inject
     private AuthorizationService authorizationService;
-    
-    @Inject
-    private AuthConfig authConfig;
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -133,13 +129,13 @@ public class AuthorizationServlet extends HttpServlet {
     
     private void silentAuthentication(HttpServletRequest req, HttpServletResponse resp, SessionEntity session, AuthorizationRequestEntity request) throws IOException {
         LOG.trace("Performing silent authentication");
-        String redirectUri = req.getParameter(REDIRECT_URI_PARAM) + authConfig.getClientRedirectUri();
+        String redirectUri = req.getParameter(REDIRECT_URI_PARAM);
         resp.addCookie(ServletUtil.createSessionCookie(session.getId()));
         resp.sendRedirect(redirectUri + ServletUtil.buildRedirectUriParams(request, session));
     }
     
     private void returnErrorToClient(HttpServletRequest req, HttpServletResponse resp, String error) throws IOException {
-        String redirectUri = req.getParameter(REDIRECT_URI_PARAM) + authConfig.getClientRedirectUri();
+        String redirectUri = req.getParameter(REDIRECT_URI_PARAM);
         resp.sendRedirect(redirectUri + ServletUtil.buildErrorParams(error));
     }
 }

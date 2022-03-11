@@ -5,10 +5,7 @@ import org.eclipse.microprofile.openapi.annotations.info.Contact;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
 import org.eclipse.microprofile.openapi.annotations.servers.Server;
 import si.smrpo.scrum.api.endpoints.UsersEndpoint;
-import si.smrpo.scrum.api.mappers.DefaultExceptionMapper;
-import si.smrpo.scrum.api.mappers.ForbiddenExceptionMapper;
-import si.smrpo.scrum.api.mappers.GenericExceptionMapper;
-import si.smrpo.scrum.api.mappers.ValidationExceptionMapper;
+import si.smrpo.scrum.api.mappers.*;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -36,6 +33,7 @@ public class RestService extends Application {
         classes.add(GenericExceptionMapper.class);
         classes.add(ForbiddenExceptionMapper.class);
         classes.add(ValidationExceptionMapper.class);
+        classes.add(UnauthorizedExceptionMapper.class);
         
         return classes;
     }
