@@ -38,6 +38,7 @@ public class AuthModuleExtension implements Extension {
     
             servletServer.registerServlet(AuthorizationServlet.class, "/protocol/oidc/auth");
             servletServer.registerServlet(TokenServlet.class, "/protocol/oidc/token");
+            servletServer.registerServlet(EndSessionServlet.class, "/protocol/oidc/logout");
             servletServer.registerServlet(LoginServlet.class, "/login");
             servletServer.registerServlet(ErrorServlet.class, "/error");
     

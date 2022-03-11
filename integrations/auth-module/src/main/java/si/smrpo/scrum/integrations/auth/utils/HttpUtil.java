@@ -127,7 +127,7 @@ public class HttpUtil {
     
     public static boolean isValidRedirectUri(String redirectUri) {
         Set<String> allowedOrigins = getAllowedOrigins();
-        return allowedOrigins.contains(redirectUri);
+        return allowedOrigins.stream().anyMatch(redirectUri::startsWith);
     }
     
     public static Set<String> getAllowedOrigins() {

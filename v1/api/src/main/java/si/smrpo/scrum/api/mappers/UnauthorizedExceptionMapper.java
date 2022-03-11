@@ -1,6 +1,6 @@
 package si.smrpo.scrum.api.mappers;
 
-import com.mjamsek.rest.exceptions.RestException;
+import com.mjamsek.rest.exceptions.UnauthorizedException;
 import com.mjamsek.rest.services.Localizator;
 
 import javax.enterprise.context.RequestScoped;
@@ -11,9 +11,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-@RequestScoped
 @Provider
-public class DefaultExceptionMapper implements ExceptionMapper<RestException> {
+@RequestScoped
+public class UnauthorizedExceptionMapper implements ExceptionMapper<UnauthorizedException> {
     
     @Inject
     private Localizator localizator;
@@ -22,8 +22,7 @@ public class DefaultExceptionMapper implements ExceptionMapper<RestException> {
     private HttpServletRequest request;
     
     @Override
-    public Response toResponse(RestException exception) {
-        exception.printStackTrace();
+    public Response toResponse(UnauthorizedException exception) {
         return MapperUtil.mapException(exception, localizator, request.getLocale());
     }
 }

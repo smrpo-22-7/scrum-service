@@ -3,7 +3,6 @@ package si.smrpo.scrum.integrations.auth.servlets;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import com.mjamsek.rest.exceptions.UnauthorizedException;
-import si.smrpo.scrum.integrations.auth.config.AuthConfig;
 import si.smrpo.scrum.integrations.auth.services.AuthorizationService;
 import si.smrpo.scrum.integrations.auth.services.SessionService;
 import si.smrpo.scrum.integrations.auth.services.UserService;
@@ -33,9 +32,6 @@ import static si.smrpo.scrum.integrations.auth.ServletConstants.LOGIN_SERVLET;
 public class LoginServlet extends HttpServlet {
     
     private static final Logger LOG = LogManager.getLogger(LoginServlet.class.getName());
-    
-    @Inject
-    private AuthConfig authConfig;
     
     @Inject
     private UserService userService;
@@ -128,10 +124,9 @@ public class LoginServlet extends HttpServlet {
     }
     
     private void redirectSuccessfullyBackToClient(String redirectUrl, HttpServletResponse resp, String requestId, String userId, SessionEntity session) throws IOException {
-        String redirectUri = redirectUrl + authConfig.getClientRedirectUri();
         LOG.trace("Redirecting back to client with authorization code");
         AuthorizationRequestEntity request = authorizationService.createAuthorizationCode(requestId, userId);
-        resp.sendRedirect(redirectUri + ServletUtil.buildRedirectUriParams(request, session));
+        resp.sendRedirect(redirectUrl + ServletUtil.buildRedirectUriParams(request, session));
     }
     
     private Map<String, String[]> sanitizeParameters(Map<String, String[]> paramsMap) {
