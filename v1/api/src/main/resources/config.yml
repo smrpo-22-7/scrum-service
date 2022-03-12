@@ -64,12 +64,12 @@ notifications:
     display-name: SMRPO
     username: user@host.com
     password: userpassword
-web-ui:
-  allowed-origins: http://localhost:4200, https://scrum-web.netlify.app
-  oidc-callback: /callback/oidc
+auth:
+  web-ui:
+    allowed-origins: http://localhost:4200, https://scrum-web.netlify.app
+  users:
+    password:
+      min-length: 12
+      max-length: 128
 templates:
   cache-enabled: false
-users:
-  password:
-    min-length: 12
-    max-length: 128
