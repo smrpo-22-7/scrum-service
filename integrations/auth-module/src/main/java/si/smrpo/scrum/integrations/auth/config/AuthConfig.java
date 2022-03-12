@@ -12,9 +12,6 @@ public class AuthConfig {
     @ConfigValue("kumuluzee.server.base-url")
     private String baseUrl;
     
-    @ConfigValue("web-ui.oidc-callback")
-    private String clientRedirectUri;
-    
     public String getBaseUrl() {
         return baseUrl;
     }
@@ -23,11 +20,4 @@ public class AuthConfig {
         this.baseUrl = baseUrl;
     }
     
-    public String getClientRedirectUri() {
-        return clientRedirectUri;
-    }
-    
-    public void setClientRedirectUri(String clientRedirectUri) {
-        this.clientRedirectUri = clientRedirectUri;
-    }
 }

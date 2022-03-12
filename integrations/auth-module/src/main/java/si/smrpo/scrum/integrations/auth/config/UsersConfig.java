@@ -6,7 +6,7 @@ import com.kumuluz.ee.configuration.cdi.ConfigValue;
 import javax.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
-@ConfigBundle("users")
+@ConfigBundle("auth.users")
 public class UsersConfig {
     
     @ConfigValue("password.min-length")

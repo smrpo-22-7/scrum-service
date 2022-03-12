@@ -50,14 +50,25 @@ public class SessionServiceImpl implements SessionService {
     @Override
     public SessionEntity associateUserWithSession(String sessionId, String userId) {
         LOG.debug("Associating user with session...");
-        SessionEntity entity = getSessionById(sessionId)
-            .orElseThrow(() -> new UnauthorizedException("Invalid session!"));
-    
-        UserEntity user = userService.getUserEntityById(userId)
-            .orElseThrow(() -> new UnauthorizedException("Invalid user!"));
     
         try {
             em.getTransaction().begin();
+    
+            SessionEntity entity = getSessionById(sessionId)
+                .orElseThrow(() -> new UnauthorizedException("Invalid session!"));
+            
+            getExistingUserSession(entity.getIpAddress(), userId)
+                .ifPresent(existingSession -> {
+                    if (!existingSession.getId().equals(entity.getId())) {
+                        LOG.debug("Found existing stored session. Cleaning it up...");
+                        em.remove(existingSession);
+                        em.flush();
+                    }
+                });
+    
+            UserEntity user = userService.getUserEntityById(userId)
+                .orElseThrow(() -> new UnauthorizedException("Invalid user!"));
+            
             entity.setUser(user);
             em.flush();
             em.getTransaction().commit();
@@ -65,6 +76,21 @@ public class SessionServiceImpl implements SessionService {
             return entity;
         } catch (PersistenceException e) {
             em.getTransaction().rollback();
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    private Optional<SessionEntity> getExistingUserSession(String ipAddress, String userId) {
+        TypedQuery<SessionEntity> query = em.createNamedQuery(SessionEntity.GET_BY_USER_AND_IP, SessionEntity.class);
+        query.setParameter("ip", ipAddress);
+        query.setParameter("userId", userId);
+        
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        } catch (PersistenceException e) {
             LOG.error(e);
             throw new RestException("error.server");
         }

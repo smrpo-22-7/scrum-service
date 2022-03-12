@@ -3,19 +3,12 @@ package si.smrpo.scrum.integrations.auth.utils;
 import com.kumuluz.ee.configuration.utils.ConfigurationUtil;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.HttpHeaders;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static si.smrpo.scrum.integrations.auth.AuthConstants.ERROR_PARAM;
-
 public class HttpUtil {
-    
-    private static final String BEARER_TOKEN_PREFIX = "Bearer";
-    private static final String BASIC_PREFIX = "Basic";
     
     private HttpUtil() {
     
@@ -73,27 +66,6 @@ public class HttpUtil {
             .replaceAll("%7E", "~");
     }
     
-    /**
-     * Retrieve Authorization header value of type Bearer or Basic
-     * @param req
-     * @return
-     */
-    public static Optional<String> getCredentialsFromRequest(HttpServletRequest req) {
-        String authorizationHeader = req.getHeader(HttpHeaders.AUTHORIZATION);
-        return Optional.ofNullable(authorizationHeader)
-            .map(String::trim)
-            .map(headerValue -> {
-                if (headerValue.startsWith(BEARER_TOKEN_PREFIX)) {
-                    return headerValue.replace(BEARER_TOKEN_PREFIX + " ", "");
-                }
-                if (headerValue.startsWith(BASIC_PREFIX)) {
-                    return headerValue.replace(BASIC_PREFIX + " ", "");
-                }
-                return headerValue;
-            })
-            .map(String::trim);
-    }
-    
     public static Optional<Cookie> getCookieByName(String name, Cookie[] cookies) {
         if (cookies == null) {
             return Optional.empty();
@@ -104,12 +76,6 @@ public class HttpUtil {
             }
         }
         return Optional.empty();
-    }
-    
-    public static String buildErrorParams(String errorMessage) {
-        Map<String, String[]> params = new HashMap<>();
-        params.put(ERROR_PARAM, new String[]{HttpUtil.encodeURI(errorMessage)});
-        return HttpUtil.formatQueryParams(params);
     }
     
     /**
@@ -132,7 +98,7 @@ public class HttpUtil {
     
     public static Set<String> getAllowedOrigins() {
         ConfigurationUtil configUtil = ConfigurationUtil.getInstance();
-        return new HashSet<>(Arrays.asList(configUtil.get("web-ui.allowed-origins").orElse("")
+        return new HashSet<>(Arrays.asList(configUtil.get("auth.web-ui.allowed-origins").orElse("")
             .split(",")))
             .stream().map(String::trim)
             .collect(Collectors.toSet());
