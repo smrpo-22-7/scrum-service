@@ -1,5 +1,6 @@
 package si.smrpo.scrum.integrations.auth.services;
 
+import si.smrpo.scrum.lib.SysRole;
 import si.smrpo.scrum.persistence.users.SysRoleEntity;
 
 import java.util.Optional;
@@ -13,7 +14,9 @@ public interface RoleService {
     
     Set<SysRoleEntity> getSysRoles(Set<String> roles);
     
-    Set<SysRoleEntity> getAllSysRoles();
+    Set<SysRoleEntity> getAllSysRoleEntities();
+    
+    Set<SysRole> getAllSysRoles();
     
     Optional<SysRoleEntity> getSysRoleEntity(String roleId);
     
