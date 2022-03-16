@@ -95,6 +95,10 @@ public class UserServiceImpl implements UserService {
                 .orElse(new HashSet<>());
         }
         
+        if (userRoles.size() == 0) {
+            throw new ValidationException("users.error.validation.empty-roles");
+        }
+        
         try {
             em.getTransaction().begin();
             em.persist(entity);
