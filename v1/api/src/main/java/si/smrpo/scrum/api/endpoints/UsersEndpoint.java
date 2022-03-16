@@ -45,11 +45,12 @@ public class UsersEndpoint implements UsersEndpointDef {
         return Response.status(Response.Status.CREATED).build();
     }
     
+    @SysRolesRequired({Roles.ADMIN_ROLE})
     @Override
     public Response checkUsernameExists(UsernameCheckRequest request) {
         boolean exists = userService.usernameExists(request.getUsername());
         if (exists) {
-            Response.status(Response.Status.CONFLICT).build();
+            return Response.status(Response.Status.CONFLICT).build();
         }
         return Response.noContent().build();
     }
