@@ -4,6 +4,7 @@ import org.eclipse.microprofile.openapi.annotations.OpenAPIDefinition;
 import org.eclipse.microprofile.openapi.annotations.info.Contact;
 import org.eclipse.microprofile.openapi.annotations.info.Info;
 import org.eclipse.microprofile.openapi.annotations.servers.Server;
+import si.smrpo.scrum.api.endpoints.SysRoleEndpoint;
 import si.smrpo.scrum.api.endpoints.UsersEndpoint;
 import si.smrpo.scrum.api.mappers.*;
 
@@ -27,6 +28,7 @@ public class RestService extends Application {
         
         // endpoints
         classes.add(UsersEndpoint.class);
+        classes.add(SysRoleEndpoint.class);
         
         // exception mappers
         classes.add(DefaultExceptionMapper.class);
