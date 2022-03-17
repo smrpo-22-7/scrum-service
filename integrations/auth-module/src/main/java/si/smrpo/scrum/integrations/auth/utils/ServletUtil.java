@@ -96,6 +96,10 @@ public class ServletUtil {
         return buildErrorParams(errorMessage, requestId, null, new HashMap<>());
     }
     
+    public static String buildErrorParams(String errorMessage, String requestId, Map<String, String[]> keptParams) {
+        return buildErrorParams(errorMessage, requestId, null, keptParams);
+    }
+    
     public static String buildErrorParams(String errorMessage, String requestId, String sessionId, Map<String, String[]> keptParams) {
         Map<String, String[]> params = new HashMap<>(keptParams);
         params.put(ERROR_PARAM, new String[]{HttpUtil.encodeURI(errorMessage)});

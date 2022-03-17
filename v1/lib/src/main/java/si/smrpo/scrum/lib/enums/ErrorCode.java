@@ -6,6 +6,7 @@ public enum ErrorCode {
     LOGIN_REQUIRED("login_required", "Login required!"),
     INVALID_CREDENTIALS("invalid_credentials", "Invalid credentials!"),
     INVALID_ARGUMENTS("invalid_arguments", "Invalid arguments!"),
+    INVALID_ORIGIN("invalid_origin", "Invalid origin!"),
     PASSWORD_MISMATCH("password_mismatch", "Passwords do not match!"),
     MISSING_REQUIRED_FIELDS("missing_required_fields", "Required fields missing!"),
     INSECURE_PASSWORD("insecure_password", "Password is too short! Password must contain at least 6 characters!"),
