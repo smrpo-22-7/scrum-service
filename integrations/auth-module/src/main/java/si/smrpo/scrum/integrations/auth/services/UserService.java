@@ -1,7 +1,11 @@
 package si.smrpo.scrum.integrations.auth.services;
 
+import com.kumuluz.ee.rest.beans.QueryParameters;
+import com.mjamsek.rest.dto.EntityList;
 import com.mjamsek.rest.exceptions.UnauthorizedException;
+import si.smrpo.scrum.lib.User;
 import si.smrpo.scrum.lib.UserProfile;
+import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.ChangePasswordRequest;
 import si.smrpo.scrum.lib.requests.UserRegisterRequest;
 import si.smrpo.scrum.persistence.users.UserEntity;
@@ -9,6 +13,10 @@ import si.smrpo.scrum.persistence.users.UserEntity;
 import java.util.Optional;
 
 public interface UserService {
+    
+    EntityList<User> getUserList(QueryParameters queryParameters);
+    
+    User getUserById(String userId);
     
     Optional<UserEntity> getUserEntityById(String userId);
     
@@ -22,5 +30,10 @@ public interface UserService {
     
     boolean usernameExists(String username);
     
+    User updateUser(String userId, User user);
+    
     UserProfile getUserProfile(String userId);
+    
+    void changeUserStatus(String userId, SimpleStatus status);
+    
 }

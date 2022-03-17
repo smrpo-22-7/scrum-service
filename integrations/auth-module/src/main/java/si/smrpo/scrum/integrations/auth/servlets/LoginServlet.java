@@ -1,5 +1,6 @@
 package si.smrpo.scrum.integrations.auth.servlets;
 
+import com.kumuluz.ee.configuration.utils.ConfigurationUtil;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import com.mjamsek.rest.exceptions.UnauthorizedException;
@@ -58,10 +59,14 @@ public class LoginServlet extends HttpServlet {
                 .orElse("Unknown error!");
         }
         
+        String webUiUrl = ConfigurationUtil.getInstance()
+            .get("web-ui.url").orElse("#");
+        
         Map<String, Object> params = new HashMap<>();
         params.put("requestId", requestId);
         params.put("error", error);
         params.put("redirectUri", redirectUri);
+        params.put("webUiUrl", webUiUrl);
         String htmlContent = templatingService.renderHtml("login", params);
     
         ServletUtil.renderHtml(htmlContent, resp);

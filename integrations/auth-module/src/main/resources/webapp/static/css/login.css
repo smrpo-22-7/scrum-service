@@ -1,97 +1,29 @@
-
-.header {
-    margin-bottom: 40px;
-}
-
-.header h1 {
-    color: #363636;
-    text-align: center;
-}
-
 form {
     min-width: 500px;
 }
-
-form .error-container {
-    margin: 0 0 20px 0;
-    font-size: 1.1rem;
-    color: var(--red-color);
-    padding: 15px;
-    border: 2px solid var(--red-color);
-    text-align: center;
-    border-radius: 5px;
-    width: 100%;
-}
-
-form .form-element {
-    width: 100%;
-    margin-bottom: 25px;
-}
-
-form .form-actions {
-    display: flex;
-    justify-content: center;
-}
-
-form .form-actions button[type=submit] {
-    padding: 5px 15px;
-    text-align: center;
-    font-size: 1.1rem;
-    background-color: var(--white-color);
-    border-radius: 8px;
-    color: var(--green-color);
-    width: 80%;
-    height: 50px;
-    border: 2px solid var(--green-color);
-    text-decoration: none;
-    transition-duration: 0.4s;
-}
-
-form .form-actions button[type=submit]:hover {
-    background-color: var(--green-color);
-    color: var(--white-color);
-    cursor: pointer;
-}
-
-form .form-element label {
-    display: block;
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-bottom: 5px;
-}
-
-form .form-element .form-control {
-    font-size: 1.2rem;
-    width: 100%;
-    min-height: 35px;
-    padding: 5px 15px;
-    border-radius: 5px;
-}
-
-form .form-element .password-input {
-    display: flex;
-    width: 100%;
-}
-
 form .password-toggler {
+    display: flex;
+    align-items: center;
+}
+form .password-toggler #show-password-btn {
     display: flex;
     align-items: center;
     font-size: 0.9rem;
     margin-top: 5px;
-}
-
-form .password-toggler #show-password-btn {
     cursor: pointer;
-    width: 35px;
-    min-width: 35px;
     height: 35px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 10px;
 }
-
 form .password-toggler #show-password-btn #show-password-img {
     width: 30px;
     height: 30px;
+    margin-right: 10px;
+}
+form .form-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+form .form-actions button[type=submit] {
+    width: 60%;
+    height: 40px;
 }
