@@ -9,11 +9,13 @@ import javax.persistence.*;
     @Index(name = "IDX_USER_ID", columnList = "user_id")
 })
 @NamedQueries({
-    @NamedQuery(name = UserSysRolesEntity.GET_USER_ROLES, query = "SELECT ur.id.sysRole FROM UserSysRolesEntity ur WHERE ur.id.user.id = :userId")
+    @NamedQuery(name = UserSysRolesEntity.GET_USER_ROLES, query = "SELECT ur.id.sysRole FROM UserSysRolesEntity ur WHERE ur.id.user.id = :userId"),
+    @NamedQuery(name = UserSysRolesEntity.GET_USER_ROLE_MAPPINGS, query = "SELECT ur FROM UserSysRolesEntity ur WHERE ur.id.user.id = :userId")
 })
 public class UserSysRolesEntity {
     
     public static final String GET_USER_ROLES = "UserSysRolesEntity.getUserRoles";
+    public static final String GET_USER_ROLE_MAPPINGS = "UserSysRolesEntity.getUserRoleMappings";
     
     @EmbeddedId
     private UserRoleId id;

@@ -6,6 +6,7 @@ import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
 import si.smrpo.scrum.integrations.auth.models.annotations.SysRolesRequired;
 import si.smrpo.scrum.integrations.auth.services.RoleService;
 import si.smrpo.scrum.lib.SysRole;
+import si.smrpo.scrum.lib.requests.ChangeSysRoleRequest;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -31,5 +32,12 @@ public class SysRoleEndpoint implements SysRoleEndpointDef {
     public Response getSysRoles() {
         Set<SysRole> roles = roleService.getAllSysRoles();
         return Response.ok(roles).build();
+    }
+    
+    @SysRolesRequired({Roles.ADMIN_ROLE})
+    @Override
+    public Response updateUserRoles(String userId, ChangeSysRoleRequest request) {
+        roleService.updateUserRoles(userId, request.getRoles());
+        return Response.noContent().build();
     }
 }

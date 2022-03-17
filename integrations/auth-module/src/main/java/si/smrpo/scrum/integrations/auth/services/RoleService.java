@@ -20,4 +20,6 @@ public interface RoleService {
     
     Optional<SysRoleEntity> getSysRoleEntity(String roleId);
     
+    void updateUserRoles(String userId, Set<String> grantedRoles);
+    
 }

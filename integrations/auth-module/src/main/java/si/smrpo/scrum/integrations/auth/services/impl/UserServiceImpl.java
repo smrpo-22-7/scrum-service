@@ -2,16 +2,26 @@ package si.smrpo.scrum.integrations.auth.services.impl;
 
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
+import com.kumuluz.ee.rest.beans.QueryFilter;
+import com.kumuluz.ee.rest.beans.QueryOrder;
+import com.kumuluz.ee.rest.beans.QueryParameters;
+import com.kumuluz.ee.rest.enums.FilterOperation;
+import com.kumuluz.ee.rest.enums.OrderDirection;
+import com.kumuluz.ee.rest.utils.JPAUtils;
+import com.mjamsek.rest.dto.EntityList;
+import com.mjamsek.rest.exceptions.NotFoundException;
 import com.mjamsek.rest.exceptions.RestException;
 import com.mjamsek.rest.exceptions.UnauthorizedException;
 import com.mjamsek.rest.exceptions.ValidationException;
 import com.mjamsek.rest.services.Validator;
+import com.mjamsek.rest.utils.QueryUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import si.smrpo.scrum.integrations.auth.Roles;
 import si.smrpo.scrum.integrations.auth.config.UsersConfig;
 import si.smrpo.scrum.integrations.auth.mappers.UserMapper;
 import si.smrpo.scrum.integrations.auth.services.RoleService;
 import si.smrpo.scrum.integrations.auth.services.UserService;
+import si.smrpo.scrum.lib.User;
 import si.smrpo.scrum.lib.UserProfile;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.ChangePasswordRequest;
@@ -28,8 +38,11 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @RequestScoped
 public class UserServiceImpl implements UserService {
@@ -49,6 +62,32 @@ public class UserServiceImpl implements UserService {
     private UsersConfig usersConfig;
     
     @Override
+    public EntityList<User> getUserList(QueryParameters queryParameters) {
+        QueryUtil.setDefaultFilterParam(new QueryFilter("status", FilterOperation.EQ, SimpleStatus.ACTIVE.name()), queryParameters);
+        QueryUtil.setDefaultOrderParam(new QueryOrder("lastName", OrderDirection.ASC), queryParameters);
+        
+        List<User> users = JPAUtils.getEntityStream(em, UserEntity.class, queryParameters)
+            .map(UserMapper::fromEntity)
+            .collect(Collectors.toList());
+        
+        long userCount = JPAUtils.queryEntitiesCount(em, UserEntity.class, queryParameters);
+        return new EntityList<>(users, userCount);
+    }
+    
+    @Override
+    public User getUserById(String userId) {
+        UserEntity entity = getUserEntityById(userId)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        
+        User user = UserMapper.fromEntity(entity);
+    
+        Set<String> userRoles = roleService.getUserRoles(userId);
+        user.setGrantedRoles(userRoles);
+        
+        return user;
+    }
+    
+    @Override
     public Optional<UserEntity> getUserEntityById(String userId) {
         return Optional.ofNullable(em.find(UserEntity.class, userId));
     }
@@ -57,7 +96,7 @@ public class UserServiceImpl implements UserService {
     public Optional<UserEntity> getUserEntityByUsername(String username) {
         TypedQuery<UserEntity> query = em.createNamedQuery(UserEntity.GET_BY_USERNAME, UserEntity.class);
         query.setParameter("username", username);
-    
+        
         try {
             UserEntity entity = query.getSingleResult();
             return Optional.of(entity);
@@ -85,7 +124,7 @@ public class UserServiceImpl implements UserService {
         entity.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
         entity.setEmail(request.getEmail().trim());
         entity.setStatus(SimpleStatus.ACTIVE);
-    
+        
         Set<SysRoleEntity> userRoles;
         if (request.getGrantedRoles() != null && request.getGrantedRoles().size() > 0) {
             userRoles = roleService.getSysRoles(request.getGrantedRoles());
@@ -142,6 +181,30 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
+    public User updateUser(String userId, User user) {
+        UserEntity entity = getUserEntityById(userId)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        
+        try {
+            em.getTransaction().begin();
+            
+            setIfNotNull(user.getUsername(), entity::setUsername);
+            setIfNotNull(user.getEmail(), entity::setEmail);
+            setIfNotNull(user.getFirstName(), entity::setFirstName);
+            setIfNotNull(user.getLastName(), entity::setLastName);
+            setIfNotNull(user.getPhoneNumber(), entity::setPhoneNumber);
+            setIfNotNull(user.getAvatar(), entity::setAvatar);
+            
+            em.getTransaction().commit();
+            return UserMapper.fromEntity(entity);
+        } catch (PersistenceException e) {
+            em.getTransaction().rollback();
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
     public UserProfile getUserProfile(String userId) {
         return getUserEntityById(userId)
             .flatMap(entity -> {
@@ -152,6 +215,22 @@ public class UserServiceImpl implements UserService {
             })
             .map(UserMapper::toProfile)
             .orElseThrow(() -> new UnauthorizedException("error.unauthorized"));
+    }
+    
+    @Override
+    public void changeUserStatus(String userId, SimpleStatus status) {
+        UserEntity entity = getUserEntityById(userId)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        
+        try {
+            em.getTransaction().begin();
+            entity.setStatus(status);
+            em.getTransaction().commit();
+        } catch (PersistenceException e) {
+            em.getTransaction().rollback();
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
     }
     
     @Override
@@ -193,9 +272,26 @@ public class UserServiceImpl implements UserService {
         if (password.length() < usersConfig.getMinPasswordLength()) {
             throw new ValidationException("users.validation.error.password.short").isValidationError();
         }
-    
+        
         if (password.length() >= usersConfig.getMaxPasswordLength()) {
             throw new ValidationException("users.validation.error.password.long").isValidationError();
         }
+    }
+    
+    private <T> void setIfNotNull(T value, Consumer<T> setter, boolean allowBlank) {
+        if (value != null) {
+            if (value instanceof String && !allowBlank) {
+                String stringValue = (String) value;
+                if (!stringValue.trim().isBlank()) {
+                    setter.accept(value);
+                }
+            } else {
+                setter.accept(value);
+            }
+        }
+    }
+    
+    private <T> void setIfNotNull(T value, Consumer<T> setter) {
+        setIfNotNull(value, setter, false);
     }
 }
