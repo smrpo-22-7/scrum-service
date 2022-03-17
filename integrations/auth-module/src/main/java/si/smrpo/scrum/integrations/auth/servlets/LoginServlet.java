@@ -1,6 +1,5 @@
 package si.smrpo.scrum.integrations.auth.servlets;
 
-import com.kumuluz.ee.configuration.utils.ConfigurationUtil;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import com.mjamsek.rest.exceptions.UnauthorizedException;
@@ -27,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static si.smrpo.scrum.integrations.auth.AuthConstants.*;
+import static si.smrpo.scrum.integrations.auth.ServletConstants.ERROR_SERVLET;
 import static si.smrpo.scrum.integrations.auth.ServletConstants.LOGIN_SERVLET;
 
 @RequestScoped
@@ -53,22 +53,28 @@ public class LoginServlet extends HttpServlet {
         String error = req.getParameter(ERROR_PARAM);
         String redirectUri = req.getParameter(REDIRECT_URI_PARAM);
         
+        if (redirectUri == null) {
+            LOG.debug("Redirect URI is not set. Returning error");
+            resp.sendRedirect(ERROR_SERVLET + ServletUtil.buildErrorParams(ErrorCode.MISSING_REQUIRED_FIELDS.code(), requestId, req.getParameterMap()));
+            return;
+        } else if (!HttpUtil.isValidRedirectUri(redirectUri)) {
+            LOG.debug("Redirect URI is not valid!");
+            resp.sendRedirect(ERROR_SERVLET + ServletUtil.buildErrorParams(ErrorCode.INVALID_ORIGIN.code(), requestId, req.getParameterMap()));
+            return;
+        }
+        
         if (error != null) {
             error = ErrorCode.fromCode(error)
                 .map(ErrorCode::description)
                 .orElse("Unknown error!");
         }
         
-        String webUiUrl = ConfigurationUtil.getInstance()
-            .get("web-ui.url").orElse("#");
-        
         Map<String, Object> params = new HashMap<>();
         params.put("requestId", requestId);
         params.put("error", error);
         params.put("redirectUri", redirectUri);
-        params.put("webUiUrl", webUiUrl);
+        params.put("webUiUrl", redirectUri);
         String htmlContent = templatingService.renderHtml("login", params);
-    
         ServletUtil.renderHtml(htmlContent, resp);
     }
     
