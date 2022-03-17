@@ -71,5 +71,7 @@ auth:
     password:
       min-length: 12
       max-length: 128
+web-ui:
+  url: http://localhost:4200
 templates:
   cache-enabled: false
