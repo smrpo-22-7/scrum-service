@@ -6,6 +6,7 @@
     --danger: #DB5461;
     --warning: #FFC857;
     --body-color: var(--white-color);
+    --light-grey-color: #bfbfbf;
     --roboto-font: 'Roboto', sans-serif;
 }
 * {

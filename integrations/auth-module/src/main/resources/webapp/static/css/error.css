@@ -1,0 +1,37 @@
+header {
+    height: 50px;
+    background-color: var(--secondary);
+    padding: 0 25px;
+    display: flex;
+    align-items: center;
+}
+header a {
+    text-decoration: none;
+    font-size: 1.1rem;
+    color: var(--white-color);
+}
+header a:hover {
+    color: var(--white-color);
+}
+.error-container {
+    min-width: 500px;
+    border: 1px solid var(--light-grey-color);
+    border-radius: 8px;
+    padding: 25px 15px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.error-container h2 {
+    color: var(--danger);
+}
+.error-container .error-desc {
+    text-align: center;
+    font-size: 1.2rem;
+}
+
+.error-container .error-subdesc {
+    text-align: center;
+    font-size: 90%;
+    font-style: italic;
+}

@@ -1,5 +1,6 @@
 package si.smrpo.scrum.integrations.auth.servlets;
 
+import si.smrpo.scrum.integrations.auth.utils.HttpUtil;
 import si.smrpo.scrum.integrations.auth.utils.ServletUtil;
 import si.smrpo.scrum.integrations.templating.TemplatingService;
 import si.smrpo.scrum.lib.enums.ErrorCode;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static si.smrpo.scrum.integrations.auth.AuthConstants.ERROR_PARAM;
+import static si.smrpo.scrum.integrations.auth.AuthConstants.REDIRECT_URI_PARAM;
 
 @RequestScoped
 public class ErrorServlet extends HttpServlet {
@@ -28,9 +30,15 @@ public class ErrorServlet extends HttpServlet {
         String translatedError = ErrorCode.fromCode(error)
             .map(ErrorCode::description)
             .orElse("Unknown error!");
+    
+        String redirectUri = req.getParameter(REDIRECT_URI_PARAM);
+        if (redirectUri == null || !HttpUtil.isValidRedirectUri(redirectUri)) {
+            redirectUri = "#";
+        }
         
         Map<String, Object> params = new HashMap<>();
         params.put("error", translatedError);
+        params.put("webUiUrl", redirectUri);
         
         String htmlContent = templatingService.renderHtml("error", params);
         ServletUtil.renderHtml(htmlContent, resp);
