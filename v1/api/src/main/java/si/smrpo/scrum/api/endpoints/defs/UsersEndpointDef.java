@@ -155,7 +155,7 @@ public interface UsersEndpointDef {
     })
     Response activateUser(@PathParam("userId") String userId);
     
-    @POST
+    @PATCH
     @Path("/profile")
     @Tag(name = "users")
     @Operation(summary = "updates user profile", description = "Updates user profile.")
