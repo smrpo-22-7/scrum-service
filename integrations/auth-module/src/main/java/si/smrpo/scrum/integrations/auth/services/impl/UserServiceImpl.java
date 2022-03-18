@@ -9,10 +9,7 @@ import com.kumuluz.ee.rest.enums.FilterOperation;
 import com.kumuluz.ee.rest.enums.OrderDirection;
 import com.kumuluz.ee.rest.utils.JPAUtils;
 import com.mjamsek.rest.dto.EntityList;
-import com.mjamsek.rest.exceptions.NotFoundException;
-import com.mjamsek.rest.exceptions.RestException;
-import com.mjamsek.rest.exceptions.UnauthorizedException;
-import com.mjamsek.rest.exceptions.ValidationException;
+import com.mjamsek.rest.exceptions.*;
 import com.mjamsek.rest.services.Validator;
 import com.mjamsek.rest.utils.QueryUtil;
 import org.mindrot.jbcrypt.BCrypt;
@@ -80,7 +77,7 @@ public class UserServiceImpl implements UserService {
             .orElseThrow(() -> new NotFoundException("error.not-found"));
         
         User user = UserMapper.fromEntity(entity);
-    
+        
         Set<String> userRoles = roleService.getUserRoles(userId);
         user.setGrantedRoles(userRoles);
         
@@ -116,6 +113,10 @@ public class UserServiceImpl implements UserService {
         validator.assertNotBlank(request.getEmail());
         validator.assertEmail(request.getEmail());
         validateCredentials(request.getPassword());
+        
+        if (getUserEntityByUsername(request.getUsername()).isPresent()) {
+            throw new ConflictException("users.error.validation.taken-username");
+        }
         
         UserEntity entity = new UserEntity();
         entity.setFirstName(request.getFirstName().trim());
@@ -162,7 +163,11 @@ public class UserServiceImpl implements UserService {
     public void changePassword(String userId, ChangePasswordRequest request) {
         validateCredentials(request.getNewPassword());
         UserEntity user = checkUserPassword(userId, request.getPassword());
-        // TODO: can disabled user change password?
+        
+        if (user.getStatus().equals(SimpleStatus.DISABLED)) {
+            throw new NotFoundException("error.not-found");
+        }
+        
         try {
             em.getTransaction().begin();
             user.setPassword(BCrypt.hashpw(request.getNewPassword(), BCrypt.gensalt()));
@@ -184,6 +189,12 @@ public class UserServiceImpl implements UserService {
     public User updateUser(String userId, User user) {
         UserEntity entity = getUserEntityById(userId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
+        
+        if (user.getUsername() != null && !user.getUsername().isBlank()) {
+            if (getUserEntityByUsername(user.getUsername()).isPresent()) {
+                throw new ConflictException("users.error.validation.taken-username");
+            }
+        }
         
         try {
             em.getTransaction().begin();
@@ -221,6 +232,12 @@ public class UserServiceImpl implements UserService {
     public void updateUserProfile(String userId, UserProfile userProfile) {
         UserEntity user = getUserEntityById(userId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
+    
+        if (userProfile.getUsername() != null && !userProfile.getUsername().isBlank()) {
+            if (getUserEntityByUsername(userProfile.getUsername()).isPresent()) {
+                throw new ConflictException("users.error.validation.taken-username");
+            }
+        }
         
         try {
             em.getTransaction().begin();
