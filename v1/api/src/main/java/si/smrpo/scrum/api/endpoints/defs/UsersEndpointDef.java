@@ -154,4 +154,19 @@ public interface UsersEndpointDef {
         ))
     })
     Response activateUser(@PathParam("userId") String userId);
+    
+    @POST
+    @Path("/profile")
+    @Tag(name = "users")
+    @Operation(summary = "updates user profile", description = "Updates user profile.")
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(
+        implementation = UserProfile.class, example = UserExamples.USER_PROFILE_RESPONSE)
+    ))
+    @APIResponses({
+        @APIResponse(responseCode = "204", description = "user updated"),
+        @APIResponse(responseCode = "422", description = "validation failed", content = @Content(
+            mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ExceptionResponse.class)
+        ))
+    })
+    Response updateUserProfile(UserProfile userProfile);
 }

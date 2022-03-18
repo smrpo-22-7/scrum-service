@@ -34,6 +34,8 @@ public interface UserService {
     
     UserProfile getUserProfile(String userId);
     
+    void updateUserProfile(String userId, UserProfile userProfile);
+    
     void changeUserStatus(String userId, SimpleStatus status);
     
 }
