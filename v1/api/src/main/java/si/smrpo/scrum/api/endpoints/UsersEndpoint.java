@@ -105,4 +105,10 @@ public class UsersEndpoint implements UsersEndpointDef {
         userService.changeUserStatus(userId, SimpleStatus.ACTIVE);
         return Response.noContent().build();
     }
+    
+    @Override
+    public Response updateUserProfile(UserProfile userProfile) {
+        userService.updateUserProfile(authContext.getId(), userProfile);
+        return Response.noContent().build();
+    }
 }

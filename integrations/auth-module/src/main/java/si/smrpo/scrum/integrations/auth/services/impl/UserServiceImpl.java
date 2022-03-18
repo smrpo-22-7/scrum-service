@@ -218,6 +218,28 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
+    public void updateUserProfile(String userId, UserProfile userProfile) {
+        UserEntity user = getUserEntityById(userId)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        
+        try {
+            em.getTransaction().begin();
+            
+            setIfNotNull(userProfile.getUsername(), user::setUsername);
+            setIfNotNull(userProfile.getFirstName(), user::setFirstName);
+            setIfNotNull(userProfile.getLastName(), user::setLastName);
+            setIfNotNull(userProfile.getEmail(), user::setEmail);
+            setIfNotNull(userProfile.getPhoneNumber(), user::setPhoneNumber);
+            
+            em.getTransaction().commit();
+        } catch (PersistenceException e) {
+            em.getTransaction().rollback();
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
     public void changeUserStatus(String userId, SimpleStatus status) {
         UserEntity entity = getUserEntityById(userId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
