@@ -18,7 +18,7 @@ import java.util.Set;
     contact = @Contact(url = "https://github.com/smrpo-22-7")),
     servers = {
         @Server(url = "http://localhost:8080/v1", description = "Local development environment"),
-        @Server(url = "http://188.34.196.239:8080/v1", description = "Test environment"),
+        @Server(url = "https://smrpo.mjamsek.com/v1", description = "Test environment"),
     })
 public class RestService extends Application {
     
