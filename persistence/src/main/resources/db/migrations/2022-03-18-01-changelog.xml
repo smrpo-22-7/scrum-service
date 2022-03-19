@@ -69,6 +69,8 @@
                                  constraintName="FK_PROJECT_USERS_ROLES" referencedTableName="project_roles"
                                  referencedColumnNames="id"/>
 
+        <addPrimaryKey tableName="project_users" columnNames="project_id,user_id" constraintName="pk_project_users"/>
+
     </changeSet>
 
 </databaseChangeLog>
