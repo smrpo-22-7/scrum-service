@@ -10,11 +10,15 @@ import si.smrpo.scrum.lib.requests.ChangePasswordRequest;
 import si.smrpo.scrum.lib.requests.UserRegisterRequest;
 import si.smrpo.scrum.persistence.users.UserEntity;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserService {
     
     EntityList<User> getUserList(QueryParameters queryParameters);
+
+    Set<UserEntity> getUserEntitiesByIds(List<String> userIds);
     
     User getUserById(String userId);
     

@@ -12,6 +12,7 @@ import com.mjamsek.rest.dto.EntityList;
 import com.mjamsek.rest.exceptions.*;
 import com.mjamsek.rest.services.Validator;
 import com.mjamsek.rest.utils.QueryUtil;
+import liquibase.pro.packaged.Q;
 import org.mindrot.jbcrypt.BCrypt;
 import si.smrpo.scrum.integrations.auth.Roles;
 import si.smrpo.scrum.integrations.auth.config.UsersConfig;
@@ -70,7 +71,15 @@ public class UserServiceImpl implements UserService {
         long userCount = JPAUtils.queryEntitiesCount(em, UserEntity.class, queryParameters);
         return new EntityList<>(users, userCount);
     }
-    
+
+    @Override
+    public Set<UserEntity> getUserEntitiesByIds(List<String> userIds) {
+        QueryParameters queryParameters = new QueryParameters();
+        QueryUtil.overrideFilterParam(new QueryFilter("id", FilterOperation.IN, userIds), queryParameters);
+        return JPAUtils.getEntityStream(em, UserEntity.class, queryParameters)
+                .collect(Collectors.toSet());
+    }
+
     @Override
     public User getUserById(String userId) {
         UserEntity entity = getUserEntityById(userId)
