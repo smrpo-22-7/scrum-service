@@ -11,11 +11,13 @@ import java.util.Date;
     @Index(name = "IDX_USERS_USERNAME_UNIQUE", columnList = "username", unique = true)
 })
 @NamedQueries({
-    @NamedQuery(name = UserEntity.GET_BY_USERNAME, query = "SELECT u FROM UserEntity u WHERE u.username = :username")
+    @NamedQuery(name = UserEntity.GET_BY_USERNAME, query = "SELECT u FROM UserEntity u WHERE u.username = :username"),
+    @NamedQuery(name = UserEntity.GET_BY_EMAIL, query = "SELECT u FROM UserEntity u WHERE u.email = :email")
 })
 public class UserEntity extends BaseEntity {
     
     public static final String GET_BY_USERNAME = "UserEntity.getByUsername";
+    public static final String GET_BY_EMAIL = "UserEntity.getByEmail";
     
     @Column(name = "username", nullable = false, unique = true)
     private String username;

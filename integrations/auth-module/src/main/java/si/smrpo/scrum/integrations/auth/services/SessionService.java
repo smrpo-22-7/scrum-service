@@ -10,6 +10,8 @@ public interface SessionService {
     
     SessionEntity associateUserWithSession(String sessionId, String userId);
     
+    SessionEntity activateSession(String sessionId);
+    
     Optional<SessionEntity> getSession(String sessionId, String ipAddress);
     
     Optional<SessionEntity> getSessionById(String sessionId);

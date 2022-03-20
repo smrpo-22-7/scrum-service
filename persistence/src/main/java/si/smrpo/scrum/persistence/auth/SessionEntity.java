@@ -1,5 +1,6 @@
 package si.smrpo.scrum.persistence.auth;
 
+import si.smrpo.scrum.lib.enums.SessionStatus;
 import si.smrpo.scrum.persistence.BaseEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
 
@@ -26,6 +27,10 @@ public class SessionEntity extends BaseEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
     
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private SessionStatus status;
+    
     public String getIpAddress() {
         return ipAddress;
     }
@@ -40,5 +45,13 @@ public class SessionEntity extends BaseEntity {
     
     public void setUser(UserEntity user) {
         this.user = user;
+    }
+    
+    public SessionStatus getStatus() {
+        return status;
+    }
+    
+    public void setStatus(SessionStatus status) {
+        this.status = status;
     }
 }

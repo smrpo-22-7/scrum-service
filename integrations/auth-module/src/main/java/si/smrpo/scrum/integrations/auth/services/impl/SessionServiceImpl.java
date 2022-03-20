@@ -6,6 +6,7 @@ import com.mjamsek.rest.exceptions.RestException;
 import com.mjamsek.rest.exceptions.UnauthorizedException;
 import si.smrpo.scrum.integrations.auth.services.SessionService;
 import si.smrpo.scrum.integrations.auth.services.UserService;
+import si.smrpo.scrum.lib.enums.SessionStatus;
 import si.smrpo.scrum.persistence.auth.SessionEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
 
@@ -33,6 +34,7 @@ public class SessionServiceImpl implements SessionService {
         LOG.debug("Starting session...");
         SessionEntity session = new SessionEntity();
         session.setIpAddress(ipAddress);
+        session.setStatus(SessionStatus.CREATED);
     
         try {
             em.getTransaction().begin();
@@ -70,6 +72,28 @@ public class SessionServiceImpl implements SessionService {
                 .orElseThrow(() -> new UnauthorizedException("Invalid user!"));
             
             entity.setUser(user);
+            em.flush();
+            em.getTransaction().commit();
+            LOG.debug("User associated with session...");
+            return entity;
+        } catch (PersistenceException e) {
+            em.getTransaction().rollback();
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
+    public SessionEntity activateSession(String sessionId) {
+        LOG.debug("Associating user with session...");
+    
+        try {
+            em.getTransaction().begin();
+        
+            SessionEntity entity = getSessionById(sessionId)
+                .orElseThrow(() -> new UnauthorizedException("Invalid session!"));
+        
+            entity.setStatus(SessionStatus.ACTIVE);
             em.flush();
             em.getTransaction().commit();
             LOG.debug("User associated with session...");

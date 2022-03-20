@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,500;0,700;1,300;1,400&display=swap" rel="stylesheet">
+        <style>
+            .header {
+                margin-top: 10px;
+            }
+            .content strong {
+                font-size: 32px;
+            }
+        </style>
+    </head>
+    <!--/*@thymesVar id="code" type="java.lang.String"*/-->
+    <!--/*@thymesVar id="verifyUrl" type="java.lang.String"*/-->
+
+    <body>
+        <div>
+            <div class="header">
+                <h3>Verify your login - SCRUM</h3>
+            </div>
+
+            <div class="content">
+                <p>
+                    Your code:
+                    <strong th:text="${code}"></strong>
+                </p>
+                <div>
+                    Or, follow this link: <a th:href="${verifyUrl}" th:text="${verifyUrl}"></a>.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

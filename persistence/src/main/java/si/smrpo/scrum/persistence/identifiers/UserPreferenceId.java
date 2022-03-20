@@ -7,7 +7,7 @@ import java.io.Serializable;
 @Embeddable
 public class UserPreferenceId implements Serializable {
     
-    @Column(name = "preference_key")
+    @Column(name = "preference_key", nullable = false)
     private String preferenceKey;
     
     @Column(name = "user_id", nullable = false)

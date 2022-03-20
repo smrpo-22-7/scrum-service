@@ -22,7 +22,7 @@ public class UserPreferencesEntity {
     @Column(name = "preference_value")
     private String preferenceValue;
     
-    @Column(name = "data_type")
+    @Column(name = "data_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private DataType dataType;
     

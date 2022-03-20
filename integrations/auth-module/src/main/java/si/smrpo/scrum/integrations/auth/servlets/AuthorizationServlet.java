@@ -10,6 +10,7 @@ import si.smrpo.scrum.integrations.auth.utils.HttpUtil;
 import si.smrpo.scrum.integrations.auth.utils.ServletUtil;
 import si.smrpo.scrum.lib.enums.ErrorCode;
 import si.smrpo.scrum.lib.enums.PKCEMethod;
+import si.smrpo.scrum.lib.enums.SessionStatus;
 import si.smrpo.scrum.persistence.auth.AuthorizationRequestEntity;
 import si.smrpo.scrum.persistence.auth.SessionEntity;
 
@@ -64,7 +65,7 @@ public class AuthorizationServlet extends HttpServlet {
             LOG.trace("Session cookie is present, checking for existing session");
             // If session cookie is present, check for existing session
             Optional<SessionEntity> existingSession = sessionService.getSession(sessionCookie.get().getValue(), req.getRemoteAddr());
-            if (existingSession.isPresent() && existingSession.get().getUser() != null) {
+            if (existingSession.isPresent() && existingSession.get().getStatus().equals(SessionStatus.ACTIVE)) {
                 LOG.trace("Valid session already exists, authentication is not needed");
                 // Session already exists and is valid, user does not need to be re-authenticated.
                 handleExistingSession(req, resp, existingSession.get());

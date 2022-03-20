@@ -2,6 +2,7 @@ package si.smrpo.scrum.integrations.auth.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kumuluz.ee.configuration.utils.ConfigurationUtil;
+import com.mjamsek.rest.exceptions.UnauthorizedException;
 import si.smrpo.scrum.persistence.auth.AuthorizationRequestEntity;
 import si.smrpo.scrum.persistence.auth.SessionEntity;
 
@@ -114,5 +115,15 @@ public class ServletUtil {
     
     public static String buildErrorParams(String errorMessage, Map<String, String[]> keptParams) {
         return buildErrorParams(errorMessage, null, null, keptParams);
+    }
+    
+    public static void validateRedirectUri(String redirectUri) throws UnauthorizedException {
+        if (redirectUri == null) {
+            throw new UnauthorizedException("error.unauthorized");
+        } else {
+            if (!HttpUtil.isValidRedirectUri(redirectUri)) {
+                throw new UnauthorizedException("error.unauthorized");
+            }
+        }
     }
 }

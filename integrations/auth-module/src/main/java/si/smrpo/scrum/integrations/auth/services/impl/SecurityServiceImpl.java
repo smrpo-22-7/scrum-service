@@ -174,7 +174,7 @@ public class SecurityServiceImpl implements SecurityService {
         claims.put(FAMILY_NAME_CLAIM, user.getLastName());
         claims.put(NAME_CLAIM, user.getFirstName() + " " + user.getLastName());
         claims.put(EMAIL_CLAIM, user.getEmail());
-        claims.put(PREFERRED_USERNAME_CLAIM, user.getUsername());        
+        claims.put(PREFERRED_USERNAME_CLAIM, user.getUsername());
       
         JWTClaimsSet.Builder commonBuilder = new JWTClaimsSet.Builder()
             .subject(user.getId())
@@ -234,7 +234,7 @@ public class SecurityServiceImpl implements SecurityService {
         return scopes == null;
     }
     
-    private <T> boolean isNotPublic(Method method) {
+    private boolean isNotPublic(Method method) {
         if (classAnnotatedScopes(method)) {
             PublicResource publicResource = method.getDeclaredAnnotation(PublicResource.class);
             return publicResource == null;

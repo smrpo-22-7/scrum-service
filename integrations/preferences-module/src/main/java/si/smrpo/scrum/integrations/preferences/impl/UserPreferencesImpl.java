@@ -77,7 +77,7 @@ public class UserPreferencesImpl implements UserPreferences {
     @Override
     public Optional<Integer> getLong(UserPreferenceKey key, String userId) {
         return getUserPreference(key, userId)
-            .filter(pref -> pref.getDataType().equals(DataType.STRING))
+            .filter(pref -> pref.getDataType().equals(DataType.INTEGER))
             .map(UserPreferencesEntity::getPreferenceValue)
             .map(Integer::parseInt);
     }
@@ -85,7 +85,7 @@ public class UserPreferencesImpl implements UserPreferences {
     @Override
     public Optional<Boolean> getBoolean(UserPreferenceKey key, String userId) {
         return getUserPreference(key, userId)
-            .filter(pref -> pref.getDataType().equals(DataType.STRING))
+            .filter(pref -> pref.getDataType().equals(DataType.BOOLEAN))
             .map(UserPreferencesEntity::getPreferenceValue)
             .map(Boolean::parseBoolean);
     }
@@ -93,7 +93,7 @@ public class UserPreferencesImpl implements UserPreferences {
     @Override
     public Optional<Double> getDecimal(UserPreferenceKey key, String userId) {
         return getUserPreference(key, userId)
-            .filter(pref -> pref.getDataType().equals(DataType.STRING))
+            .filter(pref -> pref.getDataType().equals(DataType.FLOAT))
             .map(UserPreferencesEntity::getPreferenceValue)
             .map(Double::parseDouble);
     }
@@ -101,7 +101,7 @@ public class UserPreferencesImpl implements UserPreferences {
     @Override
     public Optional<JsonNode> getJSON(UserPreferenceKey key, String userId) {
         return getUserPreference(key, userId)
-            .filter(pref -> pref.getDataType().equals(DataType.STRING))
+            .filter(pref -> pref.getDataType().equals(DataType.JSON))
             .map(UserPreferencesEntity::getPreferenceValue)
             .map(value -> {
                 try {

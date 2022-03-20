@@ -5,9 +5,12 @@ import com.kumuluz.ee.logs.Logger;
 import com.mjamsek.rest.exceptions.UnauthorizedException;
 import si.smrpo.scrum.integrations.auth.services.AuthorizationService;
 import si.smrpo.scrum.integrations.auth.services.SessionService;
+import si.smrpo.scrum.integrations.auth.services.TwoFactorAuthenticationService;
 import si.smrpo.scrum.integrations.auth.services.UserService;
 import si.smrpo.scrum.integrations.auth.utils.HttpUtil;
 import si.smrpo.scrum.integrations.auth.utils.ServletUtil;
+import si.smrpo.scrum.integrations.preferences.UserPreferenceKey;
+import si.smrpo.scrum.integrations.preferences.UserPreferences;
 import si.smrpo.scrum.integrations.templating.TemplatingService;
 import si.smrpo.scrum.lib.enums.ErrorCode;
 import si.smrpo.scrum.persistence.auth.AuthorizationRequestEntity;
@@ -26,8 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static si.smrpo.scrum.integrations.auth.AuthConstants.*;
-import static si.smrpo.scrum.integrations.auth.ServletConstants.ERROR_SERVLET;
-import static si.smrpo.scrum.integrations.auth.ServletConstants.LOGIN_SERVLET;
+import static si.smrpo.scrum.integrations.auth.ServletConstants.*;
 
 @RequestScoped
 public class LoginServlet extends HttpServlet {
@@ -42,6 +44,12 @@ public class LoginServlet extends HttpServlet {
     
     @Inject
     private AuthorizationService authorizationService;
+    
+    @Inject
+    private TwoFactorAuthenticationService twoFactorAuthenticationService;
+    
+    @Inject
+    private UserPreferences userPreferences;
     
     @Inject
     private TemplatingService templatingService;
@@ -87,15 +95,7 @@ public class LoginServlet extends HttpServlet {
         String redirectUri = req.getParameter(REDIRECT_URI_PARAM);
     
         try {
-            if (redirectUri == null) {
-                LOG.debug("Redirect URI is not set. Returning error");
-                throw new UnauthorizedException("error.unauthorized");
-            } else {
-                if (!HttpUtil.isValidRedirectUri(redirectUri)) {
-                    LOG.debug("Redirect URI is not valid!");
-                    throw new UnauthorizedException("error.unauthorized");
-                }
-            }
+            ServletUtil.validateRedirectUri(redirectUri);
             
             if (requestId == null) {
                 LOG.debug("Request id is not set. Returning error");
@@ -105,6 +105,7 @@ public class LoginServlet extends HttpServlet {
             LOG.trace("Checking user credentials...");
             UserEntity user = userService.checkUserCredentials(username, password);
             LOG.debug("User credentials OK");
+            
             // Session should already exist at this point
             Cookie sessionCookie = HttpUtil.getCookieByName(SESSION_COOKIE, req.getCookies())
                 .orElseThrow(() -> {
@@ -116,7 +117,18 @@ public class LoginServlet extends HttpServlet {
             LOG.trace("Associated user with session");
             resp.addCookie(sessionCookie);
             
-            redirectSuccessfullyBackToClient(redirectUri, resp, requestId, user.getId(), session);
+            boolean use2FA = userPreferences.getBoolean(UserPreferenceKey.ENABLED_2FA, user.getId())
+                .orElse(false);
+            if (use2FA) {
+                Map<String, Object> params = new HashMap<>();
+                params.put(REDIRECT_URI_PARAM, redirectUri);
+                params.put(REQUEST_ID_PARAM, requestId);
+                twoFactorAuthenticationService.create2FAChallenge(session, params);
+                redirectTo2FAVerification(redirectUri, resp, requestId);
+            } else {
+                sessionService.activateSession(sessionCookie.getValue());
+                redirectSuccessfullyBackToClient(redirectUri, resp, requestId, user.getId(), session);
+            }
         } catch (UnauthorizedException e) {
             LOG.trace(e);
             resp.sendRedirect(LOGIN_SERVLET +
@@ -138,6 +150,14 @@ public class LoginServlet extends HttpServlet {
         LOG.trace("Redirecting back to client with authorization code");
         AuthorizationRequestEntity request = authorizationService.createAuthorizationCode(requestId, userId);
         resp.sendRedirect(redirectUrl + ServletUtil.buildRedirectUriParams(request, session));
+    }
+    
+    private void redirectTo2FAVerification(String redirectUrl, HttpServletResponse resp, String requestId) throws IOException {
+        LOG.trace("Redirecting to 2FA verification servlet");
+        Map<String, String[]> params = new HashMap<>();
+        params.put(REDIRECT_URI_PARAM, new String[]{redirectUrl});
+        params.put(REQUEST_ID_PARAM, new String[]{requestId});
+        resp.sendRedirect(TWO_FA_SERVLET + HttpUtil.formatQueryParams(params));
     }
     
     private Map<String, String[]> sanitizeParameters(Map<String, String[]> paramsMap) {
