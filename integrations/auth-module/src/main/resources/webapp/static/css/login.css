@@ -4,6 +4,7 @@ form {
 form .password-toggler {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 form .password-toggler #show-password-btn {
     display: flex;
@@ -17,6 +18,11 @@ form .password-toggler #show-password-btn #show-password-img {
     width: 30px;
     height: 30px;
     margin-right: 10px;
+}
+form .password-toggler #forgot-password-link a {
+    font-size: 0.9rem;
+    color: var(--primary);
+    text-decoration: none;
 }
 form .form-actions {
     margin-top: 20px;

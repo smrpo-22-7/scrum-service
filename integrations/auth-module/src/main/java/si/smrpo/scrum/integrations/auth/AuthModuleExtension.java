@@ -15,6 +15,8 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+import static si.smrpo.scrum.integrations.auth.ServletConstants.*;
+
 @EeExtensionDef(name = "ScrumAuth", group = EeExtensionGroup.SECURITY)
 @EeComponentDependencies({
     @EeComponentDependency(EeComponentType.SERVLET),
@@ -36,11 +38,14 @@ public class AuthModuleExtension implements Extension {
             LOG.info("Initializing auth module...");
             ServletServer servletServer = (ServletServer) kumuluzServerWrapper.getServer();
     
-            servletServer.registerServlet(AuthorizationServlet.class, "/protocol/oidc/auth");
-            servletServer.registerServlet(TokenServlet.class, "/protocol/oidc/token");
-            servletServer.registerServlet(EndSessionServlet.class, "/protocol/oidc/logout");
-            servletServer.registerServlet(LoginServlet.class, "/login");
-            servletServer.registerServlet(ErrorServlet.class, "/error");
+            servletServer.registerServlet(AuthorizationServlet.class, AUTH_SERVLET);
+            servletServer.registerServlet(TokenServlet.class, TOKEN_SERVLET);
+            servletServer.registerServlet(EndSessionServlet.class, LOGOUT_SERVLET);
+            servletServer.registerServlet(LoginServlet.class, LOGIN_SERVLET);
+            servletServer.registerServlet(TwoFactorAuthenticationServlet.class, TWO_FA_SERVLET);
+            servletServer.registerServlet(ErrorServlet.class, ERROR_SERVLET);
+            servletServer.registerServlet(ForgotPasswordServlet.class, FORGOT_PASSWORD_SERVLET);
+            servletServer.registerServlet(ResetPasswordServlet.class, RESET_PASSWORD_SERVLET);
     
             URL staticFolder = ResourceUtils.class.getClassLoader().getResource("webapp/static");
             if (staticFolder != null ) {

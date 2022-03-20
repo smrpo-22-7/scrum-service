@@ -12,7 +12,6 @@ import com.mjamsek.rest.dto.EntityList;
 import com.mjamsek.rest.exceptions.*;
 import com.mjamsek.rest.services.Validator;
 import com.mjamsek.rest.utils.QueryUtil;
-import liquibase.pro.packaged.Q;
 import org.mindrot.jbcrypt.BCrypt;
 import si.smrpo.scrum.integrations.auth.Roles;
 import si.smrpo.scrum.integrations.auth.config.UsersConfig;
@@ -115,6 +114,20 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
+    public Optional<UserEntity> getUserEntityByEmail(String email) {
+        TypedQuery<UserEntity> query = em.createNamedQuery(UserEntity.GET_BY_EMAIL, UserEntity.class);
+        query.setParameter("email", email);
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
     public void registerUser(UserRegisterRequest request) {
         validator.assertNotBlank(request.getUsername());
         validator.assertNotBlank(request.getFirstName());
@@ -190,8 +203,49 @@ public class UserServiceImpl implements UserService {
     }
     
     @Override
+    public void setPassword(String userId, String password) {
+        validateCredentials(password);
+        UserEntity user = getUserEntityById(userId)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+    
+        if (user.getStatus().equals(SimpleStatus.DISABLED)) {
+            throw new NotFoundException("error.not-found");
+        }
+    
+        try {
+            em.getTransaction().begin();
+            user.setPassword(BCrypt.hashpw(password, BCrypt.gensalt()));
+            em.merge(user);
+            em.flush();
+            em.getTransaction().commit();
+        } catch (PersistenceException e) {
+            LOG.error("Error updating password!", e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
     public boolean usernameExists(String username) {
         return getUserEntityByUsername(username).isPresent();
+    }
+    
+    @Override
+    public boolean isValidPassword(String password, String confirmPassword) {
+        return isValidPassword(password) && isValidPassword(confirmPassword) && password.equals(confirmPassword);
+    }
+    
+    @Override
+    public boolean isValidPassword(String password) {
+        if (password == null || password.isBlank()) {
+            return false;
+        }
+        if (password.length() < usersConfig.getMinPasswordLength()) {
+            return false;
+        }
+        if (password.length() >= usersConfig.getMaxPasswordLength()) {
+            return false;
+        }
+        return true;
     }
     
     @Override

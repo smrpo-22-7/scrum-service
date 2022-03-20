@@ -63,7 +63,7 @@ public class EmailService implements MessagingService {
     
             try (Transport transport = session.getTransport("smtp")) {
                 transport.connect(emailConfig.getHost(), emailConfig.getUsername(), emailConfig.getPassword());
-                transport.sendMessage(emailMessage, null);
+                transport.sendMessage(emailMessage, emailMessage.getAllRecipients());
             } catch (javax.mail.MessagingException e) {
                 LOG.error("Error opening transport for sending email!", e);
                 throw new EmailException("messaging.email.transport.error", e);

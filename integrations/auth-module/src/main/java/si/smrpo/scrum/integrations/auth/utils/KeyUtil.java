@@ -1,10 +1,9 @@
 package si.smrpo.scrum.integrations.auth.utils;
 
+import com.mjamsek.rest.exceptions.RestException;
+
 import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
@@ -48,4 +47,30 @@ public class KeyUtil {
         }
     }
     
+    public static String getRandomString(int length) {
+        final int LEFT_LIMIT = 48; // char '0'
+        final int RIGHT_LIMIT = 57; // char '9'
+    
+        SecureRandom random = new SecureRandom();
+        
+        return random.ints(LEFT_LIMIT, RIGHT_LIMIT + 1)
+            .limit(length)
+            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+            .toString();
+    }
+    
+    public static String sha256(String value) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(value.getBytes(StandardCharsets.UTF_8));
+            String base = Base64.getUrlEncoder().encodeToString(hash)
+                .replaceAll("=", "")
+                .replaceAll("/", "_")
+                .replaceAll("\\+", "-");
+            return base;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            throw new RestException("error.server");
+        }
+    }
 }

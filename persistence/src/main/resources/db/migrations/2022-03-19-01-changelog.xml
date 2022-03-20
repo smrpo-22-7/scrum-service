@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="add-user-preferences" author="mihaj">
+        <createTable tableName="user_preferences">
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="preference_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="preference_value" type="VARCHAR(255)"/>
+        </createTable>
+
+        <addPrimaryKey tableName="user_preferences" columnNames="user_id,preference_key"
+                       constraintName="pk_user_preferences"/>
+
+        <addForeignKeyConstraint baseTableName="user_preferences" baseColumnNames="user_id"
+                                 constraintName="fk_user_preferences_users"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+        />
+    </changeSet>
+
+    <changeSet id="add-2fa-checks" author="mihaj">
+        <createTable tableName="two_factor_checks">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_two_factor_checks"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column name="expiration_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="verification_code" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="two_factor_checks" indexName="TWO_FACTOR_CODE">
+            <column name="verification_code"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseTableName="two_factor_checks" baseColumnNames="session_id"
+                                 constraintName="fk_two_factor_checks_sessions"
+                                 referencedTableName="sessions"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

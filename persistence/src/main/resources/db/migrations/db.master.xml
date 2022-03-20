@@ -8,5 +8,8 @@
     <include file="2022-03-09-02-changelog.xml" relativeToChangelogFile="true"/>
     <include file="2022-03-10-01-changelog.xml" relativeToChangelogFile="true"/>
     <include file="2022-03-18-01-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="2022-03-19-01-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="2022-03-19-02-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="2022-03-20-01-changelog.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

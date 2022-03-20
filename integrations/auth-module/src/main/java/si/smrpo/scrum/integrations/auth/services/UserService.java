@@ -28,11 +28,19 @@ public interface UserService {
     
     Optional<UserEntity> getUserEntityByUsername(String username);
     
+    Optional<UserEntity> getUserEntityByEmail(String email);
+    
     void registerUser(UserRegisterRequest request);
     
     void changePassword(String userId, ChangePasswordRequest request);
     
+    void setPassword(String userId, String password);
+    
     boolean usernameExists(String username);
+    
+    boolean isValidPassword(String password, String confirmPassword);
+    
+    boolean isValidPassword(String password);
     
     User updateUser(String userId, User user);
     
