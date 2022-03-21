@@ -40,6 +40,7 @@ public class RestService extends Application {
         classes.add(ForbiddenExceptionMapper.class);
         classes.add(ValidationExceptionMapper.class);
         classes.add(UnauthorizedExceptionMapper.class);
+        classes.add(WebApplicationExceptionMapper.class);
         
         return classes;
     }
