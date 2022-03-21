@@ -14,24 +14,24 @@ public class SprintEntity extends BaseEntity {
     public static final String GET_BY_SPRINT_NAME = "SprintEntity.getByName";
     public static final String GET_SPRINTS_IN_PROJECT = "SprintEntity.getSprintsInProject";
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "start_date")
+    @Column(name = "start_date", nullable = false)
     private Date startDate;
 
-    @Column(name = "end_date")
+    @Column(name = "end_date", nullable = false)
     private Date endDate;
 
     @Column(name = "expected_speed")
     private int expectedSpeed;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
     private SimpleStatus status;
 
     @ManyToOne
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id", nullable = false)
     private ProjectEntity project;
 
     public String getTitle() {
