@@ -14,6 +14,7 @@ public interface ProjectsEndpointDef {
     Response getProjectsList();
     
     @GET
+    @Path("/roles")
     Response getAllProjectRoles();
 
     @GET
