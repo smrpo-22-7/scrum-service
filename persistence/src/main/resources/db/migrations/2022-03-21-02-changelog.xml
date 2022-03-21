@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+    <changeSet id="add-project-roles" author="mihaj">
+        <insert tableName="project_roles">
+            <column name="id">289ee217-18e7-4c92-aa94-8ecc0ab09f3e</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="role_id">member</column>
+            <column name="name">Member</column>
+        </insert>
+        <insert tableName="project_roles">
+            <column name="id">aab54080-4e1a-4fa2-9cde-829c7173808b</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="role_id">product_owner</column>
+            <column name="name">Product owner</column>
+        </insert>
+        <insert tableName="project_roles">
+            <column name="id">8d10f15e-7057-4b3d-9b3d-bc231c1a7441</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="role_id">scrum_master</column>
+            <column name="name">Scrum master</column>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
