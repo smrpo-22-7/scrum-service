@@ -5,13 +5,12 @@ import com.mjamsek.rest.dto.EntityList;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectMember;
-import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
+import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.Response;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ProjectService {
 
@@ -36,5 +35,6 @@ public interface ProjectService {
     void removeUserFromProject(String projectId, String userId);
 
     void updateUserProjectRole(String projectId, String userId, ProjectMember member);
-
+    
+    Set<ProjectRole> getAllProjectRoles();
 }

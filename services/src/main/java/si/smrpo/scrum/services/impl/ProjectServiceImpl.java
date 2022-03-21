@@ -12,11 +12,11 @@ import com.mjamsek.rest.exceptions.NotFoundException;
 import com.mjamsek.rest.exceptions.RestException;
 import com.mjamsek.rest.services.Validator;
 import com.mjamsek.rest.utils.QueryUtil;
-import liquibase.pro.packaged.P;
 import si.smrpo.scrum.integrations.auth.services.UserService;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectMember;
+import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.mappers.ProjectMapper;
 import si.smrpo.scrum.persistence.BaseEntity;
@@ -115,7 +115,6 @@ public class ProjectServiceImpl implements ProjectService {
         List<String> userIds = request.getMembers().stream()
                 .map(ProjectMember::getUserId)
                 .collect(Collectors.toList());
-        Set<UserEntity> users = userService.getUserEntitiesByIds(userIds);
         Map<String, UserEntity> usersMap = userService.getUserEntitiesByIds(userIds)
                 .stream()
                 .collect(Collectors.toMap(BaseEntity::getId, user -> user));
@@ -266,7 +265,19 @@ public class ProjectServiceImpl implements ProjectService {
             throw new RestException("error.server");
         }
     }
-
+    
+    @Override
+    public Set<ProjectRole> getAllProjectRoles() {
+        return getAllProjectRoleEntities().stream()
+            .map(ProjectMapper::fromEntity)
+            .collect(Collectors.toSet());
+    }
+    
+    private Set<ProjectRoleEntity> getAllProjectRoleEntities() {
+        return JPAUtils.getEntityStream(em, ProjectRoleEntity.class, new QueryParameters())
+            .collect(Collectors.toSet());
+    }
+    
     private Map<String, ProjectRoleEntity> getProjectRoles(){
         return JPAUtils.getEntityStream(em, ProjectRoleEntity.class, new QueryParameters())
                 .collect(Collectors.toMap(ProjectRoleEntity::getRoleId, e -> e));
