@@ -7,11 +7,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
-public interface SprintEndpointDef {
+public interface StoryEndpointDef {
 
     @GET
-    @Path("/{sprintId}")
-    @Tag(name = "sprints")
-    Response getSprintById(@PathParam("sprintId") String sprintId);
+    @Path("/{storyId}")
+    @Tag(name = "stories")
+    Response getStoryById(@PathParam("storyId") String storyId);
     
 }
