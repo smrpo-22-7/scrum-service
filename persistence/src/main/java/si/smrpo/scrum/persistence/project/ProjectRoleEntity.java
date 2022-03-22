@@ -15,6 +15,10 @@ import javax.persistence.*;
 public class ProjectRoleEntity extends BaseEntity {
 
     public static final String GET_BY_ROLE_ID = "ProjectRoleEntity.getByRoleId";
+    
+    public static final String PROJECT_ROLE_MEMBER = "member";
+    public static final String PROJECT_ROLE_PRODUCT_OWNER = "product_owner";
+    public static final String PROJECT_ROLE_SCRUM_MASTER = "scrum_master";
 
     @Column(name = "role_id", unique = true, nullable = false)
     private String roleId;
