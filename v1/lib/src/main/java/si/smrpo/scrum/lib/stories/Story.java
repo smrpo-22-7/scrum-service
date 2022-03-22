@@ -1,11 +1,12 @@
 package si.smrpo.scrum.lib.stories;
 
+import si.smrpo.scrum.lib.BaseType;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.enums.StoryPriority;
 
 import java.util.List;
 
-public class Story {
+public class Story extends BaseType {
 
     private String title;
 
