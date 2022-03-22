@@ -79,5 +79,13 @@ public class StoryEntity extends BaseEntity {
     public void setTests(List<AcceptanceTestEntity> tests) {
         this.tests = tests;
     }
+
+    public ProjectEntity getProject() {
+        return project;
+    }
+
+    public void setProject(ProjectEntity project) {
+        this.project = project;
+    }
 }
 

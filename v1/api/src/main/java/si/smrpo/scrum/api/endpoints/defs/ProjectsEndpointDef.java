@@ -4,6 +4,7 @@ import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectMember;
 import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
+import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -55,4 +56,12 @@ public interface ProjectsEndpointDef {
     @PATCH
     @Path("/{projectId}/users/{userId}")
     Response updateUserProjectRole(@PathParam("projectId") String projectId, @PathParam("userId") String userId, ProjectMember member);
+
+    @GET
+    @Path("/{projectId}/stories")
+    Response getStories(@PathParam("projectId") String projectId);
+
+    @POST
+    @Path("/{projectId}/newstory")
+    Response createStory(@PathParam("projectId") String projectId, CreateStoryRequest request);
 }

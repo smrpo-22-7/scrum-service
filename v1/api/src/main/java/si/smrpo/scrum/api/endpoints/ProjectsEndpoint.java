@@ -14,7 +14,10 @@ import si.smrpo.scrum.lib.projects.ProjectMember;
 import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
+import si.smrpo.scrum.lib.requests.CreateStoryRequest;
+import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.services.ProjectService;
+import si.smrpo.scrum.services.StoryService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -43,6 +46,9 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private StoryService storyService;
 
     @SysRolesRequired({Roles.ADMIN_ROLE})
     @Override
@@ -128,5 +134,21 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
         projectService.updateUserProjectRole(projectId, userId, member);
         return Response.noContent().build();
     }
+
+
+    @SysRolesRequired({Roles.USER_ROLE})
+    @Override
+    public Response createStory(String projectId, CreateStoryRequest request) {
+        Story newStory = storyService.createStory(projectId, request);
+        return Response.status(Response.Status.CREATED).entity(newStory).build();
+    }
+
+    @SysRolesRequired({Roles.USER_ROLE})
+    @Override
+    public Response getStories(String projectId) {
+        EntityList<Story> stories = storyService.getStories(projectId, queryParameters);
+        return Response.ok(stories.getEntities()).header(X_TOTAL_COUNT, stories.getCount()).build();
+    }
+
 
 }
