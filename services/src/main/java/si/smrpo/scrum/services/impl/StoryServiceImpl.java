@@ -43,6 +43,9 @@ public class StoryServiceImpl implements StoryService {
     private SprintService ss;
 
     @Inject
+    private ProjectService projectService;
+
+    @Inject
     private Validator validator;
 
     @Override

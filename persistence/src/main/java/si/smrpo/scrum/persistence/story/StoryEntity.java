@@ -4,6 +4,7 @@ import org.w3c.dom.Text;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.enums.StoryPriority;
 import si.smrpo.scrum.persistence.BaseEntity;
+import si.smrpo.scrum.persistence.project.ProjectEntity;
 
 import javax.persistence.*;
 import java.util.List;
@@ -31,6 +32,10 @@ public class StoryEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "story")
     private List<AcceptanceTestEntity> tests;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private ProjectEntity project;
 
     public String getTitle() {
         return title;
