@@ -15,8 +15,10 @@ import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
+import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.services.ProjectService;
+import si.smrpo.scrum.services.SprintService;
 import si.smrpo.scrum.services.StoryService;
 
 import javax.enterprise.context.RequestScoped;
@@ -49,6 +51,9 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
 
     @Inject
     private StoryService storyService;
+    
+    @Inject
+    private SprintService sprintService;
 
     @SysRolesRequired({Roles.ADMIN_ROLE})
     @Override
@@ -59,12 +64,14 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
                 .build();
     }
     
+    @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response getAllProjectRoles() {
         Set<ProjectRole> roles = projectService.getAllProjectRoles();
         return Response.ok(roles).build();
     }
     
+    @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response getUserProjects() {
         EntityList<Project> projects = projectService.getUserProjects(authContext.getId(), queryParameters);
@@ -72,7 +79,8 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
                 .header(X_TOTAL_COUNT, projects.getCount())
                 .build();
     }
-
+    
+    @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response getProjectById(String projectId) {
         Project project = projectService.getProjectById(projectId);
@@ -116,19 +124,22 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
         projectService.changeProjectStatus(projectId, SimpleStatus.ACTIVE);
         return Response.noContent().build();
     }
-
+    
+    @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response addUserToProject(String projectId, ProjectMember member) {
         projectService.addUserToProject(projectId, member);
         return Response.noContent().build();
     }
-
+    
+    @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response removeUserFromProject(String projectId, String userId) {
         projectService.removeUserFromProject(projectId, userId);
         return Response.noContent().build();
     }
-
+    
+    @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response updateUserProjectRole(String projectId, String userId, ProjectMember member) {
         projectService.updateUserProjectRole(projectId, userId, member);
@@ -142,7 +153,22 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
         Story newStory = storyService.createStory(projectId, request);
         return Response.status(Response.Status.CREATED).entity(newStory).build();
     }
-
+    
+    @SysRolesRequired({Roles.USER_ROLE})
+    @Override
+    public Response getProjectSprints(String projectId) {
+        EntityList<Sprint> sprints = sprintService.getSprints(queryParameters);
+        return Response.ok(sprints.getEntities())
+            .header(X_TOTAL_COUNT, sprints.getCount()).build();
+    }
+    
+    @SysRolesRequired({Roles.USER_ROLE})
+    @Override
+    public Response createSprint(String projectId, Sprint sprint) {
+        Sprint createdSprint = sprintService.createSprint(sprint);
+        return Response.status(Response.Status.CREATED).entity(createdSprint).build();
+    }
+    
     @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response getStories(String projectId) {

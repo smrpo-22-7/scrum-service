@@ -1,15 +1,10 @@
 package si.smrpo.scrum.api.endpoints;
-import com.kumuluz.ee.rest.beans.QueryParameters;
-import com.mjamsek.rest.dto.EntityList;
-import si.smrpo.scrum.api.endpoints.defs.SprintEndpointDef;
+
 import si.smrpo.scrum.api.endpoints.defs.StoryEndpointDef;
 import si.smrpo.scrum.integrations.auth.Roles;
 import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
 import si.smrpo.scrum.integrations.auth.models.annotations.SysRolesRequired;
-import si.smrpo.scrum.lib.requests.CreateStoryRequest;
-import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
-import si.smrpo.scrum.services.SprintService;
 import si.smrpo.scrum.services.StoryService;
 
 import javax.enterprise.context.RequestScoped;
@@ -20,18 +15,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import static com.mjamsek.rest.Rest.HttpHeaders.X_TOTAL_COUNT;
-
 @SecureResource
-@Path("/sprints")
+@Path("/stories")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @RequestScoped
 
 public class StoryEndpoint implements StoryEndpointDef {
-
-    @Inject
-    private QueryParameters queryParameters;
 
     @Inject
     private StoryService storyService;

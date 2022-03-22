@@ -12,8 +12,6 @@ import com.mjamsek.rest.exceptions.RestException;
 import com.mjamsek.rest.exceptions.ValidationException;
 import com.mjamsek.rest.services.Validator;
 import com.mjamsek.rest.utils.QueryUtil;
-import liquibase.pro.packaged.A;
-import liquibase.pro.packaged.Q;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.stories.Story;
@@ -22,9 +20,9 @@ import si.smrpo.scrum.persistence.project.ProjectEntity;
 import si.smrpo.scrum.persistence.story.AcceptanceTestEntity;
 import si.smrpo.scrum.persistence.story.StoryEntity;
 import si.smrpo.scrum.services.ProjectService;
-import si.smrpo.scrum.services.SprintService;
 import si.smrpo.scrum.services.StoryService;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
@@ -32,15 +30,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@RequestScoped
 public class StoryServiceImpl implements StoryService {
 
     private static final Logger LOG = LogManager.getLogger(SprintServiceImpl.class.getName());
 
     @Inject
     private EntityManager em;
-
-    @Inject
-    private SprintService ss;
 
     @Inject
     private ProjectService projectService;
@@ -112,6 +108,7 @@ public class StoryServiceImpl implements StoryService {
 
             return StoryMapper.fromEntity(entity);
         } catch (PersistenceException e) {
+            LOG.error(e);
             em.getTransaction().rollback();
             throw new RestException("error.server");
         }

@@ -1,22 +1,17 @@
 package si.smrpo.scrum.api.endpoints.defs;
 
-import si.smrpo.scrum.lib.sprints.Sprint;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import javax.ws.rs.*;
-
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 public interface SprintEndpointDef {
 
     @GET
-    @Path("/{projectId}/sprints")
-    Response getSprintsList(@PathParam("projectId") String projectId);
-
-    @GET
     @Path("/{sprintId}")
+    @Tag(name = "sprints")
     Response getSprintById(@PathParam("sprintId") String sprintId);
-
-    @POST
-    @Path("/{projectId}/newsprint")
-    Response createSprint(@PathParam("projectId") String projectId, Sprint sprint);
+    
 }

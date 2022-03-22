@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd">
+
+    <changeSet id="add-stories-table" author="andrejd">
+        <createTable tableName="stories">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_stories"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="TEXT"/>
+            <column name="title" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="priority" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_value" type="INTEGER"/>
+            <column name="project_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="stories" baseColumnNames="project_id"
+                                 constraintName="fk_stories_projects"
+                                 referencedTableName="projects"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="stories" indexName="INDEX_STORIES_PROJECT_ID">
+            <column name="project_id"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="add-acceptance-tests-table" author="andrejd">
+        <createTable tableName="acceptance_tests">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_acceptance_tests"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column name="result" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="story_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="acceptance_tests" baseColumnNames="story_id"
+                                 constraintName="fk_acceptance_tests_stories"
+                                 referencedTableName="stories"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="acceptance_tests" indexName="INDEX_ACC_TEST_STORY_ID">
+            <column name="story_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
