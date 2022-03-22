@@ -1,8 +1,6 @@
 package si.smrpo.scrum.persistence.project;
 
-import liquibase.pro.packaged.P;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
-import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.persistence.BaseEntity;
 
 import javax.persistence.*;
@@ -12,7 +10,7 @@ import javax.persistence.*;
         @Index(name = "UNIQUE_PROJECT_NAME", columnList = "name", unique = true)
 })
 @NamedQueries({
-        @NamedQuery(name = ProjectEntity.GET_BY_PROJECT_NAME, query = "SELECT r FROM ProjectEntity r WHERE LOWER(r.name) = LOWER(:name)"),
+        @NamedQuery(name = ProjectEntity.GET_BY_PROJECT_NAME, query = "SELECT r FROM ProjectEntity r WHERE LOWER(TRIM(BOTH FROM r.name)) = :name"),
         @NamedQuery(name = ProjectEntity.GET_USER_PROJECTS, query = "SELECT pu.id.project FROM ProjectUserEntity pu WHERE pu.id.user.id = :userId AND pu.id.project.status = 'ACTIVE'"),
         @NamedQuery(name = ProjectEntity.COUNT_USER_PROJECT, query = "SELECT COUNT(pu) FROM ProjectUserEntity pu WHERE pu.id.user.id = :userId AND pu.id.project.status = 'ACTIVE'")
 })
