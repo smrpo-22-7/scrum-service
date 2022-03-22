@@ -168,7 +168,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public boolean projectNameExists(String projectName) {
         TypedQuery<ProjectEntity> query = em.createNamedQuery(ProjectEntity.GET_BY_PROJECT_NAME, ProjectEntity.class);
-        query.setParameter("name", projectName);
+        query.setParameter("name", projectName.toLowerCase());
 
         try {
             query.getSingleResult();
