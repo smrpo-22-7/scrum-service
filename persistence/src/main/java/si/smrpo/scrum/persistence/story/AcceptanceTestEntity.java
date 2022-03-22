@@ -16,5 +16,19 @@ public class AcceptanceTestEntity extends BaseEntity {
     @JoinColumn(name = "story_id", nullable = false)
     private StoryEntity story;
 
+    public String getResult() {
+        return result;
+    }
 
+    public void setResult(String result) {
+        this.result = result;
+    }
+
+    public StoryEntity getStory() {
+        return story;
+    }
+
+    public void setStory(StoryEntity story) {
+        this.story = story;
+    }
 }
