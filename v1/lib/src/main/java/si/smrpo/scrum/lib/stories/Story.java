@@ -15,6 +15,8 @@ public class Story extends BaseType {
     private SimpleStatus status;
 
     private Integer businessValue;
+    
+    private Integer timeEstimate;
 
     private StoryPriority priority;
 
@@ -66,5 +68,17 @@ public class Story extends BaseType {
 
     public void setTests(List<AcceptanceTest> tests) {
         this.tests = tests;
+    }
+    
+    public void setBusinessValue(Integer businessValue) {
+        this.businessValue = businessValue;
+    }
+    
+    public Integer getTimeEstimate() {
+        return timeEstimate;
+    }
+    
+    public void setTimeEstimate(Integer timeEstimate) {
+        this.timeEstimate = timeEstimate;
     }
 }
