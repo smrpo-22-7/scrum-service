@@ -31,6 +31,9 @@ public class StoryEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private StoryPriority priority;
     
+    @Column(name = "time_estimate")
+    private int timeEstimate;
+    
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     private ProjectEntity project;
@@ -94,5 +97,12 @@ public class StoryEntity extends BaseEntity {
         this.project = project;
     }
     
+    public int getTimeEstimate() {
+        return timeEstimate;
+    }
+    
+    public void setTimeEstimate(int timeEstimate) {
+        this.timeEstimate = timeEstimate;
+    }
 }
 

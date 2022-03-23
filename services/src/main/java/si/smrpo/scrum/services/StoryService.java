@@ -17,4 +17,6 @@ public interface StoryService {
     Optional<StoryEntity> getStoryEntityById(String storyId);
 
     Story createStory(String projectId, CreateStoryRequest request);
+    
+    Story updateTimeEstimate(String storyId, Story story);
 }

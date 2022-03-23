@@ -32,5 +32,12 @@ public class StoryEndpoint implements StoryEndpointDef {
         Story story = storyService.getStoryById(storyId);
         return Response.ok(story).build();
     }
-
+    
+    @SysRolesRequired({Roles.USER_ROLE})
+    @Override
+    public Response updateTimeEstimate(String storyId, Story story) {
+        Story updatedStory = storyService.updateTimeEstimate(storyId, story);
+        return Response.ok(updatedStory).build();
+    }
+    
 }
