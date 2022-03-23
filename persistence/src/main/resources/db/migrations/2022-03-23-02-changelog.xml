@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd">
+
+    <changeSet id="add-number-id-column-stories-1" author="mihaj">
+        <addColumn tableName="stories">
+            <column name="number_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        
+        <createIndex tableName="stories" indexName="UNIQUE_INDEX_NUMBER_ID_PROJECT_ID" unique="true">
+            <column name="number_id"/>
+            <column name="project_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
