@@ -17,8 +17,8 @@ import java.util.Set;
 @OpenAPIDefinition(info = @Info(title = "Scrum service", version = "1.0.0", description = "API for Scrum application",
     contact = @Contact(url = "https://github.com/smrpo-22-7")),
     servers = {
-        @Server(url = "http://localhost:8080/v1", description = "Local development environment"),
-        @Server(url = "https://smrpo.mjamsek.com/v1", description = "Test environment"),
+        @Server(url = "https://smrpo.mjamsek.com", description = "Test environment"),
+        @Server(url = "http://localhost:8080", description = "Local development environment"),
     })
 public class RestService extends Application {
     
