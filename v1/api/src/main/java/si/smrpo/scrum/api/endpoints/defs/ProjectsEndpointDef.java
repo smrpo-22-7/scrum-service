@@ -55,7 +55,12 @@ public interface ProjectsEndpointDef {
     @Path("/{projectId}/activate")
     @Tag(name = "projects")
     Response setProjectStatusActivated(@PathParam("projectId") String projectId);
-
+    
+    @GET
+    @Path("/{projectId}/roles/count")
+    @Tag(name = "projects")
+    Response getProjectRolesCount(@PathParam("projectId") String projectId);
+    
     @POST
     @Path("/{projectId}/users")
     @Tag(name = "projects")

@@ -15,6 +15,7 @@ import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
+import si.smrpo.scrum.lib.responses.ProjectRolesCount;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.services.ProjectService;
@@ -123,6 +124,12 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     public Response setProjectStatusActivated(String projectId) {
         projectService.changeProjectStatus(projectId, SimpleStatus.ACTIVE);
         return Response.noContent().build();
+    }
+    
+    @Override
+    public Response getProjectRolesCount(String projectId) {
+        ProjectRolesCount counts = projectService.getProjectRolesCount(projectId);
+        return Response.ok(counts).build();
     }
     
     @SysRolesRequired({Roles.USER_ROLE})

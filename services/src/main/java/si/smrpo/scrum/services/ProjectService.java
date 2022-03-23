@@ -7,6 +7,7 @@ import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectMember;
 import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
+import si.smrpo.scrum.lib.responses.ProjectRolesCount;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 
 import java.util.Optional;
@@ -35,6 +36,8 @@ public interface ProjectService {
     void removeUserFromProject(String projectId, String userId);
 
     void updateUserProjectRole(String projectId, String userId, ProjectMember member);
+    
+    ProjectRolesCount getProjectRolesCount(String projectId);
     
     Set<ProjectRole> getAllProjectRoles();
 }
