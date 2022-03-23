@@ -2,19 +2,29 @@ package si.smrpo.scrum.services.impl;
 
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
+import com.kumuluz.ee.rest.beans.QueryFilter;
 import com.kumuluz.ee.rest.beans.QueryParameters;
+import com.kumuluz.ee.rest.enums.FilterOperation;
 import com.kumuluz.ee.rest.utils.JPAUtils;
 import com.mjamsek.rest.dto.EntityList;
 import com.mjamsek.rest.exceptions.NotFoundException;
 import com.mjamsek.rest.exceptions.RestException;
 import com.mjamsek.rest.exceptions.ValidationException;
 import com.mjamsek.rest.services.Validator;
+import com.mjamsek.rest.utils.QueryUtil;
+import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
+import si.smrpo.scrum.lib.requests.AddStoryRequest;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.mappers.SprintMapper;
+import si.smrpo.scrum.persistence.identifiers.SprintStoryId;
 import si.smrpo.scrum.persistence.sprint.SprintEntity;
+import si.smrpo.scrum.persistence.sprint.SprintStoryEntity;
+import si.smrpo.scrum.persistence.story.StoryEntity;
+import si.smrpo.scrum.services.ProjectAuthorizationService;
 import si.smrpo.scrum.services.ProjectService;
 import si.smrpo.scrum.services.SprintService;
+import si.smrpo.scrum.services.StoryService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -35,6 +45,15 @@ public class SprintServiceImpl implements SprintService {
 
     @Inject
     private ProjectService projectService;
+
+    @Inject
+    private StoryService storyService;
+
+    @Inject
+    private ProjectAuthorizationService authService;
+
+    @Inject
+    private AuthContext authContext;
 
     @Inject
     private Validator validator;
@@ -92,6 +111,49 @@ public class SprintServiceImpl implements SprintService {
             em.persist(entity);
             em.getTransaction().commit();
             return SprintMapper.fromEntity(entity);
+
+        } catch (PersistenceException e) {
+            em.getTransaction().rollback();
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+
+    @Override
+    public void addStoriesToSprint(String sprintId, AddStoryRequest request) {
+
+        SprintEntity sprint = getSprintEntityById(sprintId)
+                .orElseThrow(() -> new NotFoundException("error.not-found"));
+
+        if (sprint.getStatus().equals(SimpleStatus.DISABLED)) {
+            throw new NotFoundException("error.not-found");
+        }
+
+        authService.isScrumMasterOrThrow(sprint.getProject().getId(), authContext.getId());
+
+        QueryParameters q = new QueryParameters();
+        QueryUtil.overrideFilterParam(new QueryFilter("id", FilterOperation.IN, request.getStoryIds()), q);
+        QueryUtil.overrideFilterParam(new QueryFilter("status", FilterOperation.EQ, SimpleStatus.ACTIVE.name()), q);
+        QueryUtil.overrideFilterParam(new QueryFilter("timeEstimate", FilterOperation.ISNOTNULL), q);
+        //QueryUtil.overrideFilterParam(new QueryFilter("realized", FilterOperation.EQ, ....), q);
+
+        List<StoryEntity> stories = JPAUtils.queryEntities(em, StoryEntity.class, q);
+
+        try {
+            em.getTransaction().begin();
+
+            stories.stream().map(s ->{
+                var s2 = new SprintStoryEntity();
+                var id = new SprintStoryId();
+                id.setSprint(sprint);
+                id.setStory(s);
+                s2.setId(id);
+
+                return s2;
+
+            }).forEach(s -> em.persist(s));
+
+            em.getTransaction().commit();
 
         } catch (PersistenceException e) {
             em.getTransaction().rollback();
