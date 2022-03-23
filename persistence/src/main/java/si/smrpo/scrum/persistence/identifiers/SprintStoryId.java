@@ -12,11 +12,11 @@ import java.io.Serializable;
 public class SprintStoryId implements Serializable {
 
     @ManyToOne
-    @JoinColumn(name = "sprint_id")
+    @JoinColumn(name = "sprint_id", nullable = false)
     private SprintEntity sprint;
 
     @ManyToOne
-    @JoinColumn(name = "story_id")
+    @JoinColumn(name = "story_id", nullable = false)
     private StoryEntity story;
 
     public SprintEntity getSprint() {
