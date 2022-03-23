@@ -26,8 +26,7 @@ import si.smrpo.scrum.services.StoryService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceException;
+import javax.persistence.*;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -92,6 +91,8 @@ public class StoryServiceImpl implements StoryService {
         ProjectEntity project = projectService.getProjectEntityById(projectId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
         
+        int newNumberId = getNewNumberId(projectId);
+        
         StoryEntity entity = new StoryEntity();
         entity.setStatus(SimpleStatus.ACTIVE);
         entity.setTitle(request.getTitle());
@@ -99,6 +100,7 @@ public class StoryServiceImpl implements StoryService {
         entity.setPriority(request.getPriority());
         entity.setBusinessValue(request.getBusinessValue());
         entity.setProject(project);
+        entity.setNumberId(newNumberId);
         
         try {
             em.getTransaction().begin();
@@ -148,6 +150,17 @@ public class StoryServiceImpl implements StoryService {
         } catch (PersistenceException e) {
             LOG.error(e);
             em.getTransaction().rollback();
+            throw new RestException("error.server");
+        }
+    }
+    
+    private int getNewNumberId(String projectId) {
+        TypedQuery<Integer> query = em.createNamedQuery(StoryEntity.GET_NEW_NUMBER_ID, Integer.class);
+        query.setParameter("projectId", projectId);
+        try {
+            return query.getSingleResult();
+        } catch (PersistenceException e) {
+            LOG.error("Unable to determine new number id!", e);
             throw new RestException("error.server");
         }
     }

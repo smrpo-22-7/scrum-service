@@ -11,6 +11,8 @@ public class Story extends BaseType {
     private String title;
 
     private String description;
+    
+    private Integer numberId;
 
     private SimpleStatus status;
 
@@ -80,5 +82,13 @@ public class Story extends BaseType {
     
     public void setTimeEstimate(Integer timeEstimate) {
         this.timeEstimate = timeEstimate;
+    }
+    
+    public Integer getNumberId() {
+        return numberId;
+    }
+    
+    public void setNumberId(Integer numberId) {
+        this.numberId = numberId;
     }
 }

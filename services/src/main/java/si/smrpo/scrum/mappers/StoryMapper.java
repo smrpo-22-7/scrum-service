@@ -14,7 +14,8 @@ public class StoryMapper {
         story.setBusinessValue(entity.getBusinessValue());
         story.setPriority(entity.getPriority());
         story.setTitle(entity.getTitle());
-
+        story.setNumberId(entity.getNumberId());
+        story.setTimeEstimate(entity.getTimeEstimate());
         return story;
     }
 

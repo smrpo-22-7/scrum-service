@@ -10,15 +10,26 @@ import java.util.List;
 
 @Entity
 @Table(name = "stories", indexes = {
-    @Index(name = "INDEX_STORIES_PROJECT_ID", columnList = "project_id")
+    @Index(name = "INDEX_STORIES_PROJECT_ID", columnList = "project_id"),
+    @Index(name = "UNIQUE_INDEX_NUMBER_ID_PROJECT_ID",
+        columnList = "number_id,project_id", unique = true)
+})
+@NamedQueries({
+    @NamedQuery(name = StoryEntity.GET_NEW_NUMBER_ID,
+        query = "SELECT MAX(s.numberId) + 1 FROM StoryEntity s WHERE s.project.id = :projectId")
 })
 public class StoryEntity extends BaseEntity {
+
+    public static final String GET_NEW_NUMBER_ID = "StoryEntity.getNewNumberId";
 
     @Column(name = "title", nullable = false)
     private String title;
 
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
+
+    @Column(name = "number_id", unique = true, nullable = false, updatable = false)
+    private int numberId;
 
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
@@ -103,6 +114,14 @@ public class StoryEntity extends BaseEntity {
     
     public void setTimeEstimate(int timeEstimate) {
         this.timeEstimate = timeEstimate;
+    }
+    
+    public int getNumberId() {
+        return numberId;
+    }
+    
+    public void setNumberId(int numberId) {
+        this.numberId = numberId;
     }
 }
 
