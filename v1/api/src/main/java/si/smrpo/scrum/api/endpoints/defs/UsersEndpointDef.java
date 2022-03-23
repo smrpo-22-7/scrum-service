@@ -1,5 +1,6 @@
 package si.smrpo.scrum.api.endpoints.defs;
 
+import com.mjamsek.rest.Rest;
 import com.mjamsek.rest.exceptions.dto.ExceptionResponse;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
@@ -12,7 +13,6 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import si.smrpo.scrum.api.endpoints.examples.UserExamples;
 import si.smrpo.scrum.lib.User;
 import si.smrpo.scrum.lib.UserProfile;
 import si.smrpo.scrum.lib.requests.ChangePasswordRequest;
@@ -35,9 +35,9 @@ public interface UsersEndpointDef {
     @APIResponses({
         @APIResponse(responseCode = "200", description = "returns users", content = @Content(
             mediaType = MediaType.APPLICATION_JSON,
-            schema = @Schema(implementation = User.class, type = SchemaType.ARRAY), example = UserExamples.USER_LIST_RESPONSE),
+            schema = @Schema(implementation = User.class, type = SchemaType.ARRAY)),
             headers = {
-                @Header(name = "X-Total-Count", description = "Number of all elements matching query", schema = @Schema(type = SchemaType.INTEGER))
+                @Header(name = Rest.HttpHeaders.X_TOTAL_COUNT, description = "Number of all elements matching query", schema = @Schema(type = SchemaType.INTEGER))
             })
     })
     Response getUserList();
@@ -46,11 +46,10 @@ public interface UsersEndpointDef {
     @Path("/{userId}")
     @Tag(name = "users")
     @Operation(summary = "get user", description = "Returns user with given id.")
-    @Parameter(name = "id", in = ParameterIn.PATH, required = true)
+    @Parameter(name = "userId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "200", description = "returns user", content = @Content(
-            mediaType = MediaType.APPLICATION_JSON,
-            schema = @Schema(implementation = User.class), example = UserExamples.USER_RESPONSE)),
+            mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = User.class))),
         @APIResponse(responseCode = "404", description = "User does not exists", content = @Content(
             mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ExceptionResponse.class)
         ))
@@ -63,7 +62,7 @@ public interface UsersEndpointDef {
     @Operation(summary = "get user profile", description = "Retrieves user profile based on credentials presented.")
     @APIResponses({
         @APIResponse(responseCode = "200", description = "returns user profile", content = @Content(
-            mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserProfile.class, example = UserExamples.USER_PROFILE_RESPONSE)
+            mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserProfile.class)
         ))
     })
     Response getUserProfile();
@@ -72,7 +71,7 @@ public interface UsersEndpointDef {
     @Tag(name = "users")
     @Operation(summary = "creates user", description = "Creates user account.")
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(
-        implementation = UserRegisterRequest.class, example = UserExamples.USER_REGISTER_REQUEST)
+        implementation = UserRegisterRequest.class)
     ))
     @APIResponses({
         @APIResponse(responseCode = "201", description = "user created"),
@@ -85,13 +84,13 @@ public interface UsersEndpointDef {
     @PATCH
     @Path("/{userId}")
     @Tag(name = "users")
+    @Parameter(name = "userId", in = ParameterIn.PATH, required = true)
     @Operation(summary = "updates user", description = "Updates user.")
-    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(
-        implementation = User.class, example = UserExamples.USER_RESPONSE)
-    ))
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+    @Schema(implementation = User.class)))
     @APIResponses({
         @APIResponse(responseCode = "200", description = "user updated", content = @Content(
-            mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = User.class, example = UserExamples.USER_RESPONSE)
+            mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = User.class)
         )),
         @APIResponse(responseCode = "422", description = "validation failed", content = @Content(
             mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ExceptionResponse.class)
@@ -104,7 +103,7 @@ public interface UsersEndpointDef {
     @Tag(name = "users")
     @Operation(summary = "check username exists", description = "Checks if the given username is already taken")
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(
-        implementation = UsernameCheckRequest.class, example = UserExamples.USERNAME_CHECK_REQUEST)
+        implementation = UsernameCheckRequest.class)
     ))
     @APIResponses({
         @APIResponse(responseCode = "204", description = "username is not yet taken"),
@@ -119,7 +118,7 @@ public interface UsersEndpointDef {
     @Tag(name = "users")
     @Operation(summary = "update user credentials", description = "Updates user credentials to given value.")
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(
-        implementation = ChangePasswordRequest.class, example = UserExamples.CHANGE_PASSWORD_REQUEST)
+        implementation = ChangePasswordRequest.class)
     ))
     @APIResponses({
         @APIResponse(responseCode = "204", description = "credentials updated"),
@@ -133,7 +132,7 @@ public interface UsersEndpointDef {
     @Path("/{userId}/disable")
     @Tag(name = "users")
     @Operation(summary = "disable user", description = "Disables user account.")
-    @Parameter(name = "id", in = ParameterIn.PATH, required = true)
+    @Parameter(name = "userId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "204", description = "disables user"),
         @APIResponse(responseCode = "404", description = "User does not exist", content = @Content(
@@ -146,7 +145,7 @@ public interface UsersEndpointDef {
     @Path("/{userId}/activate")
     @Tag(name = "users")
     @Operation(summary = "activates user", description = "Activates user account.")
-    @Parameter(name = "id", in = ParameterIn.PATH, required = true)
+    @Parameter(name = "userId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "204", description = "activates user"),
         @APIResponse(responseCode = "404", description = "User does not exist", content = @Content(
@@ -159,9 +158,8 @@ public interface UsersEndpointDef {
     @Path("/profile")
     @Tag(name = "users")
     @Operation(summary = "updates user profile", description = "Updates user profile.")
-    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(
-        implementation = UserProfile.class, example = UserExamples.USER_PROFILE_RESPONSE)
-    ))
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+    @Schema(implementation = UserProfile.class)))
     @APIResponses({
         @APIResponse(responseCode = "204", description = "user updated"),
         @APIResponse(responseCode = "422", description = "validation failed", content = @Content(
