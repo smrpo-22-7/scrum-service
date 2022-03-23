@@ -28,8 +28,13 @@ public class StoryEndpoint implements StoryEndpointDef {
 
     @SysRolesRequired({Roles.USER_ROLE})
     @Override
-    public Response getStoryById(String storyId) {
-        Story story = storyService.getStoryById(storyId);
+    public Response getStoryById(String storyId, boolean full) {
+        Story story;
+        if (full) {
+            story = storyService.getFullStoryById(storyId);
+        } else {
+            story = storyService.getStoryById(storyId);
+        }
         return Response.ok(story).build();
     }
     
