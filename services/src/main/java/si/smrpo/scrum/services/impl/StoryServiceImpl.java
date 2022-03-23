@@ -15,6 +15,7 @@ import com.mjamsek.rest.utils.QueryUtil;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
+import si.smrpo.scrum.lib.stories.AcceptanceTest;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.mappers.StoryMapper;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
@@ -26,7 +27,9 @@ import si.smrpo.scrum.services.StoryService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.persistence.*;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,6 +75,18 @@ public class StoryServiceImpl implements StoryService {
             throw new NotFoundException("error.not-found");
         }
         return StoryMapper.fromEntity(entity);
+    }
+    
+    @Override
+    public Story getFullStoryById(String storyId) {
+        Story story = getStoryEntityById(storyId)
+            .map(StoryMapper::fromEntity)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        
+        List<AcceptanceTest> tests = getStoryAcceptanceTests(storyId);
+        story.setTests(tests);
+        
+        return story;
     }
     
     @Override
@@ -152,6 +167,15 @@ public class StoryServiceImpl implements StoryService {
             em.getTransaction().rollback();
             throw new RestException("error.server");
         }
+    }
+    
+    @Override
+    public List<AcceptanceTest> getStoryAcceptanceTests(String storyId) {
+        QueryParameters query = new QueryParameters();
+        QueryUtil.overrideFilterParam(new QueryFilter("story.id", FilterOperation.EQ, storyId), query);
+        return JPAUtils.getEntityStream(em, AcceptanceTestEntity.class, query)
+            .map(StoryMapper::fromEntity)
+            .collect(Collectors.toList());
     }
     
     private int getNewNumberId(String projectId) {

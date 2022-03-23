@@ -5,6 +5,8 @@ import si.smrpo.scrum.lib.stories.AcceptanceTest;
 import si.smrpo.scrum.persistence.story.StoryEntity;
 import si.smrpo.scrum.persistence.story.AcceptanceTestEntity;
 
+import java.util.stream.Collectors;
+
 public class StoryMapper {
 
     public static Story fromEntity(StoryEntity entity) {
@@ -16,6 +18,10 @@ public class StoryMapper {
         story.setTitle(entity.getTitle());
         story.setNumberId(entity.getNumberId());
         story.setTimeEstimate(entity.getTimeEstimate());
+        if (entity.getTests() != null) {
+            story.setTests(entity.getTests().stream().map(StoryMapper::fromEntity).collect(Collectors.toList()));
+        }
+        
         return story;
     }
 
