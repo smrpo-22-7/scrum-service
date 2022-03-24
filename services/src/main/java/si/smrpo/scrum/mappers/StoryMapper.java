@@ -18,7 +18,11 @@ public class StoryMapper {
         story.setTitle(entity.getTitle());
         story.setNumberId(entity.getNumberId());
         story.setTimeEstimate(entity.getTimeEstimate());
-        story.setRealized(entity.isRealized());
+        if (entity.isRealized() != null) {
+            story.setRealized(entity.isRealized());
+        } else {
+            story.setRealized(false);
+        }
         if (entity.getTests() != null) {
             story.setTests(entity.getTests().stream().map(StoryMapper::fromEntity).collect(Collectors.toList()));
         }

@@ -22,7 +22,9 @@ public class Story extends BaseType {
 
     private StoryPriority priority;
 
-    private boolean realized;
+    private Boolean realized;
+    
+    private Boolean assigned;
 
     private List<AcceptanceTest> tests;
 
@@ -94,7 +96,15 @@ public class Story extends BaseType {
         this.numberId = numberId;
     }
 
-    public boolean isRealized() {return realized;}
+    public Boolean isRealized() {return realized;}
 
-    public void setRealized(boolean realized) {this.realized = realized;}
+    public void setRealized(Boolean realized) {this.realized = realized;}
+    
+    public Boolean getAssigned() {
+        return assigned;
+    }
+    
+    public void setAssigned(Boolean assigned) {
+        this.assigned = assigned;
+    }
 }

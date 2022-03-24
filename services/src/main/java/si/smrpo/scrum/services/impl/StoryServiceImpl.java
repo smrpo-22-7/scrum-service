@@ -19,6 +19,7 @@ import si.smrpo.scrum.lib.stories.AcceptanceTest;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.mappers.StoryMapper;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
+import si.smrpo.scrum.persistence.sprint.SprintStoryEntity;
 import si.smrpo.scrum.persistence.story.AcceptanceTestEntity;
 import si.smrpo.scrum.persistence.story.StoryEntity;
 import si.smrpo.scrum.services.ProjectAuthorizationService;
@@ -30,7 +31,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -56,13 +59,25 @@ public class StoryServiceImpl implements StoryService {
     
     @Override
     public EntityList<Story> getStories(String projectId, QueryParameters queryParameters) {
+        // Get all stories that are assigned to active sprint
+        QueryParameters sprintParams = new QueryParameters();
+        Date now = new Date();
+        QueryUtil.overrideFilterParam(new QueryFilter("id.story.project.id", FilterOperation.EQ, projectId), sprintParams);
+        QueryUtil.overrideFilterParam(new QueryFilter("id.sprint.startDate", FilterOperation.LTE, now), sprintParams);
+        QueryUtil.overrideFilterParam(new QueryFilter("id.sprint.endDate", FilterOperation.GT, now), sprintParams);
+        Map<String, SprintStoryEntity> sprintStories = JPAUtils.getEntityStream(em, SprintStoryEntity.class, sprintParams)
+                .collect(Collectors.toMap(s -> s.getStory().getId(), s -> s));
+        
+        // Get all project stories
         QueryUtil.overrideFilterParam(new QueryFilter("project.id", FilterOperation.EQ, projectId), queryParameters);
-        List<Story> story = JPAUtils.getEntityStream(em, StoryEntity.class, queryParameters)
-            .map(StoryMapper::fromEntity).collect(Collectors.toList());
+        List<Story> stories = JPAUtils.getEntityStream(em, StoryEntity.class, queryParameters)
+            .map(StoryMapper::fromEntity)
+            .peek(story -> story.setAssigned(sprintStories.containsKey(story.getId())))
+            .collect(Collectors.toList());
         
         long storyCount = JPAUtils.queryEntitiesCount(em, StoryEntity.class, queryParameters);
         
-        return new EntityList<>(story, storyCount);
+        return new EntityList<>(stories, storyCount);
     }
     
     @Override
