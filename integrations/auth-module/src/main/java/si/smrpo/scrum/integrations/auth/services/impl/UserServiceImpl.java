@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional<UserEntity> getUserEntityByEmail(String email) {
         TypedQuery<UserEntity> query = em.createNamedQuery(UserEntity.GET_BY_EMAIL, UserEntity.class);
-        query.setParameter("email", email);
+        query.setParameter("email", email.toLowerCase());
         try {
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {

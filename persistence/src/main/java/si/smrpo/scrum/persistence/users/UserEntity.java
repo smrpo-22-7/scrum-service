@@ -12,7 +12,7 @@ import java.util.Date;
 })
 @NamedQueries({
     @NamedQuery(name = UserEntity.GET_BY_USERNAME, query = "SELECT u FROM UserEntity u WHERE u.username = :username"),
-    @NamedQuery(name = UserEntity.GET_BY_EMAIL, query = "SELECT u FROM UserEntity u WHERE u.email = :email")
+    @NamedQuery(name = UserEntity.GET_BY_EMAIL, query = "SELECT u FROM UserEntity u WHERE LOWER(TRIM(BOTH FROM u.email)) = :email")
 })
 public class UserEntity extends BaseEntity {
     
