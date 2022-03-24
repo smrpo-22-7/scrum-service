@@ -2,6 +2,7 @@ package si.smrpo.scrum.services;
 
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.mjamsek.rest.dto.EntityList;
+import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.stories.AcceptanceTest;
 import si.smrpo.scrum.lib.stories.Story;
@@ -27,4 +28,6 @@ public interface StoryService {
     List<AcceptanceTest> getStoryAcceptanceTests(String storyId);
 
     Story updateRealized(String storyId, Story story);
+    
+    boolean checkStoryNameExists(String projectId, ConflictCheckRequest request);
 }

@@ -237,7 +237,7 @@ public interface ProjectsEndpointDef {
     
     @POST
     @Path("/{projectId}/sprints/check")
-    @Tag(name = "sprints")
+    @Tag(name = "stories")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = SprintConflictCheckRequest.class)))
@@ -247,6 +247,17 @@ public interface ProjectsEndpointDef {
     })
     Response checkSprintDates(@PathParam("projectId") String projectId, SprintConflictCheckRequest request);
     
+    @POST
+    @Path("/{projectId}/stories/name-check")
+    @Tag(name = "stories")
+    @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
+        schema = @Schema(implementation = ConflictCheckRequest.class)))
+    @APIResponses({
+        @APIResponse(responseCode = "204"),
+        @APIResponse(responseCode = "409"),
+    })
+    Response checkStoryNameExits(@PathParam("projectId") String projectId, ConflictCheckRequest request);
     
     @GET
     @Path("/{projectId}/members")

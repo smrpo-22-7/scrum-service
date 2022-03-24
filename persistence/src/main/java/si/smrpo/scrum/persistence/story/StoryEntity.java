@@ -16,11 +16,13 @@ import java.util.List;
 })
 @NamedQueries({
     @NamedQuery(name = StoryEntity.GET_NEW_NUMBER_ID,
-        query = "SELECT COALESCE(MAX(s.numberId) + 1, 1) FROM StoryEntity s WHERE s.project.id = :projectId")
+        query = "SELECT COALESCE(MAX(s.numberId) + 1, 1) FROM StoryEntity s WHERE s.project.id = :projectId"),
+    @NamedQuery(name = StoryEntity.GET_BY_TITLE, query = "SELECT s FROM StoryEntity s WHERE LOWER(TRIM(BOTH FROM s.title)) = :title AND s.project.id = :projectId")
 })
 public class StoryEntity extends BaseEntity {
 
     public static final String GET_NEW_NUMBER_ID = "StoryEntity.getNewNumberId";
+    public static final String GET_BY_TITLE = "StoryEntity.getByTitle";
 
     @Column(name = "title", nullable = false)
     private String title;

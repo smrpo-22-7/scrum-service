@@ -199,6 +199,15 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     }
     
     @Override
+    public Response checkStoryNameExits(String projectId, ConflictCheckRequest request) {
+        boolean exists = storyService.checkStoryNameExists(projectId, request);
+        if (exists) {
+            return Response.status(Response.Status.CONFLICT).build();
+        }
+        return Response.noContent().build();
+    }
+    
+    @Override
     public Response getProjectMembers(String projectId) {
         EntityList<ProjectMember> members = projectService.getProjectMembers(projectId, queryParameters);
         return Response.ok(members.getEntities())

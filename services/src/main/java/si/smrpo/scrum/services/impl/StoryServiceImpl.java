@@ -14,6 +14,7 @@ import com.mjamsek.rest.services.Validator;
 import com.mjamsek.rest.utils.QueryUtil;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
+import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.stories.AcceptanceTest;
 import si.smrpo.scrum.lib.stories.Story;
@@ -29,6 +30,7 @@ import si.smrpo.scrum.services.StoryService;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import java.util.Date;
@@ -216,7 +218,26 @@ public class StoryServiceImpl implements StoryService {
             throw new RestException("error.server");
         }
     }
-
+    
+    @Override
+    public boolean checkStoryNameExists(String projectId, ConflictCheckRequest request) {
+        validator.assertNotBlank(request.getValue());
+        
+        TypedQuery<StoryEntity> query = em.createNamedQuery(StoryEntity.GET_BY_TITLE, StoryEntity.class);
+        query.setParameter("title", request.getValue().toLowerCase());
+        query.setParameter("projectId", projectId);
+        
+        try {
+            query.getSingleResult();
+            return true;
+        } catch (NoResultException e) {
+            return false;
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
     private int getNewNumberId(String projectId) {
         TypedQuery<Integer> query = em.createNamedQuery(StoryEntity.GET_NEW_NUMBER_ID, Integer.class);
         query.setParameter("projectId", projectId);
