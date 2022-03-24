@@ -3,15 +3,15 @@ package si.smrpo.scrum.lib.sprints;
 import si.smrpo.scrum.lib.BaseType;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 
-import java.util.Date;
+import java.time.Instant;
 
 public class Sprint extends BaseType {
 
     private String title;
 
-    private Date startDate;
+    private Instant startDate;
 
-    private Date endDate;
+    private Instant endDate;
 
     private SimpleStatus status;
 
@@ -27,19 +27,19 @@ public class Sprint extends BaseType {
         this.title = title;
     }
 
-    public Date getStartDate() {
+    public Instant getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(Instant startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public Instant getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(Instant endDate) {
         this.endDate = endDate;
     }
 

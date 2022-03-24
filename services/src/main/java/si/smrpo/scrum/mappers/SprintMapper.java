@@ -7,8 +7,12 @@ public class SprintMapper {
 
     public static Sprint fromEntity(SprintEntity entity) {
         Sprint sprint = BaseMapper.fromEntity(entity, Sprint.class);
-        sprint.setStartDate(entity.getStartDate());
-        sprint.setEndDate(entity.getEndDate());
+        if (entity.getStartDate() != null) {
+            sprint.setStartDate(entity.getStartDate().toInstant());
+        }
+        if (entity.getEndDate() != null) {
+            sprint.setEndDate(entity.getEndDate().toInstant());
+        }
         sprint.setStatus(entity.getStatus());
         sprint.setTitle(entity.getTitle());
         sprint.setExpectedSpeed(entity.getExpectedSpeed());

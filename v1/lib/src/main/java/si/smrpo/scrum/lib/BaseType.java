@@ -1,14 +1,14 @@
 package si.smrpo.scrum.lib;
 
-import java.util.Date;
+import java.time.Instant;
 
 public class BaseType {
     
     private String id;
     
-    private Date createdAt;
+    private Instant createdAt;
     
-    private Date updatedAt;
+    private Instant updatedAt;
     
     public String getId() {
         return id;
@@ -18,19 +18,19 @@ public class BaseType {
         this.id = id;
     }
     
-    public Date getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
     
-    public void setCreatedAt(Date createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
     
-    public Date getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return updatedAt;
     }
     
-    public void setUpdatedAt(Date updatedAt) {
+    public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
 }

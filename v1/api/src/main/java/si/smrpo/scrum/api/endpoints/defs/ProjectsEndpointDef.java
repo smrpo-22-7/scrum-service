@@ -11,6 +11,7 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import si.smrpo.scrum.api.params.ProjectSprintFilters;
 import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectMember;
 import si.smrpo.scrum.lib.projects.ProjectRole;
@@ -18,6 +19,7 @@ import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
+import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
 
@@ -198,14 +200,15 @@ public interface ProjectsEndpointDef {
     @Path("/{projectId}/sprints")
     @Tag(name = "sprints")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @Parameter(name = "active", in = ParameterIn.QUERY, schema = @Schema(type = SchemaType.BOOLEAN))
+    @Parameter(name = "future", in = ParameterIn.QUERY, schema = @Schema(type = SchemaType.BOOLEAN))
+    @Parameter(name = "past", in = ParameterIn.QUERY, schema = @Schema(type = SchemaType.BOOLEAN))
     @APIResponses({
         @APIResponse(responseCode = "200", content =
         @Content(mediaType = MediaType.APPLICATION_JSON, schema =
-        @Schema(implementation = Sprint.class, type = SchemaType.ARRAY)), headers = {
-            @Header(name = Rest.HttpHeaders.X_TOTAL_COUNT, schema = @Schema(type = SchemaType.INTEGER))
-        })
+        @Schema(implementation = SprintListResponse.class)))
     })
-    Response getProjectSprints(@PathParam("projectId") String projectId);
+    Response getProjectSprints(@PathParam("projectId") String projectId, @BeanParam ProjectSprintFilters filters);
     
     @POST
     @Path("/{projectId}/sprints")

@@ -13,10 +13,10 @@ public class RoleMapper {
         SysRole role = new SysRole();
         role.setId(entity.getId());
         if (entity.getCreatedAt() != null) {
-            role.setCreatedAt(entity.getCreatedAt());
+            role.setCreatedAt(entity.getCreatedAt().toInstant());
         }
         if (entity.getUpdatedAt() != null) {
-            role.setUpdatedAt(entity.getUpdatedAt());
+            role.setUpdatedAt(entity.getUpdatedAt().toInstant());
         }
         role.setRoleId(entity.getRoleId());
         role.setName(entity.getName());

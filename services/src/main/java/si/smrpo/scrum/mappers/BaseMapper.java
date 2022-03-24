@@ -21,10 +21,10 @@ public class BaseMapper {
     public static <T extends BaseType, E extends BaseEntity> T fromEntity(E entity, T type) {
         type.setId(entity.getId());
         if (entity.getCreatedAt() != null) {
-            type.setCreatedAt(entity.getCreatedAt());
+            type.setCreatedAt(entity.getCreatedAt().toInstant());
         }
         if (entity.getUpdatedAt() != null) {
-            type.setUpdatedAt(entity.getUpdatedAt());
+            type.setUpdatedAt(entity.getUpdatedAt().toInstant());
         }
         return type;
     }

@@ -14,10 +14,10 @@ public class UserMapper {
         User user = new User();
         user.setId(entity.getId());
         if (entity.getCreatedAt() != null) {
-            user.setCreatedAt(entity.getCreatedAt());
+            user.setCreatedAt(entity.getCreatedAt().toInstant());
         }
         if (entity.getUpdatedAt() != null) {
-            user.setUpdatedAt(entity.getUpdatedAt());
+            user.setUpdatedAt(entity.getUpdatedAt().toInstant());
         }
         user.setUsername(entity.getUsername());
         user.setFirstName(entity.getFirstName());

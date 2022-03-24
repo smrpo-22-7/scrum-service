@@ -4,6 +4,7 @@ package si.smrpo.scrum.api.endpoints;
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.mjamsek.rest.dto.EntityList;
 import si.smrpo.scrum.api.endpoints.defs.ProjectsEndpointDef;
+import si.smrpo.scrum.api.params.ProjectSprintFilters;
 import si.smrpo.scrum.integrations.auth.Roles;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
@@ -16,6 +17,7 @@ import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
+import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.services.ProjectService;
@@ -163,16 +165,16 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     
     @SysRolesRequired({Roles.USER_ROLE})
     @Override
-    public Response getProjectSprints(String projectId) {
-        EntityList<Sprint> sprints = sprintService.getSprints(queryParameters);
-        return Response.ok(sprints.getEntities())
-            .header(X_TOTAL_COUNT, sprints.getCount()).build();
+    public Response getProjectSprints(String projectId, ProjectSprintFilters filters) {
+        SprintListResponse response = sprintService.getProjectSprints(projectId,
+            filters.isActive(), filters.isPast(), filters.isFuture());
+        return Response.ok(response).build();
     }
     
     @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response createSprint(String projectId, Sprint sprint) {
-        Sprint createdSprint = sprintService.createSprint(sprint);
+        Sprint createdSprint = sprintService.createSprint(projectId, sprint);
         return Response.status(Response.Status.CREATED).entity(createdSprint).build();
     }
     
