@@ -14,6 +14,7 @@ import si.smrpo.scrum.services.ProjectAuthorizationService;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import java.util.Optional;
@@ -114,7 +115,7 @@ public class ProjectAuthorizationServiceImpl implements ProjectAuthorizationServ
         
         try {
             return Optional.of(query.getSingleResult());
-        } catch (NotFoundException e) {
+        } catch (NoResultException e) {
             return Optional.empty();
         } catch (PersistenceException e) {
             LOG.error(e);
