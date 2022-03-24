@@ -76,7 +76,6 @@ public class UsersEndpoint implements UsersEndpointDef {
         return Response.ok(updatedUser).build();
     }
     
-    @SysRolesRequired({Roles.ADMIN_ROLE})
     @Override
     public Response checkUsernameExists(UsernameCheckRequest request) {
         boolean exists = userService.usernameExists(request.getUsername());
