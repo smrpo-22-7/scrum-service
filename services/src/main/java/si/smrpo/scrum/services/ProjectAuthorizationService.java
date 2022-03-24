@@ -1,8 +1,11 @@
 package si.smrpo.scrum.services;
 
 import com.mjamsek.rest.exceptions.ForbiddenException;
+import si.smrpo.scrum.lib.projects.ProjectRole;
 
 public interface ProjectAuthorizationService {
+    
+    ProjectRole getUserProjectRole(String projectId, String userId);
     
     /**
      * Checks if user is present in a project, with any role

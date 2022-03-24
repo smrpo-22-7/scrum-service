@@ -137,6 +137,17 @@ public interface ProjectsEndpointDef {
     })
     Response getProjectRolesCount(@PathParam("projectId") String projectId);
     
+    @GET
+    @Path("/{projectId}/roles/user")
+    @Tag(name = "projects")
+    @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "200", content =
+        @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+        @Schema(implementation = ProjectRole.class)))
+    })
+    Response getUserProjectRoles(@PathParam("projectId") String projectId);
+    
     @POST
     @Path("/{projectId}/users")
     @Tag(name = "projects")

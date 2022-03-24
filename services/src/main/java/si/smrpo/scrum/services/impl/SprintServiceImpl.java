@@ -26,7 +26,6 @@ import si.smrpo.scrum.persistence.story.StoryEntity;
 import si.smrpo.scrum.services.ProjectAuthorizationService;
 import si.smrpo.scrum.services.ProjectService;
 import si.smrpo.scrum.services.SprintService;
-import si.smrpo.scrum.services.StoryService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -48,9 +47,6 @@ public class SprintServiceImpl implements SprintService {
     
     @Inject
     private ProjectService projectService;
-    
-    @Inject
-    private StoryService storyService;
     
     @Inject
     private ProjectAuthorizationService authService;
@@ -161,7 +157,6 @@ public class SprintServiceImpl implements SprintService {
     
     @Override
     public void addStoriesToSprint(String sprintId, AddStoryRequest request) {
-        
         SprintEntity sprint = getSprintEntityById(sprintId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
         

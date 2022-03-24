@@ -20,6 +20,7 @@ import si.smrpo.scrum.lib.responses.ProjectRolesCount;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
+import si.smrpo.scrum.services.ProjectAuthorizationService;
 import si.smrpo.scrum.services.ProjectService;
 import si.smrpo.scrum.services.SprintService;
 import si.smrpo.scrum.services.StoryService;
@@ -57,6 +58,9 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     
     @Inject
     private SprintService sprintService;
+    
+    @Inject
+    private ProjectAuthorizationService projectAuthorizationService;
 
     @SysRolesRequired({Roles.ADMIN_ROLE})
     @Override
@@ -132,6 +136,12 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     public Response getProjectRolesCount(String projectId) {
         ProjectRolesCount counts = projectService.getProjectRolesCount(projectId);
         return Response.ok(counts).build();
+    }
+    
+    @Override
+    public Response getUserProjectRoles(String projectId) {
+        ProjectRole role = projectAuthorizationService.getUserProjectRole(projectId, authContext.getId());
+        return Response.ok(role).build();
     }
     
     @SysRolesRequired({Roles.USER_ROLE})

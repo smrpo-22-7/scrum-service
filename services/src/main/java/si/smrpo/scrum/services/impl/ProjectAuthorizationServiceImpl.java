@@ -5,6 +5,8 @@ import com.kumuluz.ee.logs.Logger;
 import com.mjamsek.rest.exceptions.ForbiddenException;
 import com.mjamsek.rest.exceptions.NotFoundException;
 import com.mjamsek.rest.exceptions.RestException;
+import si.smrpo.scrum.lib.projects.ProjectRole;
+import si.smrpo.scrum.mappers.ProjectMapper;
 import si.smrpo.scrum.persistence.project.ProjectRoleEntity;
 import si.smrpo.scrum.persistence.project.ProjectUserEntity;
 import si.smrpo.scrum.services.ProjectAuthorizationService;
@@ -23,6 +25,14 @@ public class ProjectAuthorizationServiceImpl implements ProjectAuthorizationServ
     
     @Inject
     private EntityManager em;
+    
+    @Override
+    public ProjectRole getUserProjectRole(String projectId, String userId) {
+        return getProjectMembership(projectId, userId)
+            .map(ProjectUserEntity::getProjectRole)
+            .map(ProjectMapper::fromEntity)
+            .orElseThrow(() -> new ForbiddenException("error.forbidden"));
+    }
     
     @Override
     public boolean isInProject(String projectId, String userId) {
