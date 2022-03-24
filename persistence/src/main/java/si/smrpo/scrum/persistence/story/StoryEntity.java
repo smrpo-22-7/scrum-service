@@ -36,17 +36,17 @@ public class StoryEntity extends BaseEntity {
     private SimpleStatus status;
 
     @Column(name = "business_value")
-    private int businessValue;
+    private Integer businessValue;
 
     @Column(name = "priority", nullable = false)
     @Enumerated(EnumType.STRING)
     private StoryPriority priority;
     
     @Column(name = "time_estimate")
-    private int timeEstimate;
+    private Integer timeEstimate;
 
     @Column(name = "realized")
-    private boolean realized;
+    private Boolean realized;
     
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
@@ -79,11 +79,11 @@ public class StoryEntity extends BaseEntity {
         this.status = status;
     }
 
-    public int getBusinessValue() {
+    public Integer getBusinessValue() {
         return businessValue;
     }
 
-    public void setBusinessValue(int businessValue) {
+    public void setBusinessValue(Integer businessValue) {
         this.businessValue = businessValue;
     }
 
@@ -111,11 +111,11 @@ public class StoryEntity extends BaseEntity {
         this.project = project;
     }
     
-    public int getTimeEstimate() {
+    public Integer getTimeEstimate() {
         return timeEstimate;
     }
     
-    public void setTimeEstimate(int timeEstimate) {
+    public void setTimeEstimate(Integer timeEstimate) {
         this.timeEstimate = timeEstimate;
     }
     
@@ -127,8 +127,8 @@ public class StoryEntity extends BaseEntity {
         this.numberId = numberId;
     }
 
-    public boolean isRealized() {return realized;}
+    public Boolean isRealized() {return realized;}
 
-    public void setRealized(boolean realized) {this.realized = realized;}
+    public void setRealized(Boolean realized) {this.realized = realized;}
 }
 
