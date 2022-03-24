@@ -41,5 +41,19 @@ public interface StoryEndpointDef {
         @Schema(implementation = Story.class)))
     })
     Response updateTimeEstimate(@PathParam("storyId") String storyId, Story story);
+
+
+    @PATCH
+    @Path("/{storyId}/realized")
+    @Tag(name = "stories")
+    @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
+            schema = @Schema(implementation = Story.class)))
+    @APIResponses({
+            @APIResponse(responseCode = "200", content =
+            @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+            @Schema(implementation = Story.class)))
+    })
+    Response updateRealized(@PathParam("storyId") String storyId, Story story);
     
 }
