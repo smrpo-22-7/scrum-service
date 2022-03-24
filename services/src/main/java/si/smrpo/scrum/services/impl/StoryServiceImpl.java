@@ -185,7 +185,7 @@ public class StoryServiceImpl implements StoryService {
         StoryEntity entity = getStoryEntityById(storyId)
                 .orElseThrow(() -> new NotFoundException("error.not-found"));
 
-        projectAuthorizationService.isScrumMasterOrThrow(
+        projectAuthorizationService.isProductOwnerOrThrow(
                 entity.getProject().getId(),
                 authContext.getId()
         );
