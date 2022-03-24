@@ -177,7 +177,31 @@ public class StoryServiceImpl implements StoryService {
             .map(StoryMapper::fromEntity)
             .collect(Collectors.toList());
     }
-    
+
+    @Override
+    public Story updateRealized(String storyId, Story story) {
+        validator.assertNotNull(story.isRealized(), "realized", "Story");
+
+        StoryEntity entity = getStoryEntityById(storyId)
+                .orElseThrow(() -> new NotFoundException("error.not-found"));
+
+        projectAuthorizationService.isScrumMasterOrThrow(
+                entity.getProject().getId(),
+                authContext.getId()
+        );
+
+        try {
+            em.getTransaction().begin();
+            entity.setRealized(story.isRealized());
+            em.getTransaction().commit();
+            return StoryMapper.fromEntity(entity);
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            em.getTransaction().rollback();
+            throw new RestException("error.server");
+        }
+    }
+
     private int getNewNumberId(String projectId) {
         TypedQuery<Integer> query = em.createNamedQuery(StoryEntity.GET_NEW_NUMBER_ID, Integer.class);
         query.setParameter("projectId", projectId);
@@ -188,5 +212,6 @@ public class StoryServiceImpl implements StoryService {
             throw new RestException("error.server");
         }
     }
-    
+
+
 }

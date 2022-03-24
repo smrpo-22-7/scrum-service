@@ -44,6 +44,9 @@ public class StoryEntity extends BaseEntity {
     
     @Column(name = "time_estimate")
     private int timeEstimate;
+
+    @Column(name = "realized")
+    private boolean realized;
     
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
@@ -123,5 +126,9 @@ public class StoryEntity extends BaseEntity {
     public void setNumberId(int numberId) {
         this.numberId = numberId;
     }
+
+    public boolean isRealized() {return realized;}
+
+    public void setRealized(boolean realized) {this.realized = realized;}
 }
 

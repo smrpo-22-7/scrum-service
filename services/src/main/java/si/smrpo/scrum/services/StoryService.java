@@ -25,4 +25,6 @@ public interface StoryService {
     Story updateTimeEstimate(String storyId, Story story);
     
     List<AcceptanceTest> getStoryAcceptanceTests(String storyId);
+
+    Story updateRealized(String storyId, Story story);
 }

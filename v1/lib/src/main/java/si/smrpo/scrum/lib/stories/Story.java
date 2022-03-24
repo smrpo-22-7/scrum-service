@@ -22,6 +22,8 @@ public class Story extends BaseType {
 
     private StoryPriority priority;
 
+    private boolean realized;
+
     private List<AcceptanceTest> tests;
 
     public String getTitle() {
@@ -91,4 +93,8 @@ public class Story extends BaseType {
     public void setNumberId(Integer numberId) {
         this.numberId = numberId;
     }
+
+    public boolean isRealized() {return realized;}
+
+    public void setRealized(boolean realized) {this.realized = realized;}
 }

@@ -170,7 +170,7 @@ public class SprintServiceImpl implements SprintService {
         QueryUtil.overrideFilterParam(new QueryFilter("id", FilterOperation.IN, request.getStoryIds()), q);
         QueryUtil.overrideFilterParam(new QueryFilter("status", FilterOperation.EQ, SimpleStatus.ACTIVE.name()), q);
         QueryUtil.overrideFilterParam(new QueryFilter("timeEstimate", FilterOperation.ISNOTNULL), q);
-        //QueryUtil.overrideFilterParam(new QueryFilter("realized", FilterOperation.EQ, ....), q);
+        QueryUtil.overrideFilterParam(new QueryFilter("realized", FilterOperation.EQ, String.valueOf(false)), q);
         
         List<StoryEntity> stories = JPAUtils.queryEntities(em, StoryEntity.class, q);
         
