@@ -295,10 +295,12 @@ public class UserServiceImpl implements UserService {
     public void updateUserProfile(String userId, UserProfile userProfile) {
         UserEntity user = getUserEntityById(userId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
-    
+        
         if (userProfile.getUsername() != null && !userProfile.getUsername().isBlank()) {
-            if (getUserEntityByUsername(userProfile.getUsername()).isPresent()) {
-                throw new ConflictException("users.error.validation.taken-username");
+            if (!userProfile.getUsername().equals(user.getUsername())) {
+                if (getUserEntityByUsername(userProfile.getUsername()).isPresent()) {
+                    throw new ConflictException("users.error.validation.taken-username");
+                }
             }
         }
         
