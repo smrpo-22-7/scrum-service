@@ -3,14 +3,18 @@ package si.smrpo.scrum.persistence.sprint;
 import si.smrpo.scrum.persistence.identifiers.SprintStoryId;
 import si.smrpo.scrum.persistence.story.StoryEntity;
 
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Index;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "sprint_stories")
+@NamedQueries({
+    @NamedQuery(name = SprintStoryEntity.GET_STORIES_BY_SPRINT, query = "SELECT s.id.story FROM SprintStoryEntity s WHERE s.id.sprint.id = :sprintId"),
+    @NamedQuery(name = SprintStoryEntity.COUNT_STORIES_BY_SPRINT, query = "SELECT COUNT(s.id.story) FROM SprintStoryEntity s WHERE s.id.sprint.id = :sprintId"),
+})
 public class SprintStoryEntity {
+    
+    public static final String GET_STORIES_BY_SPRINT = "SprintStoryEntity.getStoriesBySprint";
+    public static final String COUNT_STORIES_BY_SPRINT = "SprintStoryEntity.countStoriesBySprint";
 
     @EmbeddedId
     private SprintStoryId id;

@@ -17,7 +17,9 @@ import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.AddStoryRequest;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
+import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.mappers.SprintMapper;
+import si.smrpo.scrum.mappers.StoryMapper;
 import si.smrpo.scrum.persistence.identifiers.SprintStoryId;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 import si.smrpo.scrum.persistence.sprint.SprintEntity;
@@ -31,6 +33,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
+import javax.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -66,6 +69,29 @@ public class SprintServiceImpl implements SprintService {
         Long sprintCount = JPAUtils.queryEntitiesCount(em, SprintEntity.class, queryParameters);
         
         return new EntityList<>(sprint, sprintCount);
+    }
+    
+    @Override
+    public EntityList<Story> getSprintStories(String sprintId, QueryParameters queryParameters) {
+        TypedQuery<StoryEntity> query = em.createNamedQuery(SprintStoryEntity.GET_STORIES_BY_SPRINT, StoryEntity.class);
+        query.setParameter("sprintId", sprintId);
+        query.setMaxResults(Math.toIntExact(queryParameters.getLimit()));
+        query.setFirstResult(Math.toIntExact(queryParameters.getOffset()));
+        
+        TypedQuery<Long> countQuery = em.createNamedQuery(SprintStoryEntity.COUNT_STORIES_BY_SPRINT, Long.class);
+        countQuery.setParameter("sprintId", sprintId);
+        
+        try {
+            List<Story> stories = query.getResultStream()
+                .map(StoryMapper::fromEntity)
+                .collect(Collectors.toList());
+            long storiesCount = countQuery.getSingleResult();
+            
+            return new EntityList<>(stories, storiesCount);
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
     }
     
     @Override
@@ -131,7 +157,7 @@ public class SprintServiceImpl implements SprintService {
         if (sprint.getExpectedSpeed() <= 0) {
             throw new ValidationException("error.sprint.validation");
         }
-    
+        
         ProjectEntity project = projectService.getProjectEntityById(projectId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
         
