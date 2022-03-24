@@ -9,10 +9,18 @@ import java.util.Date;
 
 @Entity
 @Table(name = "sprints")
+@NamedQueries({
+    //@formatter:off
+    @NamedQuery(name = SprintEntity.COUNT_CONFLICTING_SPRINTS,
+        query = "SELECT COUNT(s) FROM SprintEntity s " +
+            "WHERE s.project.id = :projectId AND " +
+                "(s.endDate <= :startDate OR " +
+                "s.startDate <= :endDate)")
+    //@formatter:on
+})
 public class SprintEntity extends BaseEntity {
 
-    public static final String GET_BY_SPRINT_NAME = "SprintEntity.getByName";
-    public static final String GET_SPRINTS_IN_PROJECT = "SprintEntity.getSprintsInProject";
+    public static final String COUNT_CONFLICTING_SPRINTS = "SprintEntity.countConflictingSprints";
 
     @Column(name = "title", nullable = false)
     private String title;

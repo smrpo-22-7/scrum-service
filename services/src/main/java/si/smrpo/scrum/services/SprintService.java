@@ -3,6 +3,7 @@ package si.smrpo.scrum.services;
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.mjamsek.rest.dto.EntityList;
 import si.smrpo.scrum.lib.requests.AddStoryRequest;
+import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
@@ -25,4 +26,6 @@ public interface SprintService {
     Sprint createSprint(String projectId, Sprint sprint);
 
     void addStoriesToSprint(String sprintId, AddStoryRequest request);
+    
+    boolean checkForDateConflicts(String projectId, SprintConflictCheckRequest request);
 }

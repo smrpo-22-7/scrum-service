@@ -15,6 +15,7 @@ import com.mjamsek.rest.utils.QueryUtil;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.AddStoryRequest;
+import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
@@ -218,6 +219,21 @@ public class SprintServiceImpl implements SprintService {
             
         } catch (PersistenceException e) {
             em.getTransaction().rollback();
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
+    public boolean checkForDateConflicts(String projectId, SprintConflictCheckRequest request) {
+        TypedQuery<Long> query = em.createNamedQuery(SprintEntity.COUNT_CONFLICTING_SPRINTS, Long.class);
+        query.setParameter("projectId", projectId);
+        query.setParameter("startDate", Date.from(request.getStartDate()));
+        query.setParameter("endDate", Date.from(request.getEndDate()));
+        
+        try {
+            return query.getSingleResult() > 0;
+        } catch (PersistenceException e) {
             LOG.error(e);
             throw new RestException("error.server");
         }

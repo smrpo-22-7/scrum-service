@@ -18,6 +18,7 @@ import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
+import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
@@ -233,6 +234,18 @@ public interface ProjectsEndpointDef {
         @Schema(implementation = Sprint.class)))
     })
     Response createSprint(@PathParam("projectId") String projectId, Sprint sprint);
+    
+    @POST
+    @Path("/{projectId}/sprints/check")
+    @Tag(name = "sprints")
+    @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
+        schema = @Schema(implementation = SprintConflictCheckRequest.class)))
+    @APIResponses({
+        @APIResponse(responseCode = "204"),
+        @APIResponse(responseCode = "409"),
+    })
+    Response checkSprintDates(@PathParam("projectId") String projectId, SprintConflictCheckRequest request);
     
     
     @GET

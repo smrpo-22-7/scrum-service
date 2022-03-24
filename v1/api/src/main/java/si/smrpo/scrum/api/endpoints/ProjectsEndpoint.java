@@ -16,6 +16,7 @@ import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
+import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
@@ -186,6 +187,15 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     public Response createSprint(String projectId, Sprint sprint) {
         Sprint createdSprint = sprintService.createSprint(projectId, sprint);
         return Response.status(Response.Status.CREATED).entity(createdSprint).build();
+    }
+    
+    @Override
+    public Response checkSprintDates(String projectId, SprintConflictCheckRequest request) {
+        boolean exists = sprintService.checkForDateConflicts(projectId, request);
+        if (exists) {
+            return Response.status(Response.Status.CONFLICT).build();
+        }
+        return Response.noContent().build();
     }
     
     @Override
