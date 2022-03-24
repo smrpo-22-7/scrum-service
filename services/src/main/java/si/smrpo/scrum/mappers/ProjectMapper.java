@@ -1,20 +1,23 @@
 package si.smrpo.scrum.mappers;
 
+import si.smrpo.scrum.integrations.auth.mappers.UserMapper;
 import si.smrpo.scrum.lib.projects.Project;
+import si.smrpo.scrum.lib.projects.ProjectMember;
 import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
 import si.smrpo.scrum.persistence.aggregators.ProjectMembersAggregated;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 import si.smrpo.scrum.persistence.project.ProjectRoleEntity;
+import si.smrpo.scrum.persistence.project.ProjectUserEntity;
 
 public class ProjectMapper {
-
+    
     public static Project fromEntity(ProjectEntity entity) {
         Project project = BaseMapper.fromEntity(entity, Project.class);
-
+        
         project.setStatus(entity.getStatus());
         project.setName(entity.getName());
-
+        
         return project;
     }
     
@@ -32,5 +35,12 @@ public class ProjectMapper {
         counter.setScrumMastersCount(members.getScrumMastersCount());
         return counter;
     }
-
+    
+    public static ProjectMember fromEntity(ProjectUserEntity entity) {
+        ProjectMember member = new ProjectMember();
+        member.setProjectRole(fromEntity(entity.getProjectRole()));
+        member.setUser(UserMapper.fromEntity(entity.getUser()));
+        return member;
+    }
+    
 }

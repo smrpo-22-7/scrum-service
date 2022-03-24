@@ -26,6 +26,8 @@ public interface ProjectService {
     Project createProject(CreateProjectRequest request);
 
     Project updateProject(String projectId, Project project);
+    
+    EntityList<ProjectMember> getProjectMembers(String projectId, QueryParameters queryParameters);
 
     boolean projectNameExists(String projectName);
 

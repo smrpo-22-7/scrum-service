@@ -233,4 +233,18 @@ public interface ProjectsEndpointDef {
         @Schema(implementation = Sprint.class)))
     })
     Response createSprint(@PathParam("projectId") String projectId, Sprint sprint);
+    
+    
+    @GET
+    @Path("/{projectId}/members")
+    @Tag(name = "projects")
+    @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "200", content =
+        @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+        @Schema(implementation = ProjectMember.class, type = SchemaType.ARRAY)), headers = {
+            @Header(name = Rest.HttpHeaders.X_TOTAL_COUNT, schema = @Schema(type = SchemaType.INTEGER))
+        })
+    })
+    Response getProjectMembers(@PathParam("projectId") String projectId);
 }

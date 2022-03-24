@@ -175,6 +175,28 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
+    public EntityList<ProjectMember> getProjectMembers(String projectId, QueryParameters queryParameters) {
+        TypedQuery<ProjectUserEntity> query = em.createNamedQuery(ProjectUserEntity.GET_PROJECT_MEMBERS, ProjectUserEntity.class);
+        query.setParameter("projectId", projectId);
+        query.setMaxResults(Math.toIntExact(queryParameters.getLimit()));
+        query.setFirstResult(Math.toIntExact(queryParameters.getOffset()));
+        
+        TypedQuery<Long> countQuery = em.createNamedQuery(ProjectUserEntity.COUNT_PROJECT_MEMBERS, Long.class);
+        countQuery.setParameter("projectId", projectId);
+        
+        try {
+            List<ProjectMember> members = query.getResultStream()
+                .map(ProjectMapper::fromEntity)
+                .collect(Collectors.toList());
+            Long membersCount = countQuery.getSingleResult();
+            return new EntityList<>(members, membersCount);
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
     public boolean projectNameExists(String projectName) {
         TypedQuery<ProjectEntity> query = em.createNamedQuery(ProjectEntity.GET_BY_PROJECT_NAME, ProjectEntity.class);
         query.setParameter("name", projectName.toLowerCase());

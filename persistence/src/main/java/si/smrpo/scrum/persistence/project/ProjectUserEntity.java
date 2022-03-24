@@ -22,7 +22,18 @@ import javax.persistence.*;
                 "SUM (CASE WHEN pr.roleId = 'product_owner' THEN 1 ELSE 0 END) " +
             ") FROM ProjectUserEntity pu " +
             "JOIN ProjectRoleEntity pr ON pu.projectRole.id = pr.id " +
-            "WHERE pu.id.project.id = :projectId")
+            "WHERE pu.id.project.id = :projectId"),
+    @NamedQuery(name = ProjectUserEntity.GET_PROJECT_MEMBERS,
+        query = "SELECT pu " +
+            "FROM ProjectUserEntity pu " +
+            "WHERE pu.id.project.id = :projectId " +
+            "ORDER BY CASE pu.projectRole.roleId " +
+                "WHEN 'member' THEN 3 " +
+                "WHEN 'scrum_master' THEN 2 " +
+                "WHEN 'product_owner' THEN 1 END ASC"),
+    @NamedQuery(name = ProjectUserEntity.COUNT_PROJECT_MEMBERS,
+        query = "SELECT COUNT(pu) FROM ProjectUserEntity pu " +
+                "WHERE pu.id.project.id = :projectId ")
         // @formatter:on
 })
 public class ProjectUserEntity {
@@ -31,6 +42,8 @@ public class ProjectUserEntity {
     public static final String DELETE_BY_USER_AND_PROJECT = "ProjectUserEntity.deleteByUserAndProject";
     public static final String GET_BY_USER_AND_PROJECT = "ProjectUserEntity.getByUserAndProject";
     public static final String GET_ROLES_COUNT = "ProjectUserEntity.getRolesCount";
+    public static final String GET_PROJECT_MEMBERS = "ProjectUserEntity.getProjectMembers";
+    public static final String COUNT_PROJECT_MEMBERS = "ProjectUserEntity.countProjectMembers";
     
     @EmbeddedId
     private ProjectUserId id;

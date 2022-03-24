@@ -188,6 +188,14 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
         return Response.status(Response.Status.CREATED).entity(createdSprint).build();
     }
     
+    @Override
+    public Response getProjectMembers(String projectId) {
+        EntityList<ProjectMember> members = projectService.getProjectMembers(projectId, queryParameters);
+        return Response.ok(members.getEntities())
+            .header(X_TOTAL_COUNT, members.getCount())
+            .build();
+    }
+    
     @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response getStories(String projectId) {
