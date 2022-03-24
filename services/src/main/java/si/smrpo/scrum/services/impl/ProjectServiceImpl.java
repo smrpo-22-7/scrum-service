@@ -25,6 +25,7 @@ import si.smrpo.scrum.persistence.project.ProjectEntity;
 import si.smrpo.scrum.persistence.project.ProjectRoleEntity;
 import si.smrpo.scrum.persistence.project.ProjectUserEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
+import si.smrpo.scrum.services.ProjectAuthorizationService;
 import si.smrpo.scrum.services.ProjectService;
 
 import javax.enterprise.context.RequestScoped;
@@ -46,7 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
     
     @Inject
     private UserService userService;
-    
+
     @Inject
     private Validator validator;
     
@@ -102,10 +103,13 @@ public class ProjectServiceImpl implements ProjectService {
     
     @Override
     public Project createProject(CreateProjectRequest request) {
+
         validator.assertNotBlank(request.getName());
         if (projectNameExists(request.getName())) {
             throw new ConflictException("error.conflict");
         }
+
+
     
         // Check that only one role is present amongst members
         ProjectRolesCount rolesCount = getRolesCountFromRequest(request);
