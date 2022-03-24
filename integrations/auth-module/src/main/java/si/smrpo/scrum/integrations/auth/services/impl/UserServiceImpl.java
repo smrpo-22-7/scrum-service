@@ -303,6 +303,11 @@ public class UserServiceImpl implements UserService {
                 }
             }
         }
+        if (userProfile.getEmail() != null && !userProfile.getEmail().isBlank()) {
+            if (!userProfile.getEmail().equals(user.getEmail())) {
+                validator.assertEmail(userProfile.getEmail());
+            }
+        }
         
         try {
             em.getTransaction().begin();
