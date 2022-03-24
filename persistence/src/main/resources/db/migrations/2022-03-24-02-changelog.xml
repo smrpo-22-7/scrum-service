@@ -1,0 +1,1280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd">
+
+    <changeSet id="add-data-to-db" author="jasa">
+        <insert tableName="projects">
+            <column name="id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="name">Napredno orodje za SCRUM</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">43ad7cab-4fe3-4cc5-bd63-e808311ce23b</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Ustvarjanje novega projekta</column>
+            <column name="description">Administrator lahko ustvari nov projekt, izbere uporabnike za delo na tem projektu in določi njihove projektne vloge (produktni vodja, skrbnik metodologije, član razvojne skupine).</column>
+            <column name="number_id">1</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">5</column>
+            <column name="priority">MUST_HAVE</column>
+            <column name="time_estimate">4</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">True</column>
+        </insert>
+
+        <insert tableName="sprint_stories">
+            <column name="sprint_id">f938961d-0c81-48d1-aef0-a6f6c1fefd32</column>
+            <column name="story_id">43ad7cab-4fe3-4cc5-bd63-e808311ce23b</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">8651ab53-c8a1-4702-9aed-7ef91aead135</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Prvi sprejemni test: zaključen</column>
+            <column name="story_id">43ad7cab-4fe3-4cc5-bd63-e808311ce23b</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">10a8c690-c265-4800-8f66-03e9a440c781</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Drugi sprejemni test: zaključen</column>
+            <column name="story_id">43ad7cab-4fe3-4cc5-bd63-e808311ce23b</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">9e427aee-8b3e-4e31-b2cb-dd6d230c62fb</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Tretji sprejemni test: zaključen</column>
+            <column name="story_id">43ad7cab-4fe3-4cc5-bd63-e808311ce23b</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">60c429b0-1822-4f60-8329-aba017508a3a</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Ustvarjanje novega sprinta</column>
+            <column name="description">Skrbnik metodologije lahko ustvari nov Sprint. Določi mu začetni in končni datum ter pričakovano hitrost.</column>
+            <column name="number_id">2</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">5</column>
+            <column name="priority">MUST_HAVE</column>
+            <column name="time_estimate">5</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">True</column>
+        </insert>
+
+        <insert tableName="sprint_stories">
+            <column name="sprint_id">f938961d-0c81-48d1-aef0-a6f6c1fefd32</column>
+            <column name="story_id">60c429b0-1822-4f60-8329-aba017508a3a</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">68f60477-3c95-42bc-baed-e9e0ff30febd</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Četrti sprejemni test: zaključen</column>
+            <column name="story_id">60c429b0-1822-4f60-8329-aba017508a3a</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">8beb6fcb-06c3-41d1-9672-f10df14f1e19</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Peti sprejemni test: zaključen</column>
+            <column name="story_id">60c429b0-1822-4f60-8329-aba017508a3a</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">867dea73-6ace-4470-92f3-fdc582636a5a</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Šesti sprejemni test: zaključen</column>
+            <column name="story_id">60c429b0-1822-4f60-8329-aba017508a3a</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">29d6b507-86af-4b58-9d6c-d9ead1b0c720</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Ustvarjanje novih zgodb</column>
+            <column name="description">Produktni vodja in skrbnik metodologije lahko vnašata nove uporabniške zgodbe v že obstoječ projekt.</column>
+            <column name="number_id">3</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">5</column>
+            <column name="priority">MUST_HAVE</column>
+            <column name="time_estimate">4</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="sprint_stories">
+            <column name="sprint_id">f938961d-0c81-48d1-aef0-a6f6c1fefd32</column>
+            <column name="story_id">29d6b507-86af-4b58-9d6c-d9ead1b0c720</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">152b8e7b-801d-4ce4-9141-3eb5707d4986</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Sedmi sprejemni test: zaključen</column>
+            <column name="story_id">29d6b507-86af-4b58-9d6c-d9ead1b0c720</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">5d27b071-d046-4c7c-8ec1-eae297bacab0</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Osmi sprejemni test: zaključen</column>
+            <column name="story_id">29d6b507-86af-4b58-9d6c-d9ead1b0c720</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">86c0045a-b6c4-40ca-aa15-08846975cf5a</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Deveti sprejemni test: zaključen</column>
+            <column name="story_id">29d6b507-86af-4b58-9d6c-d9ead1b0c720</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">11362735-4695-42b0-ad64-212871da2bae</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">4</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">c6c775fc-b0a8-4522-bdf7-be12972ebbff</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">5</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">dce8f4c9-c107-4561-975e-033ae09bcc8a</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">6</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">269bbaaf-c238-441f-9ee5-54bd2138a737</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">7</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">968a923c-5af7-463b-a56e-dd84dc180e2b</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">8</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">57f52bcd-047a-4827-87b1-73e373324f6c</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">9</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">d29e161c-3433-4a3f-a526-5984c077a8f0</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">10</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">1bc80574-85c9-46c7-9d62-d5f8b0bd0e03</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">11</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">dcc2140d-a7ac-4a81-ad14-e3a2b8ffb08b</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">12</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">afbbc2b6-8c17-4ef2-ae6f-83555800be40</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">13</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">adc1608f-33d1-4893-aad3-c36700112d7a</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">14</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">8b53c17a-97d3-47d2-ba70-19ff9a0433ed</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">15</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">e51c5e7b-16ae-4d47-86a3-97a38f8bbe69</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">16</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">4f9fb6dd-7543-4a36-9fc2-a3beaa366868</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">17</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">9366c572-22cd-4d10-beab-be2d00c7f8d0</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">18</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">510df78b-6bfd-418c-8c33-f9316f1007b5</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">19</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">62207a17-34ff-4b86-9bd7-f18fa67913dd</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">20</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">cf586734-2959-4261-bb5c-01e29dc7a70a</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">21</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">1e2e2fa7-afda-4eca-a119-0b0e3246eb16</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">22</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">89ae3314-27d2-4125-bf9e-9de1ca774fc7</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">23</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+        <insert tableName="stories">
+            <column name="id">8f1e59bf-9fd2-4706-94fa-7bc28e4f9c34</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">24</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">29c91cd7-1242-408c-a550-179d65a772f6</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">25</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="sprints">
+            <column name="id">f938961d-0c81-48d1-aef0-a6f6c1fefd32</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Sprint 1</column>
+            <column name="start_date">2022-02-27 12:00:00.0</column>
+            <column name="end_date">2022-03-21 12:00:00.0</column>
+            <column name="expected_speed">2</column>
+            <column name="status">ACTIVE</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+        </insert>
+
+        <insert tableName="sprints">
+            <column name="id">573dad2b-da2b-43b3-a5f8-3836bb9e3ff3</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Sprint 2</column>
+            <column name="start_date">2022-03-22 12:00:00.0</column>
+            <column name="end_date">2022-03-27 12:00:00.0</column>
+            <column name="expected_speed">3</column>
+            <column name="status">ACTIVE</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+        </insert>
+
+        <insert tableName="sprints">
+            <column name="id">7439ac70-fd97-4e82-978b-26716da8680d</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Sprint 3</column>
+            <column name="start_date">2022-03-28 12:00:00.0</column>
+            <column name="end_date">2022-04-08 12:00:00.0</column>
+            <column name="expected_speed">2</column>
+            <column name="status">ACTIVE</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="name">Simple Unit Converter</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">f4df8584-eced-4c31-9dc2-d0efcbdd3f7f</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Mass Conversion</column>
+            <column name="description">Support converting units of mass (kg, lbs, stone...)</column>
+            <column name="number_id">1</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">5</column>
+            <column name="priority">MUST_HAVE</column>
+            <column name="time_estimate">4</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+            <column name="realized">True</column>
+        </insert>
+
+        <insert tableName="sprint_stories">
+            <column name="sprint_id">55e15a7e-28bf-43ac-9c49-0d7ac8ba45e9</column>
+            <column name="story_id">f4df8584-eced-4c31-9dc2-d0efcbdd3f7f</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">37ebd7f9-28c1-48ad-9948-17681b629c84</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Prvi sprejemni test: zaključen</column>
+            <column name="story_id">f4df8584-eced-4c31-9dc2-d0efcbdd3f7f</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">d4164142-05f1-46a4-803c-4c03c844a104</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Drugi sprejemni test: zaključen</column>
+            <column name="story_id">f4df8584-eced-4c31-9dc2-d0efcbdd3f7f</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">bea5b95c-2fdf-4a12-8dd3-9b0155c77559</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Tretji sprejemni test: zaključen</column>
+            <column name="story_id">f4df8584-eced-4c31-9dc2-d0efcbdd3f7f</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">47c5778f-ce64-46e3-b0c2-728f55a68938</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Distance conversion</column>
+            <column name="description">Support conversion of distance units (km, miles, yards...)</column>
+            <column name="number_id">2</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">5</column>
+            <column name="priority">MUST_HAVE</column>
+            <column name="time_estimate">5</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="sprint_stories">
+            <column name="sprint_id">55e15a7e-28bf-43ac-9c49-0d7ac8ba45e9</column>
+            <column name="story_id">47c5778f-ce64-46e3-b0c2-728f55a68938</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">268e7110-4738-4f43-a099-cb8c53ea3156</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Četrti sprejemni test: zaključen</column>
+            <column name="story_id">47c5778f-ce64-46e3-b0c2-728f55a68938</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">e6b05f52-0797-49d5-8625-8c34c9546e16</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Peti sprejemni test: zaključen</column>
+            <column name="story_id">47c5778f-ce64-46e3-b0c2-728f55a68938</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">c4ee714a-8786-48ad-95de-d3ec2f2ae992</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Šesti sprejemni test: zaključen</column>
+            <column name="story_id">47c5778f-ce64-46e3-b0c2-728f55a68938</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">77519f3b-0406-4658-bbde-9232488b9596</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">3</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">b4109ac0-d154-4b2b-b5f7-1a4f02468043</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">4</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">faa62c50-1181-4639-9af9-a10dc5a0de6b</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">5</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">60adc17a-ef5f-488d-8a80-2180e5cbed95</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">6</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">2a998e7a-79af-4f94-b6b1-6a6bc703d4fc</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">7</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">e3cf3e89-d862-4919-9372-82d01d969381</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">description</column>
+            <column name="number_id">8</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">2</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">3</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+            <column name="realized">False</column>
+        </insert>
+
+        <insert tableName="sprints">
+            <column name="id">55e15a7e-28bf-43ac-9c49-0d7ac8ba45e9</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="title">Sprint 1</column>
+            <column name="start_date">2022-02-27 12:00:00.0</column>
+            <column name="end_date">2022-03-21 12:00:00.0</column>
+            <column name="expected_speed">2</column>
+            <column name="status">ACTIVE</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">Aplikacija za beleženje porabe goriva</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">ecc5054e-617c-4a64-ae25-1927bbbba1b2</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="title">Ustvarjanje nove poti</column>
+            <column name="description">Uporabnik lahko ustvari novo pot (izhodišče, cilj) ter vnese trenutno stanje goriva.</column>
+            <column name="number_id">1</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">5</column>
+            <column name="priority">MUST_HAVE</column>
+            <column name="time_estimate">6</column>
+            <column name="realized">false</column>
+            <column name="project_id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">39de867d-002b-46b4-a02d-3a865adfd609</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Prvi sprejemni test: zaključen</column>
+            <column name="story_id">ecc5054e-617c-4a64-ae25-1927bbbba1b2</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">061204e0-78d0-488e-8d76-22c8684748b8</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Drugi sprejemni test: zaključen</column>
+            <column name="story_id">ecc5054e-617c-4a64-ae25-1927bbbba1b2</column>
+        </insert>
+
+        <insert tableName="acceptance_tests">
+            <column name="id">82446b9d-13cc-47cf-ba21-2157916c479e</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="result">Tretji sprejemni test: zaključen</column>
+            <column name="story_id">ecc5054e-617c-4a64-ae25-1927bbbba1b2</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">a351cc0c-b406-4138-9241-83f4dede302b</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">Story Description</column>
+            <column name="number_id">2</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">5</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">4</column>
+            <column name="realized">False</column>
+            <column name="project_id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">d8752bda-852f-4aea-b1b9-b71d2e7eda61</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">Story Description</column>
+            <column name="number_id">3</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">5</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">6</column>
+            <column name="realized">True</column>
+            <column name="project_id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+        </insert>
+
+        <insert tableName="stories">
+            <column name="id">43e932ae-fa50-4fe8-8da1-7e5c8bcdae97</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="title">Story Title</column>
+            <column name="description">Story Description</column>
+            <column name="number_id">4</column>
+            <column name="status">ACTIVE</column>
+            <column name="business_value">5</column>
+            <column name="priority">COULD_HAVE</column>
+            <column name="time_estimate">5</column>
+            <column name="realized">False</column>
+            <column name="project_id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">c533de91-2c10-40d9-89a3-1f0ee18115a9</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject1</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">591904d2-8bd5-4a62-93f1-8ac32fde3a4a</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject2</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">c9bb4bcd-82e4-4357-8aa0-4cb52fefaec9</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject3</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">76fe5eae-ebb6-4975-afdb-877020d56fb3</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject4</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">1be797b2-22b9-4a83-ae30-294894af53b6</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject5</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">e3bde86d-c687-4406-8e1e-86835de11f15</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject6</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">bbab32f1-26be-4323-b7f9-a2448f9d4248</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject7</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">b76910d3-b6bb-41b9-99dd-e1b3f1c61740</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject8</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">d2457555-3c4a-4a85-8b0c-29c918b0526f</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject9</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">1cc3842e-794a-4eeb-946a-1aa050248497</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject10</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">faad015a-6ebe-4d3b-ad5e-b6c05d7207e9</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject11</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">67f20316-467d-4d52-9a8e-d222dc861cc2</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject12</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">b66c5005-e8c2-4954-aa66-f210faee7591</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject13</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">d75dbd45-a789-4934-9c61-4f84d93787d4</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject14</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">a2ad975c-4a47-4db0-af88-6cc1d1e98353</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject15</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">b04a4277-f50c-4877-b3ab-716fc7f3d8a1</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject16</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">31f3bc84-7e41-4528-95b2-96fab685c3e3</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject17</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">3e44bbd4-a5f0-4970-8097-091136ba0f96</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject18</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">4ca5065f-bbb7-4a53-aa88-f74d652567df</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject19</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="projects">
+            <column name="id">d10c6b2b-b1e3-4e55-acde-1d0d69fa4d5b</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="name">EmptyProject20</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">4fe43db7-428b-4b98-a4be-599e0c811358</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="username">AdminJanko</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">jankostanko@hotmail.com</column>
+            <column name="first_name">Janko</column>
+            <column name="last_name">Stanko</column>
+            <column name="phone_number">078967534</column>
+            <column name="avatar">avatar</column>
+            <column name="last_login_at">2022-03-24 12:00:00.0</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">4fe43db7-428b-4b98-a4be-599e0c811358</column>
+            <column name="sys_role_id">68d5de4a-2662-47a7-a35f-e587551b86f2</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">9103327f-bcee-407c-90c3-452691b0fbd4</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="username">MemberBranko</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">branko@hotmail.com</column>
+            <column name="first_name">Branko</column>
+            <column name="last_name">Ban</column>
+            <column name="phone_number">857463879</column>
+            <column name="avatar">avatar</column>
+            <column name="last_login_at">2022-03-24 12:00:00.0</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">289ee217-18e7-4c92-aa94-8ecc0ab09f3e</column>
+            <column name="user_id">9103327f-bcee-407c-90c3-452691b0fbd4</column>
+            <column name="project_id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+        </insert>
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">9103327f-bcee-407c-90c3-452691b0fbd4</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">0d1edc4b-db5a-40fd-afd9-167f7526c903</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="username">MemberAlen</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">alen@hotmail.com</column>
+            <column name="first_name">Alen</column>
+            <column name="last_name">Kek</column>
+            <column name="phone_number">097453678</column>
+            <column name="avatar">avatar</column>
+            <column name="last_login_at">2022-03-24 12:00:00.0</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">289ee217-18e7-4c92-aa94-8ecc0ab09f3e</column>
+            <column name="user_id">0d1edc4b-db5a-40fd-afd9-167f7526c903</column>
+            <column name="project_id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">289ee217-18e7-4c92-aa94-8ecc0ab09f3e</column>
+            <column name="user_id">0d1edc4b-db5a-40fd-afd9-167f7526c903</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+        </insert>
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">0d1edc4b-db5a-40fd-afd9-167f7526c903</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">fa4b4843-4d1f-475a-9c9d-b77d81bd9594</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="username">MemberBor</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">bor@hotmail.com</column>
+            <column name="first_name">Bor</column>
+            <column name="last_name">Kolman</column>
+            <column name="phone_number">098678456</column>
+            <column name="avatar">avatar</column>
+            <column name="last_login_at">2022-03-24 12:00:00.0</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">289ee217-18e7-4c92-aa94-8ecc0ab09f3e</column>
+            <column name="user_id">fa4b4843-4d1f-475a-9c9d-b77d81bd9594</column>
+            <column name="project_id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">289ee217-18e7-4c92-aa94-8ecc0ab09f3e</column>
+            <column name="user_id">fa4b4843-4d1f-475a-9c9d-b77d81bd9594</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+        </insert>
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">fa4b4843-4d1f-475a-9c9d-b77d81bd9594</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">1e199b64-19b5-4a24-8f4f-7b5d5b1ab406</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="username">MemberMatjaz</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">matjaz@hotmail.com</column>
+            <column name="first_name">Matjaz</column>
+            <column name="last_name">Furlan</column>
+            <column name="phone_number">098567489</column>
+            <column name="avatar">avatar</column>
+            <column name="last_login_at">2022-03-17 12:00:00.0</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">289ee217-18e7-4c92-aa94-8ecc0ab09f3e</column>
+            <column name="user_id">1e199b64-19b5-4a24-8f4f-7b5d5b1ab406</column>
+            <column name="project_id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+        </insert>
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">1e199b64-19b5-4a24-8f4f-7b5d5b1ab406</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">f6be953c-88de-4f13-a5b9-3486395aca10</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="username">MemberMatej</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">matej@hotmail.com</column>
+            <column name="first_name">Matej</column>
+            <column name="last_name">Cernilogar</column>
+            <column name="phone_number">987564789</column>
+            <column name="avatar">avatar</column>
+            <column name="last_login_at">2022-03-21 15:32:00.0</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">289ee217-18e7-4c92-aa94-8ecc0ab09f3e</column>
+            <column name="user_id">f6be953c-88de-4f13-a5b9-3486395aca10</column>
+            <column name="project_id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">289ee217-18e7-4c92-aa94-8ecc0ab09f3e</column>
+            <column name="user_id">f6be953c-88de-4f13-a5b9-3486395aca10</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+        </insert>
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">f6be953c-88de-4f13-a5b9-3486395aca10</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">115054ab-4733-44a6-b11d-1ef531e57df1</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="username">MemberBoris</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">boris1@hotmail.com</column>
+            <column name="first_name">Boris</column>
+            <column name="last_name">Perdih</column>
+            <column name="phone_number">987654789</column>
+            <column name="avatar">avatar</column>
+            <column name="last_login_at">2022-03-22 11:32:00.0</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">289ee217-18e7-4c92-aa94-8ecc0ab09f3e</column>
+            <column name="user_id">115054ab-4733-44a6-b11d-1ef531e57df1</column>
+            <column name="project_id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">289ee217-18e7-4c92-aa94-8ecc0ab09f3e</column>
+            <column name="user_id">115054ab-4733-44a6-b11d-1ef531e57df1</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+        </insert>
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">115054ab-4733-44a6-b11d-1ef531e57df1</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">238b36ad-66b7-40f0-a3fb-278215916590</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="username">ScrumMasterJaka</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">jaka2@hotmail.com</column>
+            <column name="first_name">Jaka</column>
+            <column name="last_name">Skaka</column>
+            <column name="phone_number">086487645</column>
+            <column name="avatar">avatar</column>
+            <column name="last_login_at">2022-03-22 11:32:00.0</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">8d10f15e-7057-4b3d-9b3d-bc231c1a7441</column>
+            <column name="user_id">238b36ad-66b7-40f0-a3fb-278215916590</column>
+            <column name="project_id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">8d10f15e-7057-4b3d-9b3d-bc231c1a7441</column>
+            <column name="user_id">238b36ad-66b7-40f0-a3fb-278215916590</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+        </insert>
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">238b36ad-66b7-40f0-a3fb-278215916590</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">a6581217-b1dd-42cc-ab23-de8a5a8d6246</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="username">ScrumMasterLovro</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">lovro2@hotmail.com</column>
+            <column name="first_name">Lovro</column>
+            <column name="last_name">Kralj</column>
+            <column name="phone_number">098765678</column>
+            <column name="avatar">avatar</column>
+            <column name="last_login_at">2022-03-22 11:32:00.0</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">8d10f15e-7057-4b3d-9b3d-bc231c1a7441</column>
+            <column name="user_id">a6581217-b1dd-42cc-ab23-de8a5a8d6246</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+        </insert>
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">a6581217-b1dd-42cc-ab23-de8a5a8d6246</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">cf44bc40-af46-4d80-b203-3b2e3643083f</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="username">ProjectOwnerUrsa</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">ursa2@hotmail.com</column>
+            <column name="first_name">Ursa</column>
+            <column name="last_name">Mertelj</column>
+            <column name="phone_number">098765678</column>
+            <column name="avatar">avatar</column>
+            <column name="last_login_at">2022-03-22 10:32:00.0</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">aab54080-4e1a-4fa2-9cde-829c7173808b</column>
+            <column name="user_id">cf44bc40-af46-4d80-b203-3b2e3643083f</column>
+            <column name="project_id">17e7cee5-356e-4e59-ae47-a15878bf5f9a</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">aab54080-4e1a-4fa2-9cde-829c7173808b</column>
+            <column name="user_id">cf44bc40-af46-4d80-b203-3b2e3643083f</column>
+            <column name="project_id">51250c01-e7b8-4e3e-8ee7-ab246381b19b</column>
+        </insert>
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">cf44bc40-af46-4d80-b203-3b2e3643083f</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+
+        <insert tableName="users">
+            <column name="id">84de830e-07cc-4029-8090-1088443bc37b</column>
+            <column name="created_at">2022-03-15 12:00:00.0</column>
+            <column name="updated_at">2022-03-15 12:00:00.0</column>
+            <column name="username">ProjectOwnerAlenka</column>
+            <column name="password">$2a$10$pxlgWtuAVlFcUlp1L/Kdu.RPJCc1fwYHqpV5mcw/pz0qADDdOicpG</column>
+            <column name="email">alenka13@hotmail.com</column>
+            <column name="first_name">Alenka</column>
+            <column name="last_name">Golja</column>
+            <column name="phone_number">098765789</column>
+            <column name="avatar">avatar</column>
+            <column name="last_login_at">2022-03-22 14:32:00.0</column>
+            <column name="status">ACTIVE</column>
+        </insert>
+
+        <insert tableName="project_users">
+            <column name="project_role_id">aab54080-4e1a-4fa2-9cde-829c7173808b</column>
+            <column name="user_id">84de830e-07cc-4029-8090-1088443bc37b</column>
+            <column name="project_id">2dcbb568-f7d0-4fc7-b635-b4ee79f9b60c</column>
+        </insert>
+
+        <insert tableName="user_sys_roles">
+            <column name="user_id">84de830e-07cc-4029-8090-1088443bc37b</column>
+            <column name="sys_role_id">d4acc261-a2e1-4c65-8837-7c81cc2eea0a</column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
