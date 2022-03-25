@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd">
+
+    <changeSet id="add-2fa-admin" author="mihaj">
+
+        <sql>
+            UPDATE users SET email = 'miha_jamsek@windowslive.com' WHERE id = '6a3c5b08-9a2b-4126-acc3-fd946ce2b01c';
+        </sql>
+
+        <insert tableName="user_preferences">
+            <column name="user_id">6a3c5b08-9a2b-4126-acc3-fd946ce2b01c</column>
+            <column name="data_type">BOOLEAN</column>
+            <column name="preference_key">auth.2fa.enabled</column>
+            <column name="preference_value">true</column>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
