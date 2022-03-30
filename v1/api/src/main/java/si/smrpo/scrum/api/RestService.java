@@ -6,11 +6,12 @@ import org.eclipse.microprofile.openapi.annotations.info.Info;
 import org.eclipse.microprofile.openapi.annotations.servers.Server;
 import si.smrpo.scrum.api.endpoints.*;
 import si.smrpo.scrum.api.mappers.*;
-import si.smrpo.scrum.persistence.story.StoryEntity;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @ApplicationPath("/v1")
@@ -32,6 +33,7 @@ public class RestService extends Application {
         classes.add(ProjectsEndpoint.class);
         classes.add(SprintEndpoint.class);
         classes.add(StoryEndpoint.class);
+        classes.add(DocumentationEndpoint.class);
         
         // exception mappers
         classes.add(DefaultExceptionMapper.class);
@@ -42,5 +44,12 @@ public class RestService extends Application {
         classes.add(WebApplicationExceptionMapper.class);
         
         return classes;
+    }
+    
+    @Override
+    public Map<String, Object> getProperties() {
+        Map<String, Object> props = new HashMap<>();
+        props.put("jersey.config.server.provider.classnames", "org.glassfish.jersey.media.multipart.MultiPartFeature");
+        return props;
     }
 }

@@ -38,6 +38,8 @@
         <jbcrypt.version>0.4</jbcrypt.version>
         <thymeleaf.version>3.0.12.RELEASE</thymeleaf.version>
         <jose.version>9.11.1</jose.version>
+        <commonmark.version>0.18.2</commonmark.version>
+        <jersey-multipart.version>2.32</jersey-multipart.version>
 
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
         <download-maven-plugin.version>1.4.2</download-maven-plugin.version>
@@ -78,6 +80,11 @@
             <dependency>
                 <groupId>si.smrpo.scrum.integrations.preferences</groupId>
                 <artifactId>preferences-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>si.smrpo.scrum.integrations.markdown</groupId>
+                <artifactId>markdown-module</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -166,9 +173,19 @@
                 <version>${jose.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.commonmark</groupId>
+                <artifactId>commonmark</artifactId>
+                <version>${commonmark.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.thymeleaf</groupId>
                 <artifactId>thymeleaf</artifactId>
                 <version>${thymeleaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-multipart</artifactId>
+                <version>${jersey-multipart.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
