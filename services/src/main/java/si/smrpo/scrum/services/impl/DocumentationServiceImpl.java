@@ -71,7 +71,12 @@ public class DocumentationServiceImpl implements DocumentationService {
     public ProjectDocumentation getDocumentation(String projectId) {
         return getDocumentationEntity(projectId)
             .map(entity -> DocumentationMapper.base(entity, true, false, false))
-            .orElseThrow(() -> new NotFoundException("error.not-found"));
+            .orElseGet(() -> {
+                ProjectDocumentation docs = new ProjectDocumentation();
+                docs.setProjectId(projectId);
+                docs.setMarkdownContent("");
+                return docs;
+            });
     }
     
     @Override
