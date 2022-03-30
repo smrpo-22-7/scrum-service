@@ -19,6 +19,7 @@
         <module>messaging-module</module>
         <module>templating-module</module>
         <module>preferences-module</module>
+        <module>markdown-module</module>
     </modules>
 
 </project>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd">
+
+    <changeSet id="add-docs-table" author="mihaj">
+        <createTable tableName="project_documentation_pages">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_project_documentation_pages"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column name="project_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="md_content" type="TEXT"/>
+            <column name="text_content" type="TEXT"/>
+            <column name="html_content" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="project_documentation_pages" baseColumnNames="project_id"
+                                 constraintName="fk_projects_documentations"
+                                 referencedTableName="projects"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="project_documentation_pages"
+                     indexName="INDEX_PROJECT_DOCUMENTATION_PROJECTS">
+            <column name="project_id"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>
