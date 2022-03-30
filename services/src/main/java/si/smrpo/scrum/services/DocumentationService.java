@@ -17,7 +17,7 @@ public interface DocumentationService {
     
     Optional<ProjectDocumentationEntity> getDocumentationEntity(String projectId);
     
-    DocumentationContentResponse getDocumentationContentBytes(String projectId);
+    DocumentationContentResponse getDocumentationContentMarkdown(String projectId);
     
     DocumentationContentResponse getDocumentationContentHtml(String projectId);
     

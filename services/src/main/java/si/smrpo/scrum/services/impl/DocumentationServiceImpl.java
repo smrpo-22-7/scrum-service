@@ -90,7 +90,7 @@ public class DocumentationServiceImpl implements DocumentationService {
     }
     
     @Override
-    public DocumentationContentResponse getDocumentationContentBytes(String projectId) {
+    public DocumentationContentResponse getDocumentationContentMarkdown(String projectId) {
         return getDocumentationEntity(projectId)
             .map(entity -> {
                 DocumentationContentResponse resp = new DocumentationContentResponse();
@@ -101,7 +101,13 @@ public class DocumentationServiceImpl implements DocumentationService {
                 resp.setFilename(filename);
                 return resp;
             })
-            .orElseThrow(() -> new NotFoundException("error.not-found"));
+            .orElseGet(() -> {
+                DocumentationContentResponse resp = new DocumentationContentResponse();
+                resp.setBytes(new byte[]{});
+                String filename = "blank_docs.md";
+                resp.setFilename(filename);
+                return resp;
+            });
     }
     
     @Override
@@ -116,7 +122,13 @@ public class DocumentationServiceImpl implements DocumentationService {
                 resp.setFilename(filename);
                 return resp;
             })
-            .orElseThrow(() -> new NotFoundException("error.not-found"));
+            .orElseGet(() -> {
+                DocumentationContentResponse resp = new DocumentationContentResponse();
+                resp.setBytes(new byte[]{});
+                String filename = "blank_docs.html";
+                resp.setFilename(filename);
+                return resp;
+            });
     }
     
     private void saveNewDocumentation(ProjectEntity project, String markdownContent) {

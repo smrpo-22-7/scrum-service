@@ -32,7 +32,7 @@ public class DocumentationEndpoint implements DocumentationEndpointDef {
     
     @Override
     public Response getDocumentationContentMarkdown(String projectId, boolean asAttachment) {
-        var resp = docsService.getDocumentationContentBytes(projectId);
+        var resp = docsService.getDocumentationContentMarkdown(projectId);
         String contentDisposition = (asAttachment ? "attachment;" : "") + "filename=" + resp.getFilename();
         return Response.ok(resp.getBytes())
             .type("text/markdown")
