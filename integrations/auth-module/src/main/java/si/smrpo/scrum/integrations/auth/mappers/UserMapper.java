@@ -40,4 +40,13 @@ public class UserMapper {
         return user;
     }
     
+    public static UserProfile toSimpleProfile(UserEntity entity) {
+        UserProfile user = new UserProfile();
+        user.setId(entity.getId());
+        user.setUsername(entity.getUsername());
+        user.setFirstName(entity.getFirstName());
+        user.setLastName(entity.getLastName());
+        return user;
+    }
+    
 }
