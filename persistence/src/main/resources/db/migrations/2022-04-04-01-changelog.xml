@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd">
+
+    <changeSet id="add-tasks-table" author="mihaj">
+        <createTable tableName="tasks">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tasks"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column name="description" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="completed" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="estimate" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="story_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assignee_id" type="VARCHAR(255)"/>
+            <column name="pending_assignment" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="tasks" baseColumnNames="story_id" constraintName="fk_tasks_story"
+                                 referencedTableName="stories"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="tasks" baseColumnNames="assignee_id" constraintName="fk_tasks_users"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="tasks" indexName="INDEX_TASKS_STORY_ID">
+            <column name="story_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

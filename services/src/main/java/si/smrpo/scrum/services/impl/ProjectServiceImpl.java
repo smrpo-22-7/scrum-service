@@ -17,6 +17,7 @@ import si.smrpo.scrum.lib.projects.ProjectMember;
 import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
+import si.smrpo.scrum.lib.responses.QueryingResponse;
 import si.smrpo.scrum.mappers.ProjectMapper;
 import si.smrpo.scrum.persistence.BaseEntity;
 import si.smrpo.scrum.persistence.aggregators.ProjectMembersAggregated;
@@ -198,6 +199,11 @@ public class ProjectServiceImpl implements ProjectService {
             LOG.error(e);
             throw new RestException("error.server");
         }
+    }
+    
+    @Override
+    public List<QueryingResponse> queryProjectMembers(String projectId, QueryParameters queryParameters) {
+        return null;
     }
     
     @Override

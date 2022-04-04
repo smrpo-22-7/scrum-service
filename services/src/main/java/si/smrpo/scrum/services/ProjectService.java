@@ -8,8 +8,10 @@ import si.smrpo.scrum.lib.projects.ProjectMember;
 import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
+import si.smrpo.scrum.lib.responses.QueryingResponse;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,6 +30,8 @@ public interface ProjectService {
     Project updateProject(String projectId, Project project);
     
     EntityList<ProjectMember> getProjectMembers(String projectId, QueryParameters queryParameters);
+    
+    List<QueryingResponse> queryProjectMembers(String projectId, QueryParameters queryParameters);
 
     boolean projectNameExists(String projectName);
 
