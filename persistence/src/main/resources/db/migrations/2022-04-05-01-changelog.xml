@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd">
+
+    <changeSet id="add-project-wall-table" author="mihaj">
+        <createTable tableName="project_wall_posts">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_project_wall_posts"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="md_content" type="TEXT"/>
+            <column name="text_content" type="TEXT"/>
+            <column name="html_content" type="TEXT"/>
+            <column name="project_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="project_wall_posts" baseColumnNames="project_id" constraintName="fk_project_wall_projects"
+                                 referencedTableName="projects"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="project_wall_posts" baseColumnNames="author_id" constraintName="fk_project_wall_users"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="project_wall_posts" indexName="INDEX_PROJECT_WALL_PROJECTS">
+            <column name="project_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

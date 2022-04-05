@@ -33,6 +33,7 @@ public class RestService extends Application {
         classes.add(ProjectsEndpoint.class);
         classes.add(SprintEndpoint.class);
         classes.add(StoryEndpoint.class);
+        classes.add(ProjectWallEndpoint.class);
         classes.add(DocumentationEndpoint.class);
         
         // exception mappers
