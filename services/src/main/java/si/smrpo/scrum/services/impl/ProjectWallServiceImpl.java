@@ -3,8 +3,10 @@ package si.smrpo.scrum.services.impl;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import com.kumuluz.ee.rest.beans.QueryFilter;
+import com.kumuluz.ee.rest.beans.QueryOrder;
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.kumuluz.ee.rest.enums.FilterOperation;
+import com.kumuluz.ee.rest.enums.OrderDirection;
 import com.kumuluz.ee.rest.utils.JPAUtils;
 import com.mjamsek.rest.dto.EntityList;
 import com.mjamsek.rest.exceptions.NotFoundException;
@@ -20,6 +22,7 @@ import si.smrpo.scrum.mappers.ProjectWallPostMapper;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 import si.smrpo.scrum.persistence.project.ProjectWallPostEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
+import si.smrpo.scrum.services.ProjectAuthorizationService;
 import si.smrpo.scrum.services.ProjectService;
 import si.smrpo.scrum.services.ProjectWallService;
 
@@ -46,6 +49,9 @@ public class ProjectWallServiceImpl implements ProjectWallService {
     private MarkdownRenderService markdownRenderService;
     
     @Inject
+    private ProjectAuthorizationService projAuth;
+    
+    @Inject
     private Validator validator;
     
     @Inject
@@ -55,6 +61,7 @@ public class ProjectWallServiceImpl implements ProjectWallService {
     public EntityList<ProjectWallPost> getPosts(String projectId, QueryParameters queryParameters) {
         QueryUtil.overrideFilterParam(new QueryFilter("project.id", FilterOperation.EQ, projectId), queryParameters);
         QueryUtil.overrideFilterParam(new QueryFilter("status", FilterOperation.EQ, SimpleStatus.ACTIVE.name()), queryParameters);
+        QueryUtil.setDefaultOrderParam(new QueryOrder("createdAt", OrderDirection.DESC), queryParameters);
         
         List<ProjectWallPost> posts = JPAUtils.getEntityStream(em, ProjectWallPostEntity.class, queryParameters)
             .map(entity -> {
@@ -80,6 +87,8 @@ public class ProjectWallServiceImpl implements ProjectWallService {
     public void addPost(String projectId, ProjectWallPost post) {
         validator.assertNotBlank(post.getMarkdownContent());
     
+        projAuth.isInProjectOrThrow(projectId, authContext.getId());
+        
         ProjectEntity project = projectService.getProjectEntityById(projectId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
         
@@ -109,6 +118,9 @@ public class ProjectWallServiceImpl implements ProjectWallService {
     @Override
     public void removePost(String postId) {
         getPostEntityById(postId).ifPresent(entity -> {
+    
+            projAuth.isProjectAdmin(entity.getProject().getId(), authContext.getId());
+            
             try {
                 em.getTransaction().begin();
                 entity.setStatus(SimpleStatus.DISABLED);
