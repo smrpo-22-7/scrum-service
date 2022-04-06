@@ -20,6 +20,7 @@
         <module>templating-module</module>
         <module>preferences-module</module>
         <module>markdown-module</module>
+        <module>html-module</module>
     </modules>
 
 </project>

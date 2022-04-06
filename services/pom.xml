@@ -29,6 +29,10 @@
             <groupId>si.smrpo.scrum.integrations.markdown</groupId>
             <artifactId>markdown-module</artifactId>
         </dependency>
+        <dependency>
+            <groupId>si.smrpo.scrum.integrations.html</groupId>
+            <artifactId>html-module</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.kumuluz.ee</groupId>

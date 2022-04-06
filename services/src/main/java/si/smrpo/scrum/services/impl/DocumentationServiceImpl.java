@@ -4,6 +4,7 @@ import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import com.mjamsek.rest.exceptions.NotFoundException;
 import com.mjamsek.rest.exceptions.RestException;
+import si.smrpo.scrum.integrations.html.HtmlProcessingService;
 import si.smrpo.scrum.integrations.markdown.MarkdownRenderService;
 import si.smrpo.scrum.lib.ProjectDocumentation;
 import si.smrpo.scrum.lib.responses.DocumentationContentResponse;
@@ -37,7 +38,10 @@ public class DocumentationServiceImpl implements DocumentationService {
     private EntityManager em;
     
     @Inject
-    private MarkdownRenderService markdownRenderService;
+    private MarkdownRenderService markdownRenderer;
+    
+    @Inject
+    private HtmlProcessingService htmlProcessor;
     
     @Inject
     private ProjectService projectService;
@@ -142,9 +146,11 @@ public class DocumentationServiceImpl implements DocumentationService {
         entity.setMarkdownContent(markdownContent);
         
         try {
-            String htmlContent = markdownRenderService.convertMarkdownToHtml(markdownContent);
+            String htmlContent = markdownRenderer.convertMarkdownToHtml(markdownContent);
+            htmlContent = htmlProcessor.sanitizeHtml(htmlContent);
+            htmlContent = htmlProcessor.linkifyTitles(htmlContent);
             entity.setHtmlContent(htmlContent);
-            String textContent = markdownRenderService.convertMarkdownToText(markdownContent);
+            String textContent = markdownRenderer.convertMarkdownToText(markdownContent);
             entity.setTextContent(textContent);
             
             em.getTransaction().begin();
@@ -164,9 +170,11 @@ public class DocumentationServiceImpl implements DocumentationService {
         try {
             em.getTransaction().begin();
             documentationEntity.setMarkdownContent(markdownContent);
-            String htmlContent = markdownRenderService.convertMarkdownToHtml(markdownContent);
+            String htmlContent = markdownRenderer.convertMarkdownToHtml(markdownContent);
+            htmlContent = htmlProcessor.sanitizeHtml(htmlContent);
+            htmlContent = htmlProcessor.linkifyTitles(htmlContent);
             documentationEntity.setHtmlContent(htmlContent);
-            String textContent = markdownRenderService.convertMarkdownToText(markdownContent);
+            String textContent = markdownRenderer.convertMarkdownToText(markdownContent);
             documentationEntity.setTextContent(textContent);
             em.getTransaction().commit();
         } catch (PersistenceException e) {
