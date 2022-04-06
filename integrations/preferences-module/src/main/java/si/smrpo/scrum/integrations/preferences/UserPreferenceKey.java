@@ -1,6 +1,9 @@
 package si.smrpo.scrum.integrations.preferences;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public enum UserPreferenceKey {
+    @JsonProperty("auth.2fa.enabled")
     ENABLED_2FA("auth.2fa.enabled");
     
     private final String key;

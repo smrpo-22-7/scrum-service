@@ -14,8 +14,10 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import si.smrpo.scrum.lib.User;
+import si.smrpo.scrum.lib.UserPreference;
 import si.smrpo.scrum.lib.UserProfile;
 import si.smrpo.scrum.lib.requests.ChangePasswordRequest;
+import si.smrpo.scrum.lib.requests.UserPreferenceKeys;
 import si.smrpo.scrum.lib.requests.UserRegisterRequest;
 import si.smrpo.scrum.lib.requests.UsernameCheckRequest;
 
@@ -167,4 +169,28 @@ public interface UsersEndpointDef {
         ))
     })
     Response updateUserProfile(UserProfile userProfile);
+    
+    @POST
+    @Path("/preferences")
+    @Tag(name = "users")
+    @Operation(summary = "retrieves user preferences", description = "Returns user preferences.")
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+    @Schema(implementation = UserPreferenceKeys.class)))
+    @APIResponses({
+        @APIResponse(responseCode = "200", description = "returned preferences", content = @Content(
+            mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = UserPreference.class, type = SchemaType.OBJECT)
+        )),
+    })
+    Response getUserPreferences(UserPreferenceKeys keys);
+    
+    @PATCH
+    @Path("/preferences")
+    @Tag(name = "users")
+    @Operation(summary = "updates user preferences", description = "Updates user preferences.")
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+    @Schema(implementation = UserPreference.class)))
+    @APIResponses({
+        @APIResponse(responseCode = "204", description = "updates preferences")
+    })
+    Response updateUserPreferences(UserPreference userPreference);
 }

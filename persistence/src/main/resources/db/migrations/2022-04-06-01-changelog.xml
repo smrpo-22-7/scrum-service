@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd">
+
+    <changeSet id="add-prefs-template-table" author="mihaj">
+        <createTable tableName="preference_templates">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_preference_templates"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+
+            <column name="data_type" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="preference_key" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="default_value" type="VARCHAR(255)"/>
+        </createTable>
+
+        <createIndex tableName="preference_templates" indexName="UNIQUE_INDEX_PREFS_TEMPLATE_KEY" unique="true">
+            <column name="preference_key"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="fill-prefs-template-table" author="mihaj">
+        <insert tableName="preference_templates">
+            <column name="id">7fd179f0-800d-4f1b-858e-f1f31ea14b07</column>
+            <column name="created_at">2022-03-09 12:00:00.0</column>
+            <column name="updated_at">2022-03-09 12:00:00.0</column>
+            <column name="preference_key">auth.2fa.enabled</column>
+            <column name="data_type">BOOLEAN</column>
+            <column name="default_value">false</column>
+        </insert>
+    </changeSet>
+
+    <changeSet id="clear-old-prefs" author="mihaj">
+        <sql>DELETE FROM user_preferences</sql>
+    </changeSet>
+</databaseChangeLog>

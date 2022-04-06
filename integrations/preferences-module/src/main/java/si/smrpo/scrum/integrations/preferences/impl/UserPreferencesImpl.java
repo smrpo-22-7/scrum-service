@@ -6,11 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
+import com.mjamsek.rest.exceptions.BadRequestException;
 import com.mjamsek.rest.exceptions.RestException;
+import si.smrpo.scrum.integrations.preferences.UserPreferenceKey;
 import si.smrpo.scrum.integrations.preferences.UserPreferences;
+import si.smrpo.scrum.lib.UserPreference;
 import si.smrpo.scrum.lib.enums.DataType;
 import si.smrpo.scrum.persistence.identifiers.UserPreferenceId;
-import si.smrpo.scrum.integrations.preferences.UserPreferenceKey;
+import si.smrpo.scrum.persistence.users.PreferenceTemplateEntity;
 import si.smrpo.scrum.persistence.users.UserPreferencesEntity;
 
 import javax.annotation.PostConstruct;
@@ -22,12 +25,13 @@ import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toMap;
 
 @RequestScoped
 public class UserPreferencesImpl implements UserPreferences {
-
+    
     public static final Logger LOG = LogManager.getLogger(UserPreferencesImpl.class.getName());
     
     @Inject
@@ -49,6 +53,23 @@ public class UserPreferencesImpl implements UserPreferences {
         return query
             .getResultStream()
             .collect(toMap(pref -> UserPreferenceKey.parse(pref.getPreferenceKey()), p -> p));
+    }
+    
+    @Override
+    public Map<String, UserPreference> getUserPreferences(Set<String> keys, String userId) {
+        TypedQuery<UserPreferencesEntity> query = em.createNamedQuery(UserPreferencesEntity.GET_BY_KEYS_AND_USER, UserPreferencesEntity.class);
+        query.setParameter("userId", userId);
+        query.setParameter("keys", keys);
+        
+        return query.getResultStream()
+            .collect(toMap(UserPreferencesEntity::getPreferenceKey, p -> {
+                UserPreference pref = new UserPreference();
+                pref.setValue(p.getPreferenceValue());
+                pref.setUserId(p.getUserId());
+                pref.setKey(p.getPreferenceKey());
+                pref.setDataType(p.getDataType());
+                return pref;
+            }));
     }
     
     @Override
@@ -114,60 +135,122 @@ public class UserPreferencesImpl implements UserPreferences {
     
     @Override
     public void updateUserPreference(UserPreferenceKey key, String value, String userId) {
-        persistUserPreference(key, value, DataType.STRING, userId);
+        persistUserPreference(key, value, userId);
     }
     
     @Override
     public void updateUserPreference(UserPreferenceKey key, Long value, String userId) {
-        persistUserPreference(key, value.toString(), DataType.INTEGER, userId);
+        persistUserPreference(key, value.toString(), userId);
     }
     
     @Override
     public void updateUserPreference(UserPreferenceKey key, Boolean value, String userId) {
-        persistUserPreference(key, value.toString(), DataType.BOOLEAN, userId);
+        persistUserPreference(key, value.toString(), userId);
     }
     
     @Override
     public void updateUserPreference(UserPreferenceKey key, Double value, String userId) {
-        persistUserPreference(key, value.toString(), DataType.FLOAT, userId);
+        persistUserPreference(key, value.toString(), userId);
     }
     
     @Override
     public void updateUserPreference(UserPreferenceKey key, ObjectNode value, String userId) {
         try {
             String stringifiedJson = objectMapper.writeValueAsString(value);
-            persistUserPreference(key, stringifiedJson, DataType.JSON, userId);
+            persistUserPreference(key, stringifiedJson, userId);
         } catch (JsonProcessingException e) {
             LOG.error(e);
             throw new IllegalArgumentException("Unable to serialize JSON value!");
         }
     }
     
-    private void persistUserPreference(UserPreferenceKey key, String value, DataType dataType, String userId) {
+    @Override
+    public void updateUserPreference(UserPreference userPreference, String userId) {
+        try {
+            UserPreferenceKey key = UserPreferenceKey.parse(userPreference.getKey());
+            persistUserPreference(key, userPreference.getValue(), userId);
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("error.preferences.unknown-key");
+        }
+    }
+    
+    private void persistUserPreference(UserPreferenceKey key, String value, String userId) {
         Optional<UserPreferencesEntity> userPreference = getUserPreference(key, userId);
         try {
             em.getTransaction().begin();
-    
             userPreference.ifPresentOrElse(entity -> {
+                if (!validDataType(value, entity.getDataType())) {
+                    throw new BadRequestException("Invalid data type for key '" + key.key() + "'! Required: '" + entity.getDataType().name() + "'.");
+                }
                 entity.setPreferenceValue(value);
             }, () -> {
-                UserPreferenceId userPreferenceId = new UserPreferenceId();
-                userPreferenceId.setUserId(userId);
-                userPreferenceId.setPreferenceKey(key.key());
-                
-                UserPreferencesEntity entity = new UserPreferencesEntity();
-                entity.setPreferenceValue(value);
-                entity.setId(userPreferenceId);
-                entity.setDataType(dataType);
-                
+                UserPreferencesEntity entity = getTemplatedPreference(key, value, userId);
                 em.persist(entity);
             });
-            
             em.getTransaction().commit();
         } catch (PersistenceException e) {
             LOG.error(e);
             em.getTransaction().rollback();
             throw new RestException("error.server");
+        }
+    }
+    
+    private UserPreferencesEntity getTemplatedPreference(UserPreferenceKey key, String value, String userId) {
+        PreferenceTemplateEntity template = getTemplateEntity(key);
+    
+        UserPreferencesEntity entity = new UserPreferencesEntity();
+        entity.setDataType(template.getDataType());
+        UserPreferenceId id = new UserPreferenceId();
+        id.setPreferenceKey(template.getPreferenceKey());
+        id.setUserId(userId);
+        entity.setId(id);
+        
+        if (value == null && template.getDefaultValue() == null) {
+            throw new BadRequestException("error.bad-request");
+        }
+        
+        String checkedValue = template.getDefaultValue();
+        if (value != null && validDataType(value, template.getDataType())) {
+            checkedValue = value;
+        }
+        entity.setPreferenceValue(checkedValue);
+        
+        return entity;
+    }
+    
+    private PreferenceTemplateEntity getTemplateEntity(UserPreferenceKey key) {
+        TypedQuery<PreferenceTemplateEntity> query = em.createNamedQuery(PreferenceTemplateEntity.GET_BY_KEY, PreferenceTemplateEntity.class);
+        query.setParameter("key", key.key());
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            throw new IllegalArgumentException("Unrecognized preference key! Given key '" + key.key() + "' is not supported by the system.");
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    private boolean validDataType(String value, DataType type) {
+        try {
+            switch (type) {
+                case FLOAT:
+                    Double.parseDouble(value);
+                    return true;
+                case INTEGER:
+                    Integer.parseInt(value);
+                    return true;
+                case BOOLEAN:
+                    return value.equals("true") || value.equals("false");
+                case JSON:
+                    objectMapper.readTree(value);
+                    return true;
+                default:
+                case STRING:
+                    return true;
+            }
+        } catch (NumberFormatException | JsonProcessingException e) {
+            return false;
         }
     }
 }

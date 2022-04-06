@@ -8,10 +8,13 @@ import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
 import si.smrpo.scrum.integrations.auth.models.annotations.SysRolesRequired;
 import si.smrpo.scrum.integrations.auth.services.UserService;
+import si.smrpo.scrum.integrations.preferences.UserPreferences;
 import si.smrpo.scrum.lib.User;
+import si.smrpo.scrum.lib.UserPreference;
 import si.smrpo.scrum.lib.UserProfile;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.ChangePasswordRequest;
+import si.smrpo.scrum.lib.requests.UserPreferenceKeys;
 import si.smrpo.scrum.lib.requests.UserRegisterRequest;
 import si.smrpo.scrum.lib.requests.UsernameCheckRequest;
 
@@ -22,6 +25,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.Map;
 
 import static com.mjamsek.rest.Rest.HttpHeaders.X_TOTAL_COUNT;
 
@@ -34,6 +38,9 @@ public class UsersEndpoint implements UsersEndpointDef {
     
     @Inject
     private UserService userService;
+    
+    @Inject
+    private UserPreferences userPreferences;
     
     @Inject
     private QueryParameters queryParameters;
@@ -108,6 +115,18 @@ public class UsersEndpoint implements UsersEndpointDef {
     @Override
     public Response updateUserProfile(UserProfile userProfile) {
         userService.updateUserProfile(authContext.getId(), userProfile);
+        return Response.noContent().build();
+    }
+    
+    @Override
+    public Response getUserPreferences(UserPreferenceKeys keys) {
+        Map<String, UserPreference> prefs = userPreferences.getUserPreferences(keys.getKeys(), authContext.getId());
+        return Response.ok(prefs).build();
+    }
+    
+    @Override
+    public Response updateUserPreferences(UserPreference userPreference) {
+        userPreferences.updateUserPreference(userPreference, authContext.getId());
         return Response.noContent().build();
     }
 }

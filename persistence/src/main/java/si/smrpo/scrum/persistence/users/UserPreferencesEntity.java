@@ -9,12 +9,14 @@ import javax.persistence.*;
 @Table(name = "user_preferences")
 @NamedQueries({
     @NamedQuery(name = UserPreferencesEntity.GET_BY_KEY_AND_USER, query = "SELECT up FROM UserPreferencesEntity up WHERE up.id.preferenceKey = :key AND up.id.userId = :userId"),
+    @NamedQuery(name = UserPreferencesEntity.GET_BY_KEYS_AND_USER, query = "SELECT up FROM UserPreferencesEntity up WHERE up.id.preferenceKey IN :keys AND up.id.userId = :userId"),
     @NamedQuery(name = UserPreferencesEntity.GET_BY_USER, query = "SELECT up FROM UserPreferencesEntity up WHERE up.id.userId = :userId")
 })
 public class UserPreferencesEntity {
     
     public static final String GET_BY_KEY_AND_USER = "UserPreferencesEntity.getByKeyAndUser";
     public static final String GET_BY_USER = "UserPreferencesEntity.getByUser";
+    public static final String GET_BY_KEYS_AND_USER = "UserPreferencesEntity.getByKeysAndUser";
     
     @EmbeddedId
     private UserPreferenceId id;
