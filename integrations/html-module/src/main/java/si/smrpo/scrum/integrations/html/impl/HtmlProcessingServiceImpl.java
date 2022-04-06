@@ -5,6 +5,7 @@ import com.kumuluz.ee.logs.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.parser.Tag;
 import org.jsoup.safety.Safelist;
 import org.jsoup.select.Elements;
 import si.smrpo.scrum.integrations.html.HtmlProcessingService;
@@ -18,16 +19,27 @@ public class HtmlProcessingServiceImpl implements HtmlProcessingService {
     private static final Logger LOG = LogManager.getLogger(HtmlProcessingServiceImpl.class.getName());
     
     @Override
-    public String linkifyTitles(String html) {
+    public String linkifyTitles(String html, String linkTemplate) {
+        
         try {
             Document document = Jsoup.parse(html);
             Elements titleElements = document.select("h1,h2,h3");
-            for(Element elem : titleElements) {
+            for (Element elem : titleElements) {
                 String titleContent = elem.text();
                 String handle = toHandle(titleContent);
                 
-                String htmlContent = String.format("<a class=\"title-anchor\" href=\"%s\"></a>" + titleContent, "#" + handle);
-                elem.id(handle).html(htmlContent);
+                Element anchor = new Element(Tag.valueOf("a"), "")
+                    .addClass("title-anchor")
+                    .attr("href", String.format(linkTemplate, handle));
+                
+                Element image = new Element(Tag.valueOf("img"), "")
+                    .attr("src", "/assets/images/link.svg");
+                anchor.appendChild(image);
+                
+                elem.html("")
+                    .appendChild(anchor)
+                    .appendText(titleContent)
+                    .id(handle);
             }
             return document.toString();
         } catch (Exception e) {
@@ -39,7 +51,7 @@ public class HtmlProcessingServiceImpl implements HtmlProcessingService {
     @Override
     public String sanitizeHtml(String html) {
         try {
-            return Jsoup.clean(html, Safelist.basic());
+            return Jsoup.clean(html, Safelist.relaxed());
         } catch (Exception e) {
             LOG.error(e);
             throw e;

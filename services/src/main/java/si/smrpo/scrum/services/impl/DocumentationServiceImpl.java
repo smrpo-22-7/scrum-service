@@ -148,7 +148,8 @@ public class DocumentationServiceImpl implements DocumentationService {
         try {
             String htmlContent = markdownRenderer.convertMarkdownToHtml(markdownContent);
             htmlContent = htmlProcessor.sanitizeHtml(htmlContent);
-            htmlContent = htmlProcessor.linkifyTitles(htmlContent);
+            String linkTemplate = "/projects/" + project.getId() + "/docs#%s";
+            htmlContent = htmlProcessor.linkifyTitles(htmlContent, linkTemplate);
             entity.setHtmlContent(htmlContent);
             String textContent = markdownRenderer.convertMarkdownToText(markdownContent);
             entity.setTextContent(textContent);
@@ -172,7 +173,8 @@ public class DocumentationServiceImpl implements DocumentationService {
             documentationEntity.setMarkdownContent(markdownContent);
             String htmlContent = markdownRenderer.convertMarkdownToHtml(markdownContent);
             htmlContent = htmlProcessor.sanitizeHtml(htmlContent);
-            htmlContent = htmlProcessor.linkifyTitles(htmlContent);
+            String linkTemplate = "/projects/" + documentationEntity.getProject().getId() + "/docs#%s";
+            htmlContent = htmlProcessor.linkifyTitles(htmlContent, linkTemplate);
             documentationEntity.setHtmlContent(htmlContent);
             String textContent = markdownRenderer.convertMarkdownToText(markdownContent);
             documentationEntity.setTextContent(textContent);
