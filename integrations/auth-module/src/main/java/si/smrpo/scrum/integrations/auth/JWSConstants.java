@@ -21,5 +21,6 @@ public class JWSConstants {
     public static final String EMAIL_CLAIM = "email";
     public static final String ROLES_CLAIM = "roles";
     public static final String SESSION_STATE_CLAIM = "session_state";
+    public static final String LAST_LOGIN_CLAIM = "llog";
     
 }

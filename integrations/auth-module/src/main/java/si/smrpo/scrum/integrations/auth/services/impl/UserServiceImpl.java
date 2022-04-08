@@ -23,6 +23,7 @@ import si.smrpo.scrum.lib.UserProfile;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.ChangePasswordRequest;
 import si.smrpo.scrum.lib.requests.UserRegisterRequest;
+import si.smrpo.scrum.persistence.auth.LoginHistoryEntity;
 import si.smrpo.scrum.persistence.identifiers.UserRoleId;
 import si.smrpo.scrum.persistence.users.SysRoleEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
@@ -334,6 +335,39 @@ public class UserServiceImpl implements UserService {
         try {
             em.getTransaction().begin();
             entity.setStatus(status);
+            em.getTransaction().commit();
+        } catch (PersistenceException e) {
+            em.getTransaction().rollback();
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
+    public Optional<LoginHistoryEntity> getUsersLastLogin(String userId) {
+        try {
+            TypedQuery<LoginHistoryEntity> query = em.createNamedQuery(LoginHistoryEntity.GET_USER_LAST_LOGIN, LoginHistoryEntity.class);
+            query.setParameter("userId", userId);
+            query.setMaxResults(1);
+            query.setFirstResult(1);
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
+    public void saveLoginEvent(String userId) {
+        UserEntity user = getUserEntityById(userId)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        try {
+            em.getTransaction().begin();
+            LoginHistoryEntity entity = new LoginHistoryEntity();
+            entity.setUser(user);
+            em.persist(entity);
             em.getTransaction().commit();
         } catch (PersistenceException e) {
             em.getTransaction().rollback();

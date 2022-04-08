@@ -127,6 +127,7 @@ public class LoginServlet extends HttpServlet {
                 redirectTo2FAVerification(redirectUri, resp, requestId);
             } else {
                 sessionService.activateSession(sessionCookie.getValue());
+                userService.saveLoginEvent(user.getId());
                 redirectSuccessfullyBackToClient(redirectUri, resp, requestId, user.getId(), session);
             }
         } catch (UnauthorizedException e) {

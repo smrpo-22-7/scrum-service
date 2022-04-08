@@ -8,6 +8,7 @@ import si.smrpo.scrum.lib.UserProfile;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.ChangePasswordRequest;
 import si.smrpo.scrum.lib.requests.UserRegisterRequest;
+import si.smrpo.scrum.persistence.auth.LoginHistoryEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
 
 import java.util.List;
@@ -50,4 +51,7 @@ public interface UserService {
     
     void changeUserStatus(String userId, SimpleStatus status);
     
+    Optional<LoginHistoryEntity> getUsersLastLogin(String userId);
+    
+    void saveLoginEvent(String userId);
 }

@@ -19,6 +19,7 @@ import si.smrpo.scrum.lib.enums.PKCEMethod;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.enums.TokenType;
 import si.smrpo.scrum.persistence.auth.AuthorizationRequestEntity;
+import si.smrpo.scrum.persistence.auth.LoginHistoryEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
 
 import javax.enterprise.context.RequestScoped;
@@ -29,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static si.smrpo.scrum.integrations.auth.JWSConstants.*;
@@ -165,6 +167,11 @@ public class SecurityServiceImpl implements SecurityService {
     private TokenResponse createToken(UserEntity user, Set<String> roles) {
         LOG.debug("Creating tokens...");
         
+        Date lastLogin = userService.getUsersLastLogin(user.getId())
+            .map(LoginHistoryEntity::getCreatedAt)
+            .orElse(new Date());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss.SSS");
+        
         TokenResponse response = new TokenResponse();
         
         // Common claims
@@ -175,6 +182,7 @@ public class SecurityServiceImpl implements SecurityService {
         claims.put(NAME_CLAIM, user.getFirstName() + " " + user.getLastName());
         claims.put(EMAIL_CLAIM, user.getEmail());
         claims.put(PREFERRED_USERNAME_CLAIM, user.getUsername());
+        claims.put(LAST_LOGIN_CLAIM, dateFormat.format(lastLogin));
       
         JWTClaimsSet.Builder commonBuilder = new JWTClaimsSet.Builder()
             .subject(user.getId())

@@ -6,6 +6,7 @@ import com.mjamsek.rest.exceptions.UnauthorizedException;
 import si.smrpo.scrum.integrations.auth.services.AuthorizationService;
 import si.smrpo.scrum.integrations.auth.services.SessionService;
 import si.smrpo.scrum.integrations.auth.services.TwoFactorAuthenticationService;
+import si.smrpo.scrum.integrations.auth.services.UserService;
 import si.smrpo.scrum.integrations.auth.utils.HttpUtil;
 import si.smrpo.scrum.integrations.auth.utils.ServletUtil;
 import si.smrpo.scrum.integrations.templating.TemplatingService;
@@ -41,6 +42,9 @@ public class TwoFactorAuthenticationServlet extends HttpServlet {
     
     @Inject
     private AuthorizationService authorizationService;
+    
+    @Inject
+    private UserService userService;
     
     @Inject
     private TemplatingService templatingService;
@@ -146,6 +150,7 @@ public class TwoFactorAuthenticationServlet extends HttpServlet {
             }
             
             sessionService.activateSession(sessionCookie.getValue());
+            userService.saveLoginEvent(session.getUser().getId());
             redirectSuccessfullyBackToClient(redirectUri, resp, requestId, session.getUser().getId(), session);
         } catch (UnauthorizedException e) {
             resp.sendRedirect(TWO_FA_SERVLET +
