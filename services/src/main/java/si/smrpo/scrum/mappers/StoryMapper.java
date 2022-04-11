@@ -26,6 +26,9 @@ public class StoryMapper {
         if (entity.getTests() != null) {
             story.setTests(entity.getTests().stream().map(StoryMapper::fromEntity).collect(Collectors.toList()));
         }
+        if (entity.getProject() != null) {
+            story.setProjectId(entity.getProject().getId());
+        }
         
         return story;
     }

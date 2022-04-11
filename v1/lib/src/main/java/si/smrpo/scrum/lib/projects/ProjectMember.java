@@ -1,12 +1,12 @@
 package si.smrpo.scrum.lib.projects;
 
-import si.smrpo.scrum.lib.User;
+import si.smrpo.scrum.lib.UserProfile;
 
 public class ProjectMember {
 
     private String projectId;
 
-    private User user;
+    private UserProfile user;
 
     private String userId;
 
@@ -22,11 +22,11 @@ public class ProjectMember {
         this.projectId = projectId;
     }
 
-    public User getUser() {
+    public UserProfile getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(UserProfile user) {
         this.user = user;
     }
 

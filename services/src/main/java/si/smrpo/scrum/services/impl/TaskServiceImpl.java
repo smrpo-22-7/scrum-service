@@ -121,9 +121,16 @@ public class TaskServiceImpl implements TaskService {
     
     @Override
     public Task updateTask(String taskId, Task task) {
-        validator.assertNotBlank(task.getDescription());
-        if (task.getEstimate() <= 0) {
-            throw new ValidationException("error.validation");
+        
+        if (task.getEstimate() != null) {
+            if (task.getEstimate() <= 0) {
+                throw new ValidationException("error.validation");
+            }
+        }
+        if (task.getDescription() != null) {
+            if (task.getDescription().trim().length() == 0) {
+                throw new ValidationException("error.validation");
+            }
         }
         
         TaskEntity entity = getTaskEntityById(taskId)

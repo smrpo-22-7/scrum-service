@@ -84,30 +84,6 @@ public interface StoryEndpointDef {
     Response createStoryTask(@PathParam("storyId") String storyId, Task task);
     
     @PATCH
-    @Path("/{storyId}/tasks/{taskId}")
-    @Tag(name = "tasks")
-    @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
-    @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
-    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
-        schema = @Schema(implementation = Task.class)))
-    @APIResponses({
-        @APIResponse(responseCode = "200", content =
-        @Content(mediaType = MediaType.APPLICATION_JSON, schema =
-        @Schema(implementation = Task.class)))
-    })
-    Response updateStoryTask(@PathParam("storyId") String storyId, @PathParam("taskId") String taskId, Task task);
-    
-    @DELETE
-    @Path("/{storyId}/tasks/{taskId}")
-    @Tag(name = "tasks")
-    @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
-    @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
-    @APIResponses({
-        @APIResponse(responseCode = "204")
-    })
-    Response removeStoryTask(@PathParam("storyId") String storyId, @PathParam("taskId") String taskId);
-    
-    @PATCH
     @Path("/{storyId}/tasks/{taskId}/request")
     @Tag(name = "tasks")
     @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
@@ -118,26 +94,6 @@ public interface StoryEndpointDef {
         @APIResponse(responseCode = "204")
     })
     Response requestTaskForUser(@PathParam("storyId") String storyId, @PathParam("taskId") String taskId, TaskAssignmentRequest request);
-    
-    @POST
-    @Path("/{storyId}/tasks/{taskId}/request")
-    @Tag(name = "tasks")
-    @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
-    @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
-    @APIResponses({
-        @APIResponse(responseCode = "204")
-    })
-    Response acceptTaskRequest(@PathParam("storyId") String storyId, @PathParam("taskId") String taskId);
-    
-    @DELETE
-    @Path("/{storyId}/tasks/{taskId}/request")
-    @Tag(name = "tasks")
-    @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
-    @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
-    @APIResponses({
-        @APIResponse(responseCode = "204")
-    })
-    Response declineTaskRequest(@PathParam("storyId") String storyId, @PathParam("taskId") String taskId);
     
 }
 

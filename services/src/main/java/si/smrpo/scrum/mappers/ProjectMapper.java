@@ -39,7 +39,7 @@ public class ProjectMapper {
     public static ProjectMember fromEntity(ProjectUserEntity entity) {
         ProjectMember member = new ProjectMember();
         member.setProjectRole(fromEntity(entity.getProjectRole()));
-        member.setUser(UserMapper.fromEntity(entity.getUser()));
+        member.setUser(UserMapper.toSimpleProfile(entity.getUser()));
         return member;
     }
     

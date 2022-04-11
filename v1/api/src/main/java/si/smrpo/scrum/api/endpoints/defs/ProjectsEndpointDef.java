@@ -12,6 +12,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import si.smrpo.scrum.api.params.ProjectSprintFilters;
+import si.smrpo.scrum.lib.UserProfile;
 import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectMember;
 import si.smrpo.scrum.lib.projects.ProjectRole;
@@ -271,4 +272,16 @@ public interface ProjectsEndpointDef {
         })
     })
     Response getProjectMembers(@PathParam("projectId") String projectId);
+    
+    @GET
+    @Path("/{projectId}/members/query")
+    @Tag(name = "projects")
+    @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "200", content =
+        @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+        @Schema(implementation = UserProfile.class, type = SchemaType.ARRAY)))
+    })
+    Response queryProjectMembers(@PathParam("projectId") String projectId,
+                                 @QueryParam("query") String query);
 }

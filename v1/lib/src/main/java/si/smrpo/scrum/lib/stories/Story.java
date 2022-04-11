@@ -27,6 +27,8 @@ public class Story extends BaseType {
     private Boolean assigned;
 
     private List<AcceptanceTest> tests;
+    
+    private String projectId;
 
     public String getTitle() {
         return title;
@@ -106,5 +108,13 @@ public class Story extends BaseType {
     
     public void setAssigned(Boolean assigned) {
         this.assigned = assigned;
+    }
+    
+    public String getProjectId() {
+        return projectId;
+    }
+    
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
     }
 }

@@ -9,6 +9,7 @@ import si.smrpo.scrum.integrations.auth.Roles;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
 import si.smrpo.scrum.integrations.auth.models.annotations.SysRolesRequired;
+import si.smrpo.scrum.lib.UserProfile;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectMember;
@@ -34,6 +35,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.util.List;
 import java.util.Set;
 
 import static com.mjamsek.rest.Rest.HttpHeaders.X_TOTAL_COUNT;
@@ -213,6 +215,12 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
         return Response.ok(members.getEntities())
             .header(X_TOTAL_COUNT, members.getCount())
             .build();
+    }
+    
+    @Override
+    public Response queryProjectMembers(String projectId, String query) {
+        List<UserProfile> members = projectService.queryProjectMembers(projectId, query);
+        return Response.ok(members).build();
     }
     
     @SysRolesRequired({Roles.USER_ROLE})

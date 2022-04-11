@@ -72,32 +72,8 @@ public class StoryEndpoint implements StoryEndpointDef {
     }
     
     @Override
-    public Response updateStoryTask(String storyId, String taskId, Task task) {
-        Task updatedTask = taskService.updateTask(storyId, task);
-        return Response.ok(updatedTask).build();
-    }
-    
-    @Override
-    public Response removeStoryTask(String storyId, String taskId) {
-        taskService.removeTask(taskId);
-        return Response.noContent().build();
-    }
-    
-    @Override
     public Response requestTaskForUser(String storyId, String taskId, TaskAssignmentRequest request) {
         taskService.requestTaskForUser(taskId, request);
-        return Response.noContent().build();
-    }
-    
-    @Override
-    public Response acceptTaskRequest(String storyId, String taskId) {
-        taskService.acceptTaskRequest(taskId);
-        return Response.noContent().build();
-    }
-    
-    @Override
-    public Response declineTaskRequest(String storyId, String taskId) {
-        taskService.rejectTaskRequest(taskId);
         return Response.noContent().build();
     }
     

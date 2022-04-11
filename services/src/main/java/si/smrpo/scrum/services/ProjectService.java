@@ -2,13 +2,13 @@ package si.smrpo.scrum.services;
 
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.mjamsek.rest.dto.EntityList;
+import si.smrpo.scrum.lib.UserProfile;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectMember;
 import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
-import si.smrpo.scrum.lib.responses.QueryingResponse;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 
 import java.util.List;
@@ -31,8 +31,8 @@ public interface ProjectService {
     
     EntityList<ProjectMember> getProjectMembers(String projectId, QueryParameters queryParameters);
     
-    List<QueryingResponse> queryProjectMembers(String projectId, QueryParameters queryParameters);
-
+    List<UserProfile> queryProjectMembers(String projectId, String query);
+    
     boolean projectNameExists(String projectName);
 
     void changeProjectStatus(String projectId, SimpleStatus status);

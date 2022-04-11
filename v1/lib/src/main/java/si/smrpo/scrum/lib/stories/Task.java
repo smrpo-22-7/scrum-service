@@ -8,7 +8,7 @@ public class Task extends BaseType {
     
     private String description;
     
-    private double estimate;
+    private Double estimate;
     
     private boolean completed;
     
@@ -26,11 +26,11 @@ public class Task extends BaseType {
         this.description = description;
     }
     
-    public double getEstimate() {
+    public Double getEstimate() {
         return estimate;
     }
     
-    public void setEstimate(double estimate) {
+    public void setEstimate(Double estimate) {
         this.estimate = estimate;
     }
     
