@@ -6,6 +6,7 @@ import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
 import si.smrpo.scrum.integrations.auth.models.annotations.SysRolesRequired;
 import si.smrpo.scrum.lib.requests.TaskAssignmentRequest;
 import si.smrpo.scrum.lib.stories.Story;
+import si.smrpo.scrum.lib.stories.StoryState;
 import si.smrpo.scrum.lib.stories.Task;
 import si.smrpo.scrum.services.StoryService;
 import si.smrpo.scrum.services.TaskService;
@@ -43,6 +44,12 @@ public class StoryEndpoint implements StoryEndpointDef {
             story = storyService.getStoryById(storyId);
         }
         return Response.ok(story).build();
+    }
+    
+    @Override
+    public Response getStoryState(String storyId) {
+        StoryState state = storyService.getStoryState(storyId);
+        return Response.ok(state).build();
     }
     
     @SysRolesRequired({Roles.USER_ROLE})

@@ -11,6 +11,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import si.smrpo.scrum.lib.requests.TaskAssignmentRequest;
 import si.smrpo.scrum.lib.stories.Story;
+import si.smrpo.scrum.lib.stories.StoryState;
 import si.smrpo.scrum.lib.stories.Task;
 
 import javax.ws.rs.*;
@@ -31,6 +32,17 @@ public interface StoryEndpointDef {
     })
     Response getStoryById(@PathParam("storyId") String storyId,
                           @QueryParam("full") @DefaultValue("false") boolean full);
+    
+    @GET
+    @Path("/{storyId}/state")
+    @Tag(name = "stories")
+    @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "200", content =
+        @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+        @Schema(implementation = StoryState.class)))
+    })
+    Response getStoryState(@PathParam("storyId") String storyId);
     
     @PATCH
     @Path("/{storyId}/time-estimate")

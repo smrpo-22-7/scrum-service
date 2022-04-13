@@ -18,6 +18,7 @@ import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.stories.AcceptanceTest;
 import si.smrpo.scrum.lib.stories.Story;
+import si.smrpo.scrum.lib.stories.StoryState;
 import si.smrpo.scrum.mappers.StoryMapper;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 import si.smrpo.scrum.persistence.sprint.SprintStoryEntity;
@@ -92,6 +93,32 @@ public class StoryServiceImpl implements StoryService {
             throw new NotFoundException("error.not-found");
         }
         return StoryMapper.fromEntity(entity);
+    }
+    
+    @Override
+    public StoryState getStoryState(String storyId) {
+        
+        StoryEntity story = getStoryEntityById(storyId)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        
+        StoryState state = new StoryState();
+        state.setId(story.getId());
+        state.setEstimated(story.getTimeEstimate() != null);
+        state.setRealized(story.isRealized());
+        
+        TypedQuery<Boolean> query = em.createNamedQuery(StoryEntity.CHECK_IN_SPRINT, Boolean.class);
+        Date now = new Date();
+        query.setParameter("storyId", storyId);
+        query.setParameter("now", now);
+        
+        try {
+            state.setInActiveSprint(query.getSingleResult());
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+        
+        return state;
     }
     
     @Override
