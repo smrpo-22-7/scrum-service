@@ -10,7 +10,7 @@ public class Task extends BaseType {
     
     private Double estimate;
     
-    private boolean completed;
+    private Boolean completed;
     
     private String storyId;
     
@@ -34,11 +34,11 @@ public class Task extends BaseType {
         this.estimate = estimate;
     }
     
-    public boolean isCompleted() {
+    public Boolean getCompleted() {
         return completed;
     }
     
-    public void setCompleted(boolean completed) {
+    public void setCompleted(Boolean completed) {
         this.completed = completed;
     }
     

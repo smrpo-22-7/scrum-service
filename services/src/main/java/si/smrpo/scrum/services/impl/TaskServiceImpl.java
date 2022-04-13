@@ -136,11 +136,32 @@ public class TaskServiceImpl implements TaskService {
         TaskEntity entity = getTaskEntityById(taskId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
         
+        UserEntity user = null;
+        if (task.getAssignment() != null) {
+            if (task.getAssignment().getAssigneeId() != null) {
+                boolean isInProject = projAuth.isInProject(entity.getStory().getProject().getId(), task.getAssignment().getAssigneeId());
+                if (!isInProject) {
+                    throw new ValidationException("error.validation");
+                }
+                user = userService.getUserEntityById(task.getAssignment().getAssigneeId())
+                    .orElseThrow(() -> new ValidationException("error.validation"));
+            }
+        }
+        
         try {
             em.getTransaction().begin();
             SetterUtil.setIfNotNull(task.getDescription(), entity::setDescription);
             SetterUtil.setIfNotNull(task.getEstimate(), entity::setEstimate);
-            SetterUtil.setIfNotNull(task.isCompleted(), entity::setCompleted);
+            SetterUtil.setIfNotNull(task.getCompleted(), entity::setCompleted);
+    
+            if (task.getAssignment() != null) {
+                if (task.getAssignment().getAssigneeId() != null) {
+                    entity.setAssignee(user);
+                    // if self-assigned, then no pending required
+                    entity.setPendingAssignment(!authContext.getId().equals(task.getAssignment().getAssigneeId()));
+                }
+            }
+            
             em.getTransaction().commit();
             return TaskMapper.fromEntity(entity);
         } catch (PersistenceException e) {
