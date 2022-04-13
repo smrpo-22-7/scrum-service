@@ -3,6 +3,7 @@ package si.smrpo.scrum.persistence.identifiers;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 public class UserPreferenceId implements Serializable {
@@ -27,5 +28,18 @@ public class UserPreferenceId implements Serializable {
     
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserPreferenceId that = (UserPreferenceId) o;
+        return preferenceKey.equals(that.preferenceKey) && userId.equals(that.userId);
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(preferenceKey, userId);
     }
 }
