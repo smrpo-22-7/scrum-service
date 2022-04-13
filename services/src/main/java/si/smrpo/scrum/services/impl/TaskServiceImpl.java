@@ -83,7 +83,7 @@ public class TaskServiceImpl implements TaskService {
         StoryEntity story = storyService.getStoryEntityById(storyId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
         
-        if (!projAuth.isProjectAdmin(story.getProject().getId(), authContext.getId()) &
+        if (!projAuth.isScrumMaster(story.getProject().getId(), authContext.getId()) &
             !projAuth.isProjectMember(story.getProject().getId(), authContext.getId())) {
             throw new ForbiddenException("error.forbidden");
         }
@@ -135,6 +135,11 @@ public class TaskServiceImpl implements TaskService {
         
         TaskEntity entity = getTaskEntityById(taskId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
+    
+        if (!projAuth.isScrumMaster(entity.getStory().getProject().getId(), authContext.getId()) &
+            !projAuth.isProjectMember(entity.getStory().getProject().getId(), authContext.getId())) {
+            throw new ForbiddenException("error.forbidden");
+        }
         
         UserEntity user = null;
         if (task.getAssignment() != null) {
@@ -174,6 +179,11 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void removeTask(String taskId) {
         getTaskEntityById(taskId).ifPresent(entity -> {
+            if (!projAuth.isScrumMaster(entity.getStory().getProject().getId(), authContext.getId()) &
+                !projAuth.isProjectMember(entity.getStory().getProject().getId(), authContext.getId())) {
+                throw new ForbiddenException("error.forbidden");
+            }
+            
             try {
                 em.getTransaction().begin();
                 entity.setStatus(SimpleStatus.DISABLED);
@@ -194,6 +204,11 @@ public class TaskServiceImpl implements TaskService {
             .orElseThrow(() -> new NotFoundException("error.not-found"));
         
         getTaskEntityById(taskId).ifPresent(entity -> {
+            if (!projAuth.isScrumMaster(entity.getStory().getProject().getId(), authContext.getId()) &
+                !projAuth.isProjectMember(entity.getStory().getProject().getId(), authContext.getId())) {
+                throw new ForbiddenException("error.forbidden");
+            }
+            
             try {
                 em.getTransaction().begin();
                 entity.setAssignee(user);
@@ -252,6 +267,12 @@ public class TaskServiceImpl implements TaskService {
     public void clearAssignee(String taskId) {
         TaskEntity task = getTaskEntityById(taskId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
+    
+        if (!projAuth.isScrumMaster(task.getStory().getProject().getId(), authContext.getId()) &
+            !projAuth.isProjectMember(task.getStory().getProject().getId(), authContext.getId())) {
+            throw new ForbiddenException("error.forbidden");
+        }
+        
         try {
             em.getTransaction().begin();
             task.setPendingAssignment(true);
