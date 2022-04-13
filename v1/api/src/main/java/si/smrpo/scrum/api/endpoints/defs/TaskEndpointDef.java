@@ -49,6 +49,15 @@ public interface TaskEndpointDef {
     Response declineTaskRequest(@PathParam("taskId") String taskId);
     
     @DELETE
+    @Path("/{taskId}/assignee")
+    @Tag(name = "tasks")
+    @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "204")
+    })
+    Response clearAssignee(@PathParam("taskId") String taskId);
+    
+    @DELETE
     @Path("/{taskId}")
     @Tag(name = "tasks")
     @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)

@@ -25,4 +25,6 @@ public interface TaskService {
     
     void rejectTaskRequest(String taskId);
     
+    void clearAssignee(String taskId);
+    
 }

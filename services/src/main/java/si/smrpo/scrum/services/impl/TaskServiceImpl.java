@@ -247,4 +247,20 @@ public class TaskServiceImpl implements TaskService {
             throw new RestException("error.server");
         }
     }
+    
+    @Override
+    public void clearAssignee(String taskId) {
+        TaskEntity task = getTaskEntityById(taskId)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        try {
+            em.getTransaction().begin();
+            task.setPendingAssignment(true);
+            task.setAssignee(null);
+            em.getTransaction().commit();
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            em.getTransaction().rollback();
+            throw new RestException("error.server");
+        }
+    }
 }

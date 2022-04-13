@@ -42,6 +42,12 @@ public class TaskEndpoint implements TaskEndpointDef {
     }
     
     @Override
+    public Response clearAssignee(String taskId) {
+        taskService.clearAssignee(taskId);
+        return Response.noContent().build();
+    }
+    
+    @Override
     public Response removeTask(String taskId) {
         taskService.removeTask(taskId);
         return Response.noContent().build();
