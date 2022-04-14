@@ -7,6 +7,7 @@ import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.kumuluz.ee.rest.enums.FilterOperation;
 import com.kumuluz.ee.rest.utils.JPAUtils;
 import com.mjamsek.rest.dto.EntityList;
+import com.mjamsek.rest.exceptions.ConflictException;
 import com.mjamsek.rest.exceptions.NotFoundException;
 import com.mjamsek.rest.exceptions.RestException;
 import com.mjamsek.rest.exceptions.ValidationException;
@@ -35,6 +36,8 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -150,13 +153,33 @@ public class SprintServiceImpl implements SprintService {
     
     @Override
     public Sprint createSprint(String projectId, Sprint sprint) {
-        validator.assertNotBlank(sprint.getTitle());
-        Date now = new Date();
-        validator.assertNotBefore(Date.from(sprint.getStartDate()), now);
-        validator.assertNotBefore(Date.from(sprint.getEndDate()), Date.from(sprint.getStartDate()));
+        validator.assertNotBlank(sprint.getTitle(), "title", "Sprint");
+    
+        Instant startDate = LocalDateTime.ofInstant(sprint.getStartDate(), ZoneId.of("Europe/Ljubljana")).toInstant(ZoneOffset.UTC);
+        Instant endDate = LocalDateTime.ofInstant(sprint.getEndDate(), ZoneId.of("Europe/Ljubljana")).toInstant(ZoneOffset.UTC);
+        
+        Instant now = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).toInstant(ZoneOffset.UTC);
+        if (startDate.isBefore(now)) {
+            throw new ValidationException("error.sprint.validation")
+                .withEntity("Sprint")
+                .withField("startDate")
+                .withDescription("Start date is in past!");
+        }
+        if (endDate.isBefore(startDate)) {
+            throw new ValidationException("error.sprint.validation").withEntity("Sprint")
+                .withField("endDate")
+                .withDescription("End date is before start date!");
+        }
         
         if (sprint.getExpectedSpeed() <= 0) {
-            throw new ValidationException("error.sprint.validation");
+            throw new ValidationException("error.sprint.validation").withEntity("Sprint")
+                .withField("expectedSpeed")
+                .withDescription("Expected speed must be non-zero integer!");
+        }
+        
+        boolean hasConflict = sprintConflicts(projectId, startDate, endDate);
+        if (hasConflict) {
+            throw new ConflictException("error.conflict").setEntity("Sprint");
         }
         
         ProjectEntity project = projectService.getProjectEntityById(projectId)
@@ -226,11 +249,17 @@ public class SprintServiceImpl implements SprintService {
     
     @Override
     public boolean checkForDateConflicts(String projectId, SprintConflictCheckRequest request) {
+        Instant startDate = LocalDateTime.ofInstant(request.getStartDate(), ZoneId.of("Europe/Ljubljana")).toInstant(ZoneOffset.UTC);
+        Instant endDate = LocalDateTime.ofInstant(request.getEndDate(), ZoneId.of("Europe/Ljubljana")).toInstant(ZoneOffset.UTC);
+        return sprintConflicts(projectId, startDate, endDate);
+    }
+    
+    private boolean sprintConflicts(String projectId, Instant startDate, Instant endDate) {
         TypedQuery<Long> query = em.createNamedQuery(SprintEntity.COUNT_CONFLICTING_SPRINTS, Long.class);
         query.setParameter("projectId", projectId);
-        query.setParameter("startDate", Date.from(request.getStartDate()));
-        query.setParameter("endDate", Date.from(request.getEndDate()));
-        
+        query.setParameter("startDate", Date.from(startDate));
+        query.setParameter("endDate", Date.from(endDate));
+    
         try {
             return query.getSingleResult() > 0;
         } catch (PersistenceException e) {

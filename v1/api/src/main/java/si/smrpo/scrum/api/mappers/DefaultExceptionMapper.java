@@ -23,7 +23,9 @@ public class DefaultExceptionMapper implements ExceptionMapper<RestException> {
     
     @Override
     public Response toResponse(RestException exception) {
-        exception.printStackTrace();
+        if (exception.getStatus() == 400 || exception.getStatus() >= 500) {
+            exception.printStackTrace();
+        }
         return MapperUtil.mapException(exception, localizator, request.getLocale());
     }
 }

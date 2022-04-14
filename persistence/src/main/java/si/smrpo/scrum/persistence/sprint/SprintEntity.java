@@ -14,7 +14,7 @@ import java.util.Date;
     @NamedQuery(name = SprintEntity.COUNT_CONFLICTING_SPRINTS,
         query = "SELECT COUNT(s) FROM SprintEntity s " +
             "WHERE s.project.id = :projectId AND " +
-                "(s.endDate <= :startDate OR " +
+                "(s.endDate >= :startDate AND " +
                 "s.startDate <= :endDate)")
     //@formatter:on
 })
