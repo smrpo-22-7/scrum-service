@@ -30,6 +30,7 @@ import si.smrpo.scrum.persistence.story.StoryEntity;
 import si.smrpo.scrum.services.ProjectAuthorizationService;
 import si.smrpo.scrum.services.ProjectService;
 import si.smrpo.scrum.services.SprintService;
+import si.smrpo.scrum.utils.DateUtils;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -155,8 +156,8 @@ public class SprintServiceImpl implements SprintService {
     public Sprint createSprint(String projectId, Sprint sprint) {
         validator.assertNotBlank(sprint.getTitle(), "title", "Sprint");
     
-        Instant startDate = LocalDateTime.ofInstant(sprint.getStartDate(), ZoneId.of("Europe/Ljubljana")).toInstant(ZoneOffset.UTC);
-        Instant endDate = LocalDateTime.ofInstant(sprint.getEndDate(), ZoneId.of("Europe/Ljubljana")).toInstant(ZoneOffset.UTC);
+        Instant startDate = DateUtils.truncateTime(sprint.getStartDate());
+        Instant endDate = DateUtils.truncateTime(sprint.getEndDate());
         
         Instant now = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).toInstant(ZoneOffset.UTC);
         if (startDate.isBefore(now)) {
@@ -188,8 +189,8 @@ public class SprintServiceImpl implements SprintService {
         SprintEntity entity = new SprintEntity();
         entity.setStatus(SimpleStatus.ACTIVE);
         entity.setTitle(sprint.getTitle());
-        entity.setStartDate(Date.from(sprint.getStartDate()));
-        entity.setEndDate(Date.from(sprint.getEndDate()));
+        entity.setStartDate(Date.from(startDate));
+        entity.setEndDate(Date.from(endDate));
         entity.setExpectedSpeed(sprint.getExpectedSpeed());
         entity.setProject(project);
         
@@ -257,8 +258,8 @@ public class SprintServiceImpl implements SprintService {
     private boolean sprintConflicts(String projectId, Instant startDate, Instant endDate) {
         TypedQuery<Long> query = em.createNamedQuery(SprintEntity.COUNT_CONFLICTING_SPRINTS, Long.class);
         query.setParameter("projectId", projectId);
-        query.setParameter("startDate", Date.from(startDate));
-        query.setParameter("endDate", Date.from(endDate));
+        query.setParameter("startDate", Date.from(DateUtils.truncateTime(startDate)));
+        query.setParameter("endDate", Date.from(DateUtils.truncateTime(endDate)));
     
         try {
             return query.getSingleResult() > 0;
