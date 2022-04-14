@@ -22,10 +22,7 @@ import si.smrpo.scrum.lib.responses.ProjectRolesCount;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
-import si.smrpo.scrum.services.ProjectAuthorizationService;
-import si.smrpo.scrum.services.ProjectService;
-import si.smrpo.scrum.services.SprintService;
-import si.smrpo.scrum.services.StoryService;
+import si.smrpo.scrum.services.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -55,6 +52,9 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
 
     @Inject
     private ProjectService projectService;
+    
+    @Inject
+    private ProjectMembershipService projectMembershipService;
 
     @Inject
     private StoryService storyService;
@@ -137,7 +137,7 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     
     @Override
     public Response getProjectRolesCount(String projectId) {
-        ProjectRolesCount counts = projectService.getProjectRolesCount(projectId);
+        ProjectRolesCount counts = projectMembershipService.getProjectRolesCount(projectId);
         return Response.ok(counts).build();
     }
     
@@ -150,21 +150,21 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response addUserToProject(String projectId, ProjectMember member) {
-        projectService.addUserToProject(projectId, member);
+        projectMembershipService.addUserToProject(projectId, member);
         return Response.noContent().build();
     }
     
     @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response removeUserFromProject(String projectId, String userId) {
-        projectService.removeUserFromProject(projectId, userId);
+        projectMembershipService.removeUserFromProject(projectId, userId);
         return Response.noContent().build();
     }
     
     @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response updateUserProjectRole(String projectId, String userId, ProjectMember member) {
-        projectService.updateUserProjectRole(projectId, userId, member);
+        projectMembershipService.updateUserProjectRole(projectId, userId, member);
         return Response.noContent().build();
     }
 
@@ -211,7 +211,7 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     
     @Override
     public Response getProjectMembers(String projectId) {
-        EntityList<ProjectMember> members = projectService.getProjectMembers(projectId, queryParameters);
+        EntityList<ProjectMember> members = projectMembershipService.getProjectMembers(projectId, queryParameters);
         return Response.ok(members.getEntities())
             .header(X_TOTAL_COUNT, members.getCount())
             .build();
@@ -219,7 +219,7 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     
     @Override
     public Response queryProjectMembers(String projectId, String query) {
-        List<UserProfile> members = projectService.queryProjectMembers(projectId, query);
+        List<UserProfile> members = projectMembershipService.queryProjectMembers(projectId, query);
         return Response.ok(members).build();
     }
     
