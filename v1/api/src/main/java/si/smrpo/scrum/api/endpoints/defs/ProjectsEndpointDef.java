@@ -287,7 +287,7 @@ public interface ProjectsEndpointDef {
                                  @QueryParam("query") String query);
     
     @GET
-    @Path("/{projectId}/sprints/active")
+    @Path("/{projectId}/sprints/status")
     @Tag(name = "projects")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @APIResponses({
