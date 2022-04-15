@@ -21,6 +21,7 @@ import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
+import si.smrpo.scrum.lib.responses.ProjectSprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
@@ -284,4 +285,15 @@ public interface ProjectsEndpointDef {
     })
     Response queryProjectMembers(@PathParam("projectId") String projectId,
                                  @QueryParam("query") String query);
+    
+    @GET
+    @Path("/{projectId}/sprints/active")
+    @Tag(name = "projects")
+    @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "200", content =
+        @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+        @Schema(implementation = ProjectSprintStatus.class)))
+    })
+    Response getProjectsActiveSprintStatus(@PathParam("projectId") String projectId);
 }

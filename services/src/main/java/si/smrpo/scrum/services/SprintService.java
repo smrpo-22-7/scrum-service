@@ -4,6 +4,7 @@ import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.mjamsek.rest.dto.EntityList;
 import si.smrpo.scrum.lib.requests.AddStoryRequest;
 import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
+import si.smrpo.scrum.lib.responses.ProjectSprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
@@ -20,8 +21,12 @@ public interface SprintService {
     SprintListResponse getProjectSprints(String projectId, boolean active, boolean past, boolean future);
     
     Sprint getSprintById(String sprintId);
+    
+    ProjectSprintStatus getProjectActiveSprintStatus(String projectId);
 
     Optional<SprintEntity> getSprintEntityById(String sprintId);
+    
+    Optional<SprintEntity> getActiveSprint(String projectId);
 
     Sprint createSprint(String projectId, Sprint sprint);
 

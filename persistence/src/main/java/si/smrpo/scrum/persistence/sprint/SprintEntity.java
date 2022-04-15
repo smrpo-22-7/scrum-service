@@ -15,12 +15,17 @@ import java.util.Date;
         query = "SELECT COUNT(s) FROM SprintEntity s " +
             "WHERE s.project.id = :projectId AND " +
                 "(s.endDate >= :startDate AND " +
-                "s.startDate <= :endDate)")
+                "s.startDate <= :endDate)"),
+    @NamedQuery(name = SprintEntity.GET_ACTIVE_SPRINT,
+        query = "SELECT s FROM SprintEntity s WHERE " +
+            "s.project.id = :projectId AND " +
+            ":now BETWEEN s.startDate AND s.endDate")
     //@formatter:on
 })
 public class SprintEntity extends BaseEntity {
 
     public static final String COUNT_CONFLICTING_SPRINTS = "SprintEntity.countConflictingSprints";
+    public static final String GET_ACTIVE_SPRINT = "SprintEntity.getActiveSprint";
 
     @Column(name = "title", nullable = false)
     private String title;

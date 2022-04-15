@@ -19,6 +19,7 @@ import si.smrpo.scrum.lib.requests.CreateProjectRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
+import si.smrpo.scrum.lib.responses.ProjectSprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
@@ -221,6 +222,12 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     public Response queryProjectMembers(String projectId, String query) {
         List<UserProfile> members = projectMembershipService.queryProjectMembers(projectId, query);
         return Response.ok(members).build();
+    }
+    
+    @Override
+    public Response getProjectsActiveSprintStatus(String projectId) {
+        ProjectSprintStatus status = sprintService.getProjectActiveSprintStatus(projectId);
+        return Response.ok(status).build();
     }
     
     @SysRolesRequired({Roles.USER_ROLE})

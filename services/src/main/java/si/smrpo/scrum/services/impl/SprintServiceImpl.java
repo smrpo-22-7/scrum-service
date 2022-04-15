@@ -17,6 +17,7 @@ import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.AddStoryRequest;
 import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
+import si.smrpo.scrum.lib.responses.ProjectSprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
@@ -35,6 +36,7 @@ import si.smrpo.scrum.utils.DateUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import java.time.*;
@@ -148,8 +150,47 @@ public class SprintServiceImpl implements SprintService {
     }
     
     @Override
+    public ProjectSprintStatus getProjectActiveSprintStatus(String projectId) {
+        return getActiveSprint(projectId)
+            .map(entity -> {
+                long assignedPoints = getSprintStoriesEstimateSum(entity.getId());
+                ProjectSprintStatus status = new ProjectSprintStatus();
+                status.setActive(true);
+                status.setSprintId(entity.getId());
+                status.setProjectId(entity.getProject().getId());
+                status.setStartDate(entity.getStartDate().toInstant());
+                status.setEndDate(entity.getEndDate().toInstant());
+                status.setAssignedPoints(assignedPoints);
+                status.setExpectedSpeed(entity.getExpectedSpeed());
+                return status;
+            }).orElseGet(() -> {
+                ProjectSprintStatus status = new ProjectSprintStatus();
+                status.setActive(false);
+                status.setProjectId(projectId);
+                return status;
+            });
+    }
+    
+    @Override
     public Optional<SprintEntity> getSprintEntityById(String sprintId) {
         return Optional.ofNullable(em.find(SprintEntity.class, sprintId));
+    }
+    
+    @Override
+    public Optional<SprintEntity> getActiveSprint(String projectId) {
+        TypedQuery<SprintEntity> query = em.createNamedQuery(SprintEntity.GET_ACTIVE_SPRINT, SprintEntity.class);
+        query.setParameter("projectId", projectId);
+        Instant now = LocalDateTime.now().truncatedTo(ChronoUnit.DAYS).toInstant(ZoneOffset.UTC);
+        query.setParameter("now", Date.from(now));
+        
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
     }
     
     @Override
@@ -263,6 +304,18 @@ public class SprintServiceImpl implements SprintService {
     
         try {
             return query.getSingleResult() > 0;
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    private Long getSprintStoriesEstimateSum(String sprintId) {
+        TypedQuery<Long> query = em.createNamedQuery(SprintStoryEntity.SUM_STORIES_PT_BY_SPRINT, Long.class);
+        query.setParameter("sprintId", sprintId);
+        
+        try {
+            return query.getSingleResult();
         } catch (PersistenceException e) {
             LOG.error(e);
             throw new RestException("error.server");
