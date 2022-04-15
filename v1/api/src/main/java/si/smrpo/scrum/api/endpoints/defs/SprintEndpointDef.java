@@ -11,6 +11,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import si.smrpo.scrum.lib.requests.AddStoryRequest;
+import si.smrpo.scrum.lib.responses.SprintStatus;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
 
@@ -57,4 +58,14 @@ public interface SprintEndpointDef {
     })
     Response addStoriesToSprint(@PathParam("sprintId") String sprintId, AddStoryRequest request);
     
+    @GET
+    @Path("/{sprintId}/status")
+    @Tag(name = "sprints")
+    @Parameter(name = "sprintId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "200", content =
+        @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+        @Schema(implementation = SprintStatus.class)))
+    })
+    Response getSprintStatus(@PathParam("sprintId") String sprintId);
 }

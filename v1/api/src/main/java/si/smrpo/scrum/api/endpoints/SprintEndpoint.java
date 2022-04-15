@@ -7,8 +7,8 @@ import si.smrpo.scrum.api.endpoints.defs.SprintEndpointDef;
 import si.smrpo.scrum.integrations.auth.Roles;
 import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
 import si.smrpo.scrum.integrations.auth.models.annotations.SysRolesRequired;
-import si.smrpo.scrum.lib.User;
 import si.smrpo.scrum.lib.requests.AddStoryRequest;
+import si.smrpo.scrum.lib.responses.SprintStatus;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.services.SprintService;
@@ -56,6 +56,12 @@ public class SprintEndpoint implements SprintEndpointDef {
     public Response addStoriesToSprint(String sprintId, AddStoryRequest request) {
         sprintService.addStoriesToSprint(sprintId, request);
         return Response.noContent().build();
+    }
+    
+    @Override
+    public Response getSprintStatus(String sprintId) {
+        SprintStatus status = sprintService.getSprintStatus(sprintId);
+        return Response.ok(status).build();
     }
     
 }

@@ -2,7 +2,7 @@ package si.smrpo.scrum.lib.responses;
 
 import java.time.Instant;
 
-public class ProjectSprintStatus {
+public class SprintStatus {
     
     private boolean active;
     

@@ -17,7 +17,7 @@ import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.AddStoryRequest;
 import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
-import si.smrpo.scrum.lib.responses.ProjectSprintStatus;
+import si.smrpo.scrum.lib.responses.SprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
@@ -150,25 +150,22 @@ public class SprintServiceImpl implements SprintService {
     }
     
     @Override
-    public ProjectSprintStatus getProjectActiveSprintStatus(String projectId) {
+    public SprintStatus getProjectActiveSprintStatus(String projectId) {
         return getActiveSprint(projectId)
-            .map(entity -> {
-                long assignedPoints = getSprintStoriesEstimateSum(entity.getId());
-                ProjectSprintStatus status = new ProjectSprintStatus();
-                status.setActive(true);
-                status.setSprintId(entity.getId());
-                status.setProjectId(entity.getProject().getId());
-                status.setStartDate(entity.getStartDate().toInstant());
-                status.setEndDate(entity.getEndDate().toInstant());
-                status.setAssignedPoints(assignedPoints);
-                status.setExpectedSpeed(entity.getExpectedSpeed());
-                return status;
-            }).orElseGet(() -> {
-                ProjectSprintStatus status = new ProjectSprintStatus();
+            .map(this::mapToSprintStatus)
+            .orElseGet(() -> {
+                SprintStatus status = new SprintStatus();
                 status.setActive(false);
                 status.setProjectId(projectId);
                 return status;
             });
+    }
+    
+    @Override
+    public SprintStatus getSprintStatus(String sprintId) {
+        return getSprintEntityById(sprintId)
+            .map(this::mapToSprintStatus)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
     }
     
     @Override
@@ -196,7 +193,7 @@ public class SprintServiceImpl implements SprintService {
     @Override
     public Sprint createSprint(String projectId, Sprint sprint) {
         validator.assertNotBlank(sprint.getTitle(), "title", "Sprint");
-    
+        
         Instant startDate = DateUtils.truncateTime(sprint.getStartDate());
         Instant endDate = DateUtils.truncateTime(sprint.getEndDate());
         
@@ -301,7 +298,7 @@ public class SprintServiceImpl implements SprintService {
         query.setParameter("projectId", projectId);
         query.setParameter("startDate", Date.from(DateUtils.truncateTime(startDate)));
         query.setParameter("endDate", Date.from(DateUtils.truncateTime(endDate)));
-    
+        
         try {
             return query.getSingleResult() > 0;
         } catch (PersistenceException e) {
@@ -320,5 +317,18 @@ public class SprintServiceImpl implements SprintService {
             LOG.error(e);
             throw new RestException("error.server");
         }
+    }
+    
+    private SprintStatus mapToSprintStatus(SprintEntity entity) {
+        long assignedPoints = getSprintStoriesEstimateSum(entity.getId());
+        SprintStatus status = new SprintStatus();
+        status.setActive(true);
+        status.setSprintId(entity.getId());
+        status.setProjectId(entity.getProject().getId());
+        status.setStartDate(entity.getStartDate().toInstant());
+        status.setEndDate(entity.getEndDate().toInstant());
+        status.setAssignedPoints(assignedPoints);
+        status.setExpectedSpeed(entity.getExpectedSpeed());
+        return status;
     }
 }
