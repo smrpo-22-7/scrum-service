@@ -3,8 +3,10 @@ package si.smrpo.scrum.services.impl;
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import com.kumuluz.ee.rest.beans.QueryFilter;
+import com.kumuluz.ee.rest.beans.QueryOrder;
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.kumuluz.ee.rest.enums.FilterOperation;
+import com.kumuluz.ee.rest.enums.OrderDirection;
 import com.kumuluz.ee.rest.utils.JPAUtils;
 import com.mjamsek.rest.dto.EntityList;
 import com.mjamsek.rest.exceptions.ConflictException;
@@ -58,6 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public EntityList<Project> getProjects(QueryParameters queryParameters) {
         QueryUtil.setDefaultFilterParam(new QueryFilter("status", FilterOperation.EQ, SimpleStatus.ACTIVE.name()), queryParameters);
+        QueryUtil.setDefaultOrderParam(new QueryOrder("name", OrderDirection.ASC), queryParameters);
         
         List<Project> projects = JPAUtils.getEntityStream(em, ProjectEntity.class, queryParameters)
             .map(ProjectMapper::fromEntity)
@@ -221,7 +224,9 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     private Set<ProjectRoleEntity> getAllProjectRoleEntities() {
-        return JPAUtils.getEntityStream(em, ProjectRoleEntity.class, new QueryParameters())
+        QueryParameters queryParameters = new QueryParameters();
+        QueryUtil.setDefaultOrderParam(new QueryOrder("roleId", OrderDirection.ASC), queryParameters);
+        return JPAUtils.getEntityStream(em, ProjectRoleEntity.class, queryParameters)
             .collect(Collectors.toSet());
     }
     

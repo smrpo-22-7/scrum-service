@@ -1,4 +1,4 @@
-package si.smrpo.scrum.services;
+package si.smrpo.scrum.services.impl;
 
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
@@ -27,6 +27,9 @@ import si.smrpo.scrum.persistence.project.ProjectEntity;
 import si.smrpo.scrum.persistence.project.ProjectRoleEntity;
 import si.smrpo.scrum.persistence.project.ProjectUserEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
+import si.smrpo.scrum.services.ProjectAuthorizationService;
+import si.smrpo.scrum.services.ProjectMembershipService;
+import si.smrpo.scrum.services.ProjectService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -60,7 +63,9 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
     @Override
     public EntityList<ProjectMember> getProjectMembers(String projectId, QueryParameters queryParameters) {
         
-        projAuth.isInProjectOrThrow(projectId, authContext.getId());
+        if (!authContext.getSysRoles().contains(Roles.ADMIN_ROLE)) {
+            projAuth.isInProjectOrThrow(projectId, authContext.getId());
+        }
         
         TypedQuery<ProjectUserEntity> query = em.createNamedQuery(ProjectUserEntity.GET_PROJECT_MEMBERS, ProjectUserEntity.class);
         query.setParameter("projectId", projectId);
