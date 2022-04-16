@@ -33,10 +33,7 @@ import si.smrpo.scrum.services.ProjectService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceException;
-import javax.persistence.TypedQuery;
+import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -160,28 +157,29 @@ public class ProjectServiceImpl implements ProjectService {
         // Check that only one role is present amongst members
         validateRequestRoles(request);
         
-        ProjectEntity entity = getProjectEntityById(projectId)
-            .orElseThrow(() -> new NotFoundException("error.not-found"));
-        
-        if (!request.getName().equals(entity.getName())) {
-            if (projectNameExists(request.getName())) {
-                throw new ConflictException("error.conflict", "ProjectRequest", "name");
-            }
-        }
-        
-        Map<String, ProjectRoleEntity> projectRolesMap = getProjectRoles();
-        List<ProjectUserEntity> currentMembers = projMems.getProjectMembershipEntities(projectId);
-        Map<String, ProjectUserEntity> currentMembersMap = currentMembers.stream()
-            .collect(Collectors.toMap(e -> e.getUser().getId(), e -> e));
-        List<ProjectMember> newMembers = request.getMembers();
-        Map<String, ProjectMember> newMembersMap = request.getMembers().stream()
-            .collect(Collectors.toMap(ProjectMember::getUserId, e -> e));
-        
-        Set<ProjectUserEntity> toBeAdded = new HashSet<>();
-        Set<ProjectUserEntity> toBeDeleted = new HashSet<>();
-        
         try {
             em.getTransaction().begin();
+    
+            ProjectEntity entity = getProjectEntityById(projectId)
+                .orElseThrow(() -> new NotFoundException("error.not-found"));
+    
+            if (!request.getName().equals(entity.getName())) {
+                if (projectNameExists(request.getName())) {
+                    throw new ConflictException("error.conflict", "ProjectRequest", "name");
+                }
+            }
+    
+            Map<String, ProjectRoleEntity> projectRolesMap = getProjectRoles();
+            List<ProjectUserEntity> currentMembers = projMems.getProjectMembershipEntities(projectId);
+            Map<String, ProjectUserEntity> currentMembersMap = currentMembers.stream()
+                .collect(Collectors.toMap(e -> e.getUser().getId(), e -> e));
+            List<ProjectMember> newMembers = request.getMembers();
+            Map<String, ProjectMember> newMembersMap = request.getMembers().stream()
+                .collect(Collectors.toMap(ProjectMember::getUserId, e -> e));
+    
+            Set<ProjectUserEntity> toBeAdded = new HashSet<>();
+            Set<ProjectUserEntity> toBeDeleted = new HashSet<>();
+            
             entity.setName(request.getName());
             
             // update project membership
@@ -214,8 +212,13 @@ public class ProjectServiceImpl implements ProjectService {
                 // inverse condition is already checked in previous step
             }
             
-            toBeDeleted.forEach(e -> em.remove(e));
             toBeAdded.forEach(e -> em.persist(e));
+            toBeDeleted.forEach(e -> {
+                Query query = em.createNamedQuery(ProjectUserEntity.DELETE_BY_USER_AND_PROJECT);
+                query.setParameter("projectId", e.getProject().getId());
+                query.setParameter("userId", e.getUser().getId());
+                query.executeUpdate();
+            });
             
             em.getTransaction().commit();
             return ProjectMapper.fromEntity(entity);
