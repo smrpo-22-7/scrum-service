@@ -17,7 +17,7 @@ import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectMember;
 import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
-import si.smrpo.scrum.lib.requests.CreateProjectRequest;
+import si.smrpo.scrum.lib.requests.ProjectRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
@@ -79,13 +79,13 @@ public interface ProjectsEndpointDef {
     @POST
     @Tag(name = "projects")
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
-        schema = @Schema(implementation = CreateProjectRequest.class)))
+        schema = @Schema(implementation = ProjectRequest.class)))
     @APIResponses({
         @APIResponse(responseCode = "201", content =
         @Content(mediaType = MediaType.APPLICATION_JSON, schema =
         @Schema(implementation = Project.class)))
     })
-    Response createProject(CreateProjectRequest request);
+    Response createProject(ProjectRequest request);
     
     @POST
     @Path("/name-check")
@@ -98,18 +98,18 @@ public interface ProjectsEndpointDef {
     })
     Response checkProjectNameExits(ConflictCheckRequest request);
     
-    @PATCH
+    @PUT
     @Path("/{projectId}")
     @Tag(name = "projects")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
-        schema = @Schema(implementation = Project.class)))
+        schema = @Schema(implementation = ProjectRequest.class)))
     @APIResponses({
         @APIResponse(responseCode = "200", content =
         @Content(mediaType = MediaType.APPLICATION_JSON, schema =
         @Schema(implementation = Project.class)))
     })
-    Response updateProjectName(@PathParam("projectId") String projectId, Project project);
+    Response updateProjectName(@PathParam("projectId") String projectId, ProjectRequest request);
     
     @DELETE
     @Path("/{projectId}/disable")

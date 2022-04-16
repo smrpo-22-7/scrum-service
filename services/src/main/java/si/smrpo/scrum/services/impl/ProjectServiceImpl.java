@@ -20,8 +20,7 @@ import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectMember;
 import si.smrpo.scrum.lib.projects.ProjectRole;
-import si.smrpo.scrum.lib.requests.CreateProjectRequest;
-import si.smrpo.scrum.lib.responses.ProjectRolesCount;
+import si.smrpo.scrum.lib.requests.ProjectRequest;
 import si.smrpo.scrum.mappers.ProjectMapper;
 import si.smrpo.scrum.persistence.BaseEntity;
 import si.smrpo.scrum.persistence.identifiers.ProjectUserId;
@@ -29,6 +28,7 @@ import si.smrpo.scrum.persistence.project.ProjectEntity;
 import si.smrpo.scrum.persistence.project.ProjectRoleEntity;
 import si.smrpo.scrum.persistence.project.ProjectUserEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
+import si.smrpo.scrum.services.ProjectMembershipService;
 import si.smrpo.scrum.services.ProjectService;
 
 import javax.enterprise.context.RequestScoped;
@@ -37,10 +37,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequestScoped
@@ -53,6 +50,9 @@ public class ProjectServiceImpl implements ProjectService {
     
     @Inject
     private UserService userService;
+    
+    @Inject
+    private ProjectMembershipService projMems;
     
     @Inject
     private Validator validator;
@@ -109,22 +109,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public Project createProject(CreateProjectRequest request) {
-        
+    public Project createProject(ProjectRequest request) {
         validator.assertNotBlank(request.getName());
         if (projectNameExists(request.getName())) {
             throw new ConflictException("error.conflict");
         }
-        
-        
+        validator.assertNotNull(request.getMembers());
         // Check that only one role is present amongst members
-        ProjectRolesCount rolesCount = getRolesCountFromRequest(request);
-        if (rolesCount.getProductOwnersCount() > 1) {
-            throw new ValidationException("error.project.roles.limit.product-owner");
-        }
-        if (rolesCount.getScrumMastersCount() > 1) {
-            throw new ValidationException("error.project.roles.limit.product-owner");
-        }
+        validateRequestRoles(request);
         
         ProjectEntity entity = new ProjectEntity();
         entity.setStatus(SimpleStatus.ACTIVE);
@@ -150,9 +142,7 @@ public class ProjectServiceImpl implements ProjectService {
                 projectUserEntity.setId(projectUserId);
                 projectUserEntity.setProjectRole(projectRolesMap.get(member.getProjectRoleId()));
                 return projectUserEntity;
-            }).forEach(projectUserEntity -> {
-                em.persist(projectUserEntity);
-            });
+            }).forEach(e -> em.persist(e));
             
             em.getTransaction().commit();
             return ProjectMapper.fromEntity(entity);
@@ -164,17 +154,69 @@ public class ProjectServiceImpl implements ProjectService {
     }
     
     @Override
-    public Project updateProject(String projectId, Project project) {
+    public Project updateProject(String projectId, ProjectRequest request) {
+        validator.assertNotBlank(request.getName(), "name", "ProjectRequest");
+        validator.assertNotNull(request.getMembers());
+        // Check that only one role is present amongst members
+        validateRequestRoles(request);
+        
         ProjectEntity entity = getProjectEntityById(projectId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
-        validator.assertNotBlank(project.getName());
-        if (projectNameExists(project.getName())) {
-            throw new ConflictException("error.conflict");
+        
+        if (!request.getName().equals(entity.getName())) {
+            if (projectNameExists(request.getName())) {
+                throw new ConflictException("error.conflict", "ProjectRequest", "name");
+            }
         }
+        
+        Map<String, ProjectRoleEntity> projectRolesMap = getProjectRoles();
+        List<ProjectUserEntity> currentMembers = projMems.getProjectMembershipEntities(projectId);
+        Map<String, ProjectUserEntity> currentMembersMap = currentMembers.stream()
+            .collect(Collectors.toMap(e -> e.getUser().getId(), e -> e));
+        List<ProjectMember> newMembers = request.getMembers();
+        Map<String, ProjectMember> newMembersMap = request.getMembers().stream()
+            .collect(Collectors.toMap(ProjectMember::getUserId, e -> e));
+        
+        Set<ProjectUserEntity> toBeAdded = new HashSet<>();
+        Set<ProjectUserEntity> toBeDeleted = new HashSet<>();
         
         try {
             em.getTransaction().begin();
-            entity.setName(project.getName());
+            entity.setName(request.getName());
+            
+            // update project membership
+            for (ProjectUserEntity currentMember : currentMembers) {
+                // if member is present in current and new, check role and update if needed, otherwise noop
+                if (newMembersMap.containsKey(currentMember.getUser().getId())) {
+                    ProjectMember newMember = newMembersMap.get(currentMember.getUser().getId());
+                    if (!currentMember.getProjectRole().getRoleId().equals(newMember.getProjectRoleId())) {
+                        currentMember.setProjectRole(projectRolesMap.get(newMember.getProjectRoleId()));
+                        em.merge(currentMember);
+                    }
+                } else {
+                    // if member is present in current, but not new, mark it for deletion
+                    toBeDeleted.add(currentMember);
+                }
+            }
+            for (ProjectMember newMember : newMembers) {
+                // if member is present in new and not in current, mark it for addition
+                if (!currentMembersMap.containsKey(newMember.getUserId())) {
+                    ProjectUserEntity membership = new ProjectUserEntity();
+                    membership.setProjectRole(projectRolesMap.get(newMember.getProjectRoleId()));
+                    ProjectUserId membershipId = new ProjectUserId();
+                    membershipId.setProject(entity);
+                    UserEntity user = userService.getUserEntityById(newMember.getUserId())
+                            .orElseThrow(() -> new NotFoundException("error.not-found"));
+                    membershipId.setUser(user);
+                    membership.setId(membershipId);
+                    toBeAdded.add(membership);
+                }
+                // inverse condition is already checked in previous step
+            }
+            
+            toBeDeleted.forEach(e -> em.remove(e));
+            toBeAdded.forEach(e -> em.persist(e));
+            
             em.getTransaction().commit();
             return ProjectMapper.fromEntity(entity);
         } catch (PersistenceException e) {
@@ -235,21 +277,30 @@ public class ProjectServiceImpl implements ProjectService {
             .collect(Collectors.toMap(ProjectRoleEntity::getRoleId, e -> e));
     }
     
-    private ProjectRolesCount getRolesCountFromRequest(CreateProjectRequest request) {
-        ProjectRolesCount counter = new ProjectRolesCount();
-        counter.setProductOwnersCount(countRoles(request.getMembers(), ProjectRoleEntity.PROJECT_ROLE_PRODUCT_OWNER));
-        counter.setScrumMastersCount(countRoles(request.getMembers(), ProjectRoleEntity.PROJECT_ROLE_SCRUM_MASTER));
-        counter.setMembersCount(countRoles(request.getMembers(), ProjectRoleEntity.PROJECT_ROLE_MEMBER));
-        return counter;
+    /**
+     * Checks that only one role is present and that project has assigned members
+     */
+    private void validateRequestRoles(ProjectRequest request) throws ValidationException {
+        Map<String, Integer> rolesCount = request.getMembers().stream()
+            .collect(Collectors.toMap(ProjectMember::getProjectRoleId, e -> 1, Integer::sum));
+        
+        if (rolesCount.getOrDefault(ProjectRoleEntity.PROJECT_ROLE_PRODUCT_OWNER, 0) != 1) {
+            throw new ValidationException("error.project.roles.limit.product-owner")
+                .withEntity("ProjectRequest")
+                .withField("members")
+                .withDescription("Only one product owner per project is allowed!");
+        }
+        if (rolesCount.getOrDefault(ProjectRoleEntity.PROJECT_ROLE_SCRUM_MASTER, 0) != 1) {
+            throw new ValidationException("error.project.roles.limit.scrum-master")
+                .withEntity("ProjectRequest")
+                .withField("members")
+                .withDescription("Only one scrum master per project is allowed!");
+        }
+        if (rolesCount.getOrDefault(ProjectRoleEntity.PROJECT_ROLE_MEMBER, 0) == 0) {
+            throw new ValidationException("error.project.roles.limit.members")
+                .withEntity("ProjectRequest")
+                .withField("members")
+                .withDescription("Project must have at least one member!");
+        }
     }
-    
-    private long countRoles(List<ProjectMember> members, String roleId) {
-        return members.stream().reduce(0L, (acc, elem) -> {
-            if (elem.getProjectRoleId().equals(roleId)) {
-                return acc + 1;
-            }
-            return acc;
-        }, Long::sum);
-    }
-    
 }

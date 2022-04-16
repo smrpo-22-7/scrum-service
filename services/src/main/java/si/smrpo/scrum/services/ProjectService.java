@@ -5,7 +5,7 @@ import com.mjamsek.rest.dto.EntityList;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectRole;
-import si.smrpo.scrum.lib.requests.CreateProjectRequest;
+import si.smrpo.scrum.lib.requests.ProjectRequest;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 
 import java.util.Optional;
@@ -21,9 +21,9 @@ public interface ProjectService {
 
     Optional<ProjectEntity> getProjectEntityById(String projectId);
 
-    Project createProject(CreateProjectRequest request);
+    Project createProject(ProjectRequest request);
 
-    Project updateProject(String projectId, Project project);
+    Project updateProject(String projectId, ProjectRequest request);
     
     boolean projectNameExists(String projectName);
 

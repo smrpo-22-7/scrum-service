@@ -61,6 +61,19 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
     private AuthContext authContext;
     
     @Override
+    public List<ProjectUserEntity> getProjectMembershipEntities(String projectId) {
+        TypedQuery<ProjectUserEntity> query = em.createNamedQuery(ProjectUserEntity.GET_PROJECT_MEMBERS, ProjectUserEntity.class);
+        query.setParameter("projectId", projectId);
+    
+        try {
+            return query.getResultList();
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
     public EntityList<ProjectMember> getProjectMembers(String projectId, QueryParameters queryParameters) {
         
         if (!authContext.getSysRoles().contains(Roles.ADMIN_ROLE)) {

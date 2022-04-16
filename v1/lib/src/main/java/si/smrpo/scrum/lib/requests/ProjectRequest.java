@@ -4,7 +4,7 @@ import si.smrpo.scrum.lib.projects.ProjectMember;
 
 import java.util.List;
 
-public class CreateProjectRequest {
+public class ProjectRequest {
 
     private String name;
 

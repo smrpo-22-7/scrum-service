@@ -15,7 +15,7 @@ import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectMember;
 import si.smrpo.scrum.lib.projects.ProjectRole;
 import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
-import si.smrpo.scrum.lib.requests.CreateProjectRequest;
+import si.smrpo.scrum.lib.requests.ProjectRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
@@ -100,7 +100,7 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
 
     @SysRolesRequired({Roles.ADMIN_ROLE})
     @Override
-    public Response createProject(CreateProjectRequest request) {
+    public Response createProject(ProjectRequest request) {
         Project createdProject = projectService.createProject(request);
         return Response.status(Response.Status.CREATED).entity(createdProject).build();
     }
@@ -117,7 +117,7 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
 
     @SysRolesRequired({Roles.ADMIN_ROLE})
     @Override
-    public Response updateProjectName(String projectId, Project project) {
+    public Response updateProjectName(String projectId, ProjectRequest project) {
         Project updatedProject = projectService.updateProject(projectId, project);
         return Response.ok(updatedProject).build();
     }
