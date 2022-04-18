@@ -2,8 +2,10 @@ package si.smrpo.scrum.services;
 
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.mjamsek.rest.dto.EntityList;
+import si.smrpo.scrum.lib.params.ProjectStoriesFilters;
 import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
+import si.smrpo.scrum.lib.responses.ExtendedStory;
 import si.smrpo.scrum.lib.stories.AcceptanceTest;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.lib.stories.StoryState;
@@ -15,6 +17,8 @@ import java.util.Optional;
 public interface StoryService {
 
     EntityList<Story> getStories(String projectId, QueryParameters queryParameters);
+    
+    EntityList<ExtendedStory> getProjectStories(String projectId, ProjectStoriesFilters params);
 
     Story getStoryById(String storyId);
     

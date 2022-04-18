@@ -24,7 +24,26 @@ import java.util.List;
             "FROM SprintStoryEntity ss " +
             "WHERE ss.id.story.id = :storyId " +
             "AND ss.id.sprint.startDate <= :now " +
-            "AND ss.id.sprint.endDate > :now")
+            "AND ss.id.sprint.endDate > :now"),
+    @NamedQuery(name = StoryEntity.GET_EXTENDED_STORIES,
+        query = "SELECT new si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated(s, ss.id.sprint IS NOT NULL, ss.id.sprint.id) " +
+            "FROM StoryEntity s " +
+            "LEFT JOIN SprintStoryEntity ss ON ss.id.story = s " +
+            "LEFT JOIN SprintEntity sp ON ss.id.sprint = sp AND sp.endDate >= :now AND sp.startDate <= :now " +
+            "WHERE s.project.id = :projectId AND s.realized = :realized AND (CASE WHEN (ss.id.sprint IS NOT NULL) THEN true ELSE false END) = :activeSprintOnly " +
+            "ORDER BY s.numberId ASC"),
+    @NamedQuery(name = StoryEntity.GET_EXTENDED_STORIES_DESC,
+        query = "SELECT new si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated(s, ss.id.sprint IS NOT NULL, ss.id.sprint.id) " +
+            "FROM StoryEntity s " +
+            "LEFT JOIN SprintStoryEntity ss ON ss.id.story = s " +
+            "LEFT JOIN SprintEntity sp ON ss.id.sprint = sp AND sp.endDate >= :now AND sp.startDate <= :now " +
+            "WHERE s.project.id = :projectId AND s.realized = :realized AND (CASE WHEN (ss.id.sprint IS NOT NULL) THEN true ELSE false END) = :activeSprintOnly " +
+            "ORDER BY s.numberId DESC"),
+    @NamedQuery(name = StoryEntity.COUNT_EXTENDED_STORIES,
+        query = "SELECT COUNT(s) FROM StoryEntity s " +
+            "LEFT JOIN SprintStoryEntity ss ON ss.id.story = s " +
+            "LEFT JOIN SprintEntity sp ON ss.id.sprint = sp AND sp.endDate >= :now AND sp.startDate <= :now " +
+            "WHERE s.project.id = :projectId AND s.realized = :realized AND (CASE WHEN (ss.id.sprint IS NOT NULL) THEN true ELSE false END) = :activeSprintOnly")
     // @formatter:on
 })
 public class StoryEntity extends BaseEntity {
@@ -32,6 +51,9 @@ public class StoryEntity extends BaseEntity {
     public static final String GET_NEW_NUMBER_ID = "StoryEntity.getNewNumberId";
     public static final String GET_BY_TITLE = "StoryEntity.getByTitle";
     public static final String CHECK_IN_SPRINT = "StoryEntity.checkInSprint";
+    public static final String GET_EXTENDED_STORIES = "StoryEntity.getExtendedStories";
+    public static final String GET_EXTENDED_STORIES_DESC = "StoryEntity.getExtendedStoriesDesc";
+    public static final String COUNT_EXTENDED_STORIES = "StoryEntity.countExtendedStories";
     
     @Column(name = "title", nullable = false)
     private String title;

@@ -8,27 +8,27 @@ import java.util.List;
 
 public class Story extends BaseType {
 
-    private String title;
-
-    private String description;
+    protected String title;
     
-    private Integer numberId;
-
-    private SimpleStatus status;
-
-    private Integer businessValue;
+    protected String description;
     
-    private Integer timeEstimate;
-
-    private StoryPriority priority;
-
-    private Boolean realized;
+    protected Integer numberId;
     
-    private Boolean assigned;
-
-    private List<AcceptanceTest> tests;
+    protected SimpleStatus status;
     
-    private String projectId;
+    protected Integer businessValue;
+    
+    protected Integer timeEstimate;
+    
+    protected StoryPriority priority;
+    
+    protected Boolean realized;
+    
+    protected Boolean assigned;
+    
+    protected List<AcceptanceTest> tests;
+    
+    protected String projectId;
 
     public String getTitle() {
         return title;

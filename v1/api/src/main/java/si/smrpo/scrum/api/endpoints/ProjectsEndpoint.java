@@ -5,6 +5,7 @@ import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.mjamsek.rest.dto.EntityList;
 import si.smrpo.scrum.api.endpoints.defs.ProjectsEndpointDef;
 import si.smrpo.scrum.api.params.ProjectSprintFilters;
+import si.smrpo.scrum.api.params.ProjectStoriesParams;
 import si.smrpo.scrum.integrations.auth.Roles;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
@@ -18,6 +19,7 @@ import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.ProjectRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
+import si.smrpo.scrum.lib.responses.ExtendedStory;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
 import si.smrpo.scrum.lib.responses.SprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
@@ -236,6 +238,11 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
         EntityList<Story> stories = storyService.getStories(projectId, queryParameters);
         return Response.ok(stories.getEntities()).header(X_TOTAL_COUNT, stories.getCount()).build();
     }
-
-
+    
+    @Override
+    public Response getProjectStories(String projectId, ProjectStoriesParams params) {
+        EntityList<ExtendedStory> stories = storyService.getProjectStories(projectId, params.toProjectStoriesFilters());
+        return Response.ok(stories.getEntities()).header(X_TOTAL_COUNT, stories.getCount()).build();
+    }
+    
 }

@@ -12,6 +12,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import si.smrpo.scrum.api.params.ProjectSprintFilters;
+import si.smrpo.scrum.api.params.ProjectStoriesParams;
 import si.smrpo.scrum.lib.UserProfile;
 import si.smrpo.scrum.lib.projects.Project;
 import si.smrpo.scrum.lib.projects.ProjectMember;
@@ -20,6 +21,7 @@ import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.ProjectRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
+import si.smrpo.scrum.lib.responses.ExtendedStory;
 import si.smrpo.scrum.lib.responses.ProjectRolesCount;
 import si.smrpo.scrum.lib.responses.SprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
@@ -196,6 +198,19 @@ public interface ProjectsEndpointDef {
         })
     })
     Response getStories(@PathParam("projectId") String projectId);
+    
+    @GET
+    @Path("/{projectId}/stories/full")
+    @Tag(name = "stories")
+    @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "200", content =
+        @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+        @Schema(implementation = ExtendedStory.class, type = SchemaType.ARRAY)), headers = {
+            @Header(name = Rest.HttpHeaders.X_TOTAL_COUNT, schema = @Schema(type = SchemaType.INTEGER))
+        })
+    })
+    Response getProjectStories(@PathParam("projectId") String projectId, @BeanParam ProjectStoriesParams params);
     
     @POST
     @Path("/{projectId}/stories")
