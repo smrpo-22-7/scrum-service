@@ -29,7 +29,7 @@ public class ProjectStoryQueryBuilder {
     }
     
     public ProjectStoryQueryBuilder build(String projectId, ProjectStoriesFilters filters) {
-        String sql = "SELECT new si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated(s, ss.id.sprint IS NOT NULL, ss.id.sprint.id) " +
+        String sql = "SELECT new si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated(s, sp.id IS NOT NULL, sp.id) " +
             "FROM StoryEntity s " +
             "LEFT JOIN SprintStoryEntity ss ON ss.id.story = s " +
             "LEFT JOIN SprintEntity sp ON ss.id.sprint = sp AND sp.endDate >= :now AND sp.startDate <= :now " +
