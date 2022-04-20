@@ -1,5 +1,6 @@
 package si.smrpo.scrum.api.endpoints.defs;
 
+import com.kumuluz.ee.rest.enums.OrderDirection;
 import com.mjamsek.rest.Rest;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
@@ -190,19 +191,11 @@ public interface ProjectsEndpointDef {
     @Path("/{projectId}/stories")
     @Tag(name = "stories")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
-    @APIResponses({
-        @APIResponse(responseCode = "200", content =
-        @Content(mediaType = MediaType.APPLICATION_JSON, schema =
-        @Schema(implementation = Story.class, type = SchemaType.ARRAY)), headers = {
-            @Header(name = Rest.HttpHeaders.X_TOTAL_COUNT, schema = @Schema(type = SchemaType.INTEGER))
-        })
-    })
-    Response getStories(@PathParam("projectId") String projectId);
-    
-    @GET
-    @Path("/{projectId}/stories/full")
-    @Tag(name = "stories")
-    @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @Parameter(name = "numberIdSort", in = ParameterIn.QUERY, schema = @Schema(implementation = OrderDirection.class))
+    @Parameter(name = "filterRealized", in = ParameterIn.QUERY, schema = @Schema(implementation = Boolean.class))
+    @Parameter(name = "filterAssigned", in = ParameterIn.QUERY, schema = @Schema(implementation = Boolean.class))
+    @Parameter(name = "limit", in = ParameterIn.QUERY, schema = @Schema(implementation = Long.class))
+    @Parameter(name = "offset", in = ParameterIn.QUERY, schema = @Schema(implementation = Long.class))
     @APIResponses({
         @APIResponse(responseCode = "200", content =
         @Content(mediaType = MediaType.APPLICATION_JSON, schema =

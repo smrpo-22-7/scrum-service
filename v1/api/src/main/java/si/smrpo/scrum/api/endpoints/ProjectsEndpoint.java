@@ -234,12 +234,6 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     
     @SysRolesRequired({Roles.USER_ROLE})
     @Override
-    public Response getStories(String projectId) {
-        EntityList<Story> stories = storyService.getStories(projectId, queryParameters);
-        return Response.ok(stories.getEntities()).header(X_TOTAL_COUNT, stories.getCount()).build();
-    }
-    
-    @Override
     public Response getProjectStories(String projectId, ProjectStoriesParams params) {
         EntityList<ExtendedStory> stories = storyService.getProjectStories(projectId, params.toProjectStoriesFilters());
         return Response.ok(stories.getEntities()).header(X_TOTAL_COUNT, stories.getCount()).build();

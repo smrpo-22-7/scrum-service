@@ -22,7 +22,6 @@ import si.smrpo.scrum.lib.stories.AcceptanceTest;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.lib.stories.StoryState;
 import si.smrpo.scrum.mappers.StoryMapper;
-import si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 import si.smrpo.scrum.persistence.sprint.SprintStoryEntity;
 import si.smrpo.scrum.persistence.story.AcceptanceTestEntity;
@@ -30,6 +29,7 @@ import si.smrpo.scrum.persistence.story.StoryEntity;
 import si.smrpo.scrum.services.ProjectAuthorizationService;
 import si.smrpo.scrum.services.ProjectService;
 import si.smrpo.scrum.services.StoryService;
+import si.smrpo.scrum.services.builders.ProjectStoryQueryBuilder;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -88,35 +88,10 @@ public class StoryServiceImpl implements StoryService {
     
     @Override
     public EntityList<ExtendedStory> getProjectStories(String projectId, ProjectStoriesFilters params) {
-        TypedQuery<ExtendedStoryAggregated> query = em.createNamedQuery(
-            params.getNumberIdSortAsc() ? StoryEntity.GET_EXTENDED_STORIES : StoryEntity.GET_EXTENDED_STORIES_DESC,
-            ExtendedStoryAggregated.class);
-        Date now =new Date();
-        query.setMaxResults(params.getLimit());
-        query.setFirstResult(params.getOffset());
-        query.setParameter("projectId", projectId);
-        query.setParameter("now", now);
-        query.setParameter("realized", params.getFilterRealized());
-        query.setParameter("activeSprintOnly", params.getFilterAssigned());
-        
-        TypedQuery<Long> countQuery = em.createNamedQuery(StoryEntity.COUNT_EXTENDED_STORIES, Long.class);
-        countQuery.setParameter("projectId", projectId);
-        countQuery.setParameter("now", now);
-        countQuery.setParameter("realized", params.getFilterRealized());
-        countQuery.setParameter("activeSprintOnly", params.getFilterAssigned());
-        
-        List<ExtendedStory> stories = query.getResultStream()
-            .map(entity -> {
-                ExtendedStory story = new ExtendedStory(StoryMapper.fromEntity(entity.getStory()));
-                story.setAssignedSprintId(entity.getAssignedTo());
-                story.setInActiveSprint(entity.isAssigned());
-                return story;
-            })
-            .collect(Collectors.toList());
-        
-        Long storiesCount = countQuery.getSingleResult();
-        
-        return new EntityList<>(stories, storiesCount);
+        return ProjectStoryQueryBuilder
+            .newBuilder(em)
+            .build(projectId, params)
+            .getQueryResult();
     }
     
     @Override

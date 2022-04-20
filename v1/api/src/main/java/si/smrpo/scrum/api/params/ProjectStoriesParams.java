@@ -13,11 +13,9 @@ public class ProjectStoriesParams {
     private OrderDirection numberIdSort;
     
     @QueryParam("filterRealized")
-    @DefaultValue("false")
     private Boolean filterRealized;
     
     @QueryParam("filterAssigned")
-    @DefaultValue("false")
     private Boolean filterAssigned;
     
     @QueryParam("limit")
