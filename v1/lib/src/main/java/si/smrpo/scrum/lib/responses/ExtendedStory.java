@@ -23,6 +23,7 @@ public class ExtendedStory extends Story {
         this.title = story.getTitle();
         this.numberId = story.getNumberId();
         this.timeEstimate = story.getTimeEstimate();
+        this.rejectComment = story.getRejectComment();
         if (story.isRealized() != null) {
             this.realized = story.isRealized();
         }

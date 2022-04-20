@@ -18,6 +18,7 @@ public class StoryMapper {
         story.setTitle(entity.getTitle());
         story.setNumberId(entity.getNumberId());
         story.setTimeEstimate(entity.getTimeEstimate());
+        story.setRejectComment(entity.getRejectComment());
         if (entity.isRealized() != null) {
             story.setRealized(entity.isRealized());
         } else {

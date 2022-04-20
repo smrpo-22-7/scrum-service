@@ -24,6 +24,8 @@ public class Story extends BaseType {
     
     protected Boolean realized;
     
+    protected String rejectComment;
+    
     protected Boolean assigned;
     
     protected List<AcceptanceTest> tests;
@@ -116,5 +118,13 @@ public class Story extends BaseType {
     
     public void setProjectId(String projectId) {
         this.projectId = projectId;
+    }
+    
+    public String getRejectComment() {
+        return rejectComment;
+    }
+    
+    public void setRejectComment(String rejectComment) {
+        this.rejectComment = rejectComment;
     }
 }

@@ -248,6 +248,9 @@ public class StoryServiceImpl implements StoryService {
         try {
             em.getTransaction().begin();
             entity.setRealized(story.isRealized());
+            if (story.getRejectComment() != null && !story.isRealized()) {
+                entity.setRejectComment(story.getRejectComment());
+            }
             em.getTransaction().commit();
             return StoryMapper.fromEntity(entity);
         } catch (PersistenceException e) {
