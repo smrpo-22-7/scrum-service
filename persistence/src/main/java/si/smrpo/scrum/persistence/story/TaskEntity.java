@@ -20,8 +20,8 @@ public class TaskEntity extends BaseEntity {
     @Column(name = "description", nullable = false)
     private String description;
     
-    @Column(name = "estimate", nullable = false)
-    private double estimate;
+    @Column(name = "estimate")
+    private Double estimate;
     
     @Column(name = "completed", nullable = false)
     private boolean completed;
@@ -49,11 +49,11 @@ public class TaskEntity extends BaseEntity {
         this.description = description;
     }
     
-    public double getEstimate() {
+    public Double getEstimate() {
         return estimate;
     }
     
-    public void setEstimate(double estimate) {
+    public void setEstimate(Double estimate) {
         this.estimate = estimate;
     }
     
