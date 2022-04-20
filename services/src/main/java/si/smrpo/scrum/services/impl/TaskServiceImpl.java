@@ -76,7 +76,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task createTask(String storyId, Task task) {
         validator.assertNotBlank(task.getDescription());
-        if (task.getEstimate() <= 0) {
+        
+        if (task.getEstimate() != null && task.getEstimate() <= 0) {
             throw new ValidationException("error.validation");
         }
         
@@ -92,7 +93,9 @@ public class TaskServiceImpl implements TaskService {
         entity.setDescription(task.getDescription());
         entity.setStory(story);
         entity.setStatus(SimpleStatus.ACTIVE);
-        entity.setEstimate(task.getEstimate());
+        if (task.getEstimate() != null) {
+            entity.setEstimate(task.getEstimate());
+        }
         entity.setCompleted(false);
         
         entity.setPendingAssignment(true);
