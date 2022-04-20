@@ -44,8 +44,8 @@ public class ProjectStoryQueryBuilder {
             countSql += " AND s.realized = :realized";
         }
         if (filters.getFilterAssigned() != null) {
-            sql += " AND (CASE WHEN (ss.id.sprint IS NOT NULL) THEN true ELSE false END) = :activeSprintOnly";
-            countSql += " AND (CASE WHEN (ss.id.sprint IS NOT NULL) THEN true ELSE false END) = :activeSprintOnly";
+            sql += " AND (CASE WHEN (sp.id IS NOT NULL) THEN true ELSE false END) = :activeSprintOnly";
+            countSql += " AND (CASE WHEN (sp.id IS NOT NULL) THEN true ELSE false END) = :activeSprintOnly";
         }
         
         sql += " ORDER BY s.numberId " + (filters.getNumberIdSortAsc() ? "ASC" : "DESC");
