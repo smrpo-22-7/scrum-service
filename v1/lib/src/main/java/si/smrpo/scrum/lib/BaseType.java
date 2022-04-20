@@ -4,11 +4,11 @@ import java.time.Instant;
 
 public class BaseType {
     
-    private String id;
+    protected String id;
     
-    private Instant createdAt;
+    protected Instant createdAt;
     
-    private Instant updatedAt;
+    protected Instant updatedAt;
     
     public String getId() {
         return id;

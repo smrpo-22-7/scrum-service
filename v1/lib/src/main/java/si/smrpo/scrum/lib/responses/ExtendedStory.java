@@ -13,6 +13,9 @@ public class ExtendedStory extends Story {
     }
     
     public ExtendedStory(Story story) {
+        this.id = story.getId();
+        this.createdAt = story.getCreatedAt();
+        this.updatedAt = story.getUpdatedAt();
         this.status = story.getStatus();
         this.description = story.getDescription();
         this.businessValue = story.getBusinessValue();

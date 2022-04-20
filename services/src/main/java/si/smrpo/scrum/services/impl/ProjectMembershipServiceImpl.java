@@ -34,6 +34,7 @@ import si.smrpo.scrum.services.ProjectService;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.*;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Path;
 import java.util.List;
@@ -64,7 +65,7 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
     public List<ProjectUserEntity> getProjectMembershipEntities(String projectId) {
         TypedQuery<ProjectUserEntity> query = em.createNamedQuery(ProjectUserEntity.GET_PROJECT_MEMBERS, ProjectUserEntity.class);
         query.setParameter("projectId", projectId);
-    
+        
         try {
             return query.getResultList();
         } catch (PersistenceException e) {
@@ -84,10 +85,10 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
         query.setParameter("projectId", projectId);
         query.setMaxResults(Math.toIntExact(queryParameters.getLimit()));
         query.setFirstResult(Math.toIntExact(queryParameters.getOffset()));
-    
+        
         TypedQuery<Long> countQuery = em.createNamedQuery(ProjectUserEntity.COUNT_PROJECT_MEMBERS, Long.class);
         countQuery.setParameter("projectId", projectId);
-    
+        
         try {
             List<ProjectMember> members = query.getResultStream()
                 .map(ProjectMapper::fromEntity)
@@ -106,8 +107,7 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
         
         QueryParameters queryParameters = new QueryParameters();
         queryParameters.setLimit(5);
-        QueryUtil.overrideFilterParam(new QueryFilter("id.project.id", FilterOperation.EQ, projectId), queryParameters);
-    
+        
         var queryOpt = prepareQuery(query);
         CriteriaFilter<ProjectUserEntity> searchFilter = null;
         if (queryOpt.isPresent()) {
@@ -115,70 +115,15 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
             searchFilter = (p, cb, r) -> {
                 Path<UserEntity> userPath = r.get("id").get("user");
                 Path<ProjectEntity> projectPath = r.get("id").get("project");
-                Expression<String> usernameQuery = cb.function(
-                    "REPLACE",
-                    String.class,
-                    cb.function(
-                        "REPLACE",
-                        String.class,
-                        cb.function(
-                            "REPLACE",
-                            String.class,
-                            cb.lower(userPath.get("username")),
-                            cb.literal("š"),
-                            cb.literal("s")
-                        ),
-                        cb.literal("ž"),
-                        cb.literal("z")
-                    ),
-                    cb.literal("č"),
-                    cb.literal("c")
-                );
-            
-                Expression<String> firstNameQuery = cb.function(
-                    "REPLACE",
-                    String.class,
-                    cb.function(
-                        "REPLACE",
-                        String.class,
-                        cb.function(
-                            "REPLACE",
-                            String.class,
-                            cb.lower(userPath.get("firstName")),
-                            cb.literal("š"),
-                            cb.literal("s")
-                        ),
-                        cb.literal("ž"),
-                        cb.literal("z")
-                    ),
-                    cb.literal("č"),
-                    cb.literal("c")
-                );
-            
-                Expression<String> lastNameQuery = cb.function(
-                    "REPLACE",
-                    String.class,
-                    cb.function(
-                        "REPLACE",
-                        String.class,
-                        cb.function(
-                            "REPLACE",
-                            String.class,
-                            cb.lower(userPath.get("lastName")),
-                            cb.literal("š"),
-                            cb.literal("s")
-                        ),
-                        cb.literal("ž"),
-                        cb.literal("z")
-                    ),
-                    cb.literal("č"),
-                    cb.literal("c")
-                );
-            
+                
+                Expression<String> usernameQuery = prepareFieldQuery(cb, userPath.get("username"));
+                Expression<String> firstNameQuery = prepareFieldQuery(cb, userPath.get("firstName"));
+                Expression<String> lastNameQuery = prepareFieldQuery(cb, userPath.get("lastName"));
+                
                 return cb.and(
                     cb.equal(
-                        cb.literal(projectId),
-                        projectPath.get("id")
+                        projectPath.get("id"),
+                        cb.literal(projectId)
                     ),
                     cb.or(
                         cb.like(usernameQuery, preparedQuery),
@@ -189,7 +134,7 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
                     ));
             };
         }
-    
+        
         return JPAUtils.getEntityStream(em, ProjectUserEntity.class, queryParameters, searchFilter)
             .map(ProjectUserEntity::getUser)
             .map(UserMapper::toSimpleProfile)
@@ -202,13 +147,13 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
         
         ProjectEntity project = projectService.getProjectEntityById(projectId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
-    
+        
         UserEntity user = userService.getUserEntityById(member.getUserId())
             .orElseThrow(() -> new NotFoundException("error.not-found"));
-    
+        
         ProjectRoleEntity role = getProjectRoleEntity(member.getProjectRoleId())
             .orElseThrow(() -> new NotFoundException("error.not-found"));
-    
+        
         ProjectRolesCount currentProjectRoles = getProjectRolesCount(projectId);
         if (role.getRoleId().equals(ProjectRoleEntity.PROJECT_ROLE_SCRUM_MASTER) &&
             currentProjectRoles.getScrumMastersCount() != 0) {
@@ -218,14 +163,14 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
             currentProjectRoles.getProductOwnersCount() != 0) {
             throw new BadRequestException("error.project.roles.limit.product-owner");
         }
-    
+        
         ProjectUserEntity entity = new ProjectUserEntity();
         ProjectUserId entityId = new ProjectUserId();
         entityId.setUser(user);
         entityId.setProject(project);
         entity.setId(entityId);
         entity.setProjectRole(role);
-    
+        
         try {
             em.getTransaction().begin();
             em.persist(entity);
@@ -244,7 +189,7 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
         Query query = em.createNamedQuery(ProjectUserEntity.DELETE_BY_USER_AND_PROJECT);
         query.setParameter("projectId", projectId);
         query.setParameter("userId", userId);
-    
+        
         try {
             em.getTransaction().begin();
             query.executeUpdate();
@@ -263,12 +208,12 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
         TypedQuery<ProjectUserEntity> query = em.createNamedQuery(ProjectUserEntity.GET_BY_USER_AND_PROJECT, ProjectUserEntity.class);
         query.setParameter("projectId", projectId);
         query.setParameter("userId", userId);
-    
+        
         ProjectRoleEntity role = getProjectRoleEntity(member.getProjectRoleId())
             .orElseThrow(() -> new NotFoundException("error.not-found"));
-    
+        
         ProjectRolesCount currentProjectRoles = getProjectRolesCount(projectId);
-    
+        
         if (role.getRoleId().equals(ProjectRoleEntity.PROJECT_ROLE_SCRUM_MASTER) &&
             currentProjectRoles.getScrumMastersCount() != 0) {
             throw new BadRequestException("error.project.roles.limit.scrum-master");
@@ -277,7 +222,7 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
             currentProjectRoles.getProductOwnersCount() != 0) {
             throw new BadRequestException("error.project.roles.limit.product-owner");
         }
-    
+        
         try {
             em.getTransaction().begin();
             ProjectUserEntity projectUserEntity = query.getSingleResult();
@@ -295,11 +240,31 @@ public class ProjectMembershipServiceImpl implements ProjectMembershipService {
     @Override
     public ProjectRolesCount getProjectRolesCount(String projectId) {
         ProjectMembersAggregated currentProjectRoles = getProjectRolesCountAggregated(projectId);
-    
+        
         ProjectRolesCount count = ProjectMapper.fromAggregated(currentProjectRoles);
         count.setProjectId(projectId);
-    
+        
         return count;
+    }
+    
+    private Expression<String> applyReplace(CriteriaBuilder cb, Expression<String> column, String find, String replace) {
+        return cb.function(
+            "REPLACE",
+            String.class,
+            column,
+            cb.literal(find),
+            cb.literal(replace)
+        );
+    }
+    
+    private Expression<String> prepareFieldQuery(CriteriaBuilder cb, Expression<String> column) {
+        return applyReplace(cb,
+            applyReplace(cb,
+                applyReplace(cb,
+                    cb.lower(column),
+                    "š", "s"
+                ), "ž", "z"
+            ), "č", "c");
     }
     
     private ProjectMembersAggregated getProjectRolesCountAggregated(String projectId) {
