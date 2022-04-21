@@ -11,7 +11,7 @@ import javax.persistence.*;
     @Index(name = "INDEX_TASKS_STORY_ID", columnList = "story_id")
 })
 @NamedQueries({
-    @NamedQuery(name = TaskEntity.GET_BY_STORY, query = "SELECT t FROM TaskEntity t WHERE t.story.id = :storyId")
+    @NamedQuery(name = TaskEntity.GET_BY_STORY, query = "SELECT t FROM TaskEntity t WHERE t.story.id = :storyId AND t.status = 'ACTIVE'")
 })
 public class TaskEntity extends BaseEntity {
     
