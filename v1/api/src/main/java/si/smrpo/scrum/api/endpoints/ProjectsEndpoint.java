@@ -103,8 +103,7 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
         Project createdProject = projectService.createProject(request);
         return Response.status(Response.Status.CREATED).entity(createdProject).build();
     }
-
-    @SysRolesRequired({Roles.ADMIN_ROLE})
+    
     @Override
     public Response checkProjectNameExits(ConflictCheckRequest request) {
         boolean exists = projectService.projectNameExists(request.getValue());
@@ -113,22 +112,19 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
         }
         return Response.noContent().build();
     }
-
-    @SysRolesRequired({Roles.ADMIN_ROLE})
+    
     @Override
     public Response updateProjectName(String projectId, ProjectRequest project) {
         Project updatedProject = projectService.updateProject(projectId, project);
         return Response.ok(updatedProject).build();
     }
-
-    @SysRolesRequired({Roles.ADMIN_ROLE})
+    
     @Override
     public Response setProjectStatusDisabled(String projectId) {
         projectService.changeProjectStatus(projectId, SimpleStatus.DISABLED);
         return Response.noContent().build();
     }
-
-    @SysRolesRequired({Roles.ADMIN_ROLE})
+    
     @Override
     public Response setProjectStatusActivated(String projectId) {
         projectService.changeProjectStatus(projectId, SimpleStatus.ACTIVE);
