@@ -36,8 +36,7 @@ public class SprintEndpoint implements SprintEndpointDef {
     
     @Inject
     private SprintService sprintService;
-
-    @SysRolesRequired({Roles.USER_ROLE})
+    
     @Override
     public Response getSprintById(String sprintId) {
         Sprint sprint = sprintService.getSprintById(sprintId);

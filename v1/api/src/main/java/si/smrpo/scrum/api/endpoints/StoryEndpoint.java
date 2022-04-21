@@ -34,7 +34,6 @@ public class StoryEndpoint implements StoryEndpointDef {
     @Inject
     private TaskService taskService;
     
-    @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response getStoryById(String storyId, boolean full) {
         Story story;
@@ -52,14 +51,12 @@ public class StoryEndpoint implements StoryEndpointDef {
         return Response.ok(state).build();
     }
     
-    @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response updateTimeEstimate(String storyId, Story story) {
         Story updatedStory = storyService.updateTimeEstimate(storyId, story);
         return Response.ok(updatedStory).build();
     }
     
-    @SysRolesRequired({Roles.USER_ROLE})
     @Override
     public Response updateRealized(String storyId, Story story) {
         Story updatedStory = storyService.updateRealized(storyId, story);
