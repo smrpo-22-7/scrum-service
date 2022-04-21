@@ -48,7 +48,6 @@ public class UsersEndpoint implements UsersEndpointDef {
     @Inject
     private AuthContext authContext;
     
-    @SysRolesRequired({Roles.ADMIN_ROLE})
     @Override
     public Response getUserList() {
         EntityList<User> users = userService.getUserList(queryParameters);
