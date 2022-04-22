@@ -1,10 +1,13 @@
 package si.smrpo.scrum.persistence.project;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.persistence.BaseEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "project_wall_posts", indexes = {
@@ -32,6 +35,10 @@ public class ProjectWallPostEntity extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
     private ProjectEntity project;
+    
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @LazyCollection(LazyCollectionOption.TRUE)
+    private List<ProjectWallCommentEntity> comments;
     
     public String getTextContent() {
         return textContent;
@@ -79,5 +86,13 @@ public class ProjectWallPostEntity extends BaseEntity {
     
     public void setStatus(SimpleStatus status) {
         this.status = status;
+    }
+    
+    public List<ProjectWallCommentEntity> getComments() {
+        return comments;
+    }
+    
+    public void setComments(List<ProjectWallCommentEntity> comments) {
+        this.comments = comments;
     }
 }

@@ -1,5 +1,6 @@
 package si.smrpo.scrum.api.endpoints.defs;
 
+import com.kumuluz.ee.rest.enums.OrderDirection;
 import com.mjamsek.rest.Rest;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
@@ -12,6 +13,7 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import si.smrpo.scrum.api.params.ProjectWallPostsParams;
 import si.smrpo.scrum.lib.projects.ProjectWallComment;
 import si.smrpo.scrum.lib.projects.ProjectWallPost;
 import si.smrpo.scrum.lib.responses.ExtendedStory;
@@ -27,6 +29,9 @@ public interface ProjectWallEndpointDef {
     @Tag(name = "project-wall")
     @Operation(summary = "get wall posts")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @Parameter(name = "sort", in = ParameterIn.QUERY, schema = @Schema(implementation = OrderDirection.class))
+    @Parameter(name = "limit", in = ParameterIn.QUERY, schema = @Schema(implementation = Long.class))
+    @Parameter(name = "offset", in = ParameterIn.QUERY, schema = @Schema(implementation = Long.class))
     @APIResponses({
         @APIResponse(responseCode = "200", content =
         @Content(mediaType = MediaType.APPLICATION_JSON, schema =
@@ -34,7 +39,7 @@ public interface ProjectWallEndpointDef {
             @Header(name = Rest.HttpHeaders.X_TOTAL_COUNT, schema = @Schema(type = SchemaType.INTEGER))
         })
     })
-    Response getPosts(@PathParam("projectId") String projectId);
+    Response getPosts(@PathParam("projectId") String projectId, @BeanParam ProjectWallPostsParams params);
     
     @GET
     @Path("/posts/{postId}/comments")

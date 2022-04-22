@@ -4,6 +4,7 @@ import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.mjamsek.rest.Rest;
 import com.mjamsek.rest.dto.EntityList;
 import si.smrpo.scrum.api.endpoints.defs.ProjectWallEndpointDef;
+import si.smrpo.scrum.api.params.ProjectWallPostsParams;
 import si.smrpo.scrum.lib.projects.ProjectWallComment;
 import si.smrpo.scrum.lib.projects.ProjectWallPost;
 import si.smrpo.scrum.services.ProjectWallService;
@@ -29,8 +30,8 @@ public class ProjectWallEndpoint implements ProjectWallEndpointDef {
     private QueryParameters queryParameters;
     
     @Override
-    public Response getPosts(String projectId) {
-        EntityList<ProjectWallPost> posts = projectWallService.getPosts(projectId, queryParameters);
+    public Response getPosts(String projectId, ProjectWallPostsParams params) {
+        EntityList<ProjectWallPost> posts = projectWallService.getPosts(projectId, params.toProjectWallPostFilters());
         return Response.ok(posts.getEntities())
             .header(Rest.HttpHeaders.X_TOTAL_COUNT, posts.getCount())
             .build();

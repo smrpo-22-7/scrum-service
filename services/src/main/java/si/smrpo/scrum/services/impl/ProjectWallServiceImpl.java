@@ -17,6 +17,7 @@ import com.mjamsek.rest.utils.QueryUtil;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.integrations.markdown.MarkdownRenderService;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
+import si.smrpo.scrum.lib.params.ProjectWallPostFilters;
 import si.smrpo.scrum.lib.projects.ProjectWallComment;
 import si.smrpo.scrum.lib.projects.ProjectWallPost;
 import si.smrpo.scrum.mappers.ProjectWallPostMapper;
@@ -27,6 +28,7 @@ import si.smrpo.scrum.persistence.users.UserEntity;
 import si.smrpo.scrum.services.ProjectAuthorizationService;
 import si.smrpo.scrum.services.ProjectService;
 import si.smrpo.scrum.services.ProjectWallService;
+import si.smrpo.scrum.services.builders.ProjectWallPostQueryBuilder;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -60,20 +62,10 @@ public class ProjectWallServiceImpl implements ProjectWallService {
     private AuthContext authContext;
     
     @Override
-    public EntityList<ProjectWallPost> getPosts(String projectId, QueryParameters queryParameters) {
-        QueryUtil.overrideFilterParam(new QueryFilter("project.id", FilterOperation.EQ, projectId), queryParameters);
-        QueryUtil.overrideFilterParam(new QueryFilter("status", FilterOperation.EQ, SimpleStatus.ACTIVE.name()), queryParameters);
-        QueryUtil.setDefaultOrderParam(new QueryOrder("createdAt", OrderDirection.DESC), queryParameters);
-        
-        List<ProjectWallPost> posts = JPAUtils.getEntityStream(em, ProjectWallPostEntity.class, queryParameters)
-            .map(entity -> {
-                return ProjectWallPostMapper.fromEntity(entity, false, true, false);
-            })
-            .collect(Collectors.toList());
-        
-        long postCount = JPAUtils.queryEntitiesCount(em, ProjectWallPostEntity.class, queryParameters);
-        
-        return new EntityList<>(posts, postCount);
+    public EntityList<ProjectWallPost> getPosts(String projectId, ProjectWallPostFilters filters) {
+        return ProjectWallPostQueryBuilder.newBuilder(em)
+            .build(projectId, filters)
+            .getQueryResult();
     }
     
     @Override

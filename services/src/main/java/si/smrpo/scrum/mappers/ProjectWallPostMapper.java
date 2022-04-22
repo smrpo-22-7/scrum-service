@@ -3,6 +3,7 @@ package si.smrpo.scrum.mappers;
 import si.smrpo.scrum.integrations.auth.mappers.UserMapper;
 import si.smrpo.scrum.lib.projects.ProjectWallComment;
 import si.smrpo.scrum.lib.projects.ProjectWallPost;
+import si.smrpo.scrum.persistence.aggregators.ProjectWallPostAggregated;
 import si.smrpo.scrum.persistence.project.ProjectWallCommentEntity;
 import si.smrpo.scrum.persistence.project.ProjectWallPostEntity;
 
@@ -27,6 +28,12 @@ public class ProjectWallPostMapper {
         if (withText) {
             post.setTextContent(entity.getTextContent());
         }
+        return post;
+    }
+    
+    public static ProjectWallPost fromAggregatedEntity(ProjectWallPostAggregated entity, boolean withMarkdown, boolean withHtml, boolean withText) {
+        ProjectWallPost post = fromEntity(entity.getPost(), withMarkdown, withHtml, withText);
+        post.setNumOfComments(entity.getNumOfComments());
         return post;
     }
     

@@ -2,6 +2,7 @@ package si.smrpo.scrum.services;
 
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.mjamsek.rest.dto.EntityList;
+import si.smrpo.scrum.lib.params.ProjectWallPostFilters;
 import si.smrpo.scrum.lib.projects.ProjectWallComment;
 import si.smrpo.scrum.lib.projects.ProjectWallPost;
 import si.smrpo.scrum.persistence.project.ProjectWallCommentEntity;
@@ -11,7 +12,7 @@ import java.util.Optional;
 
 public interface ProjectWallService {
     
-    EntityList<ProjectWallPost> getPosts(String projectId, QueryParameters queryParameters);
+    EntityList<ProjectWallPost> getPosts(String projectId, ProjectWallPostFilters filters);
     
     EntityList<ProjectWallComment> getPostComments(String postId, QueryParameters queryParameters);
     

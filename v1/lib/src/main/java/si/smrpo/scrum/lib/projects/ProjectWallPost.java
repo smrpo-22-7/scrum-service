@@ -20,7 +20,7 @@ public class ProjectWallPost extends BaseType {
     
     private String projectId;
     
-    private Long numOfComments;
+    private Integer numOfComments;
     
     public String getTextContent() {
         return textContent;
@@ -78,11 +78,11 @@ public class ProjectWallPost extends BaseType {
         this.status = status;
     }
     
-    public Long getNumOfComments() {
+    public Integer getNumOfComments() {
         return numOfComments;
     }
     
-    public void setNumOfComments(Long numOfComments) {
+    public void setNumOfComments(Integer numOfComments) {
         this.numOfComments = numOfComments;
     }
 }
