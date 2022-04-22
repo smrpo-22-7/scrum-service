@@ -15,6 +15,8 @@ public class CreateStoryRequest {
     private SimpleStatus status;
 
     private Integer businessValue;
+    
+    protected Integer timeEstimate;
 
     private StoryPriority priority;
 
@@ -66,5 +68,13 @@ public class CreateStoryRequest {
 
     public void setTests(List<AcceptanceTest> tests) {
         this.tests = tests;
+    }
+    
+    public Integer getTimeEstimate() {
+        return timeEstimate;
+    }
+    
+    public void setTimeEstimate(Integer timeEstimate) {
+        this.timeEstimate = timeEstimate;
     }
 }

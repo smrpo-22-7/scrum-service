@@ -7,11 +7,13 @@ import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.kumuluz.ee.rest.enums.FilterOperation;
 import com.kumuluz.ee.rest.utils.JPAUtils;
 import com.mjamsek.rest.dto.EntityList;
+import com.mjamsek.rest.exceptions.BadRequestException;
 import com.mjamsek.rest.exceptions.NotFoundException;
 import com.mjamsek.rest.exceptions.RestException;
 import com.mjamsek.rest.exceptions.ValidationException;
 import com.mjamsek.rest.services.Validator;
 import com.mjamsek.rest.utils.QueryUtil;
+import liquibase.sqlgenerator.core.LockDatabaseChangeLogGenerator;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.params.ProjectStoriesFilters;
@@ -72,7 +74,7 @@ public class StoryServiceImpl implements StoryService {
         QueryUtil.overrideFilterParam(new QueryFilter("id.sprint.startDate", FilterOperation.LTE, now), sprintParams);
         QueryUtil.overrideFilterParam(new QueryFilter("id.sprint.endDate", FilterOperation.GT, now), sprintParams);
         Map<String, SprintStoryEntity> sprintStories = JPAUtils.getEntityStream(em, SprintStoryEntity.class, sprintParams)
-                .collect(Collectors.toMap(s -> s.getStory().getId(), s -> s));
+            .collect(Collectors.toMap(s -> s.getStory().getId(), s -> s));
         
         // Get all project stories
         QueryUtil.overrideFilterParam(new QueryFilter("project.id", FilterOperation.EQ, projectId), queryParameters);
@@ -155,7 +157,17 @@ public class StoryServiceImpl implements StoryService {
         validator.assertNotNull(request.getPriority());
         
         if (request.getBusinessValue() <= 0) {
-            throw new ValidationException("error.story.validation");
+            throw new ValidationException("error.story.validation")
+                .withEntity("Story")
+                .withField("bussinessValue");
+        }
+        
+        if (request.getTimeEstimate() != null) {
+            if (request.getTimeEstimate() <= 0) {
+                throw new ValidationException("error.story.validation")
+                    .withEntity("Story")
+                    .withField("timeEstimate");
+            }
         }
         
         ProjectEntity project = projectService.getProjectEntityById(projectId)
@@ -169,6 +181,9 @@ public class StoryServiceImpl implements StoryService {
         entity.setDescription(request.getDescription());
         entity.setPriority(request.getPriority());
         entity.setBusinessValue(request.getBusinessValue());
+        if (request.getTimeEstimate() != null) {
+            entity.setTimeEstimate(request.getTimeEstimate());
+        }
         entity.setProject(project);
         entity.setNumberId(newNumberId);
         
@@ -190,6 +205,42 @@ public class StoryServiceImpl implements StoryService {
         } catch (PersistenceException e) {
             LOG.error(e);
             em.getTransaction().rollback();
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
+    public Story updateStory(String storyId, CreateStoryRequest story) {
+        StoryEntity entity = getStoryEntityById(storyId)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        
+        validateStoryEdit(entity);
+        
+        try {
+            em.getTransaction().begin();
+            
+            entity.setDescription(story.getDescription());
+            entity.setTitle(story.getTitle());
+            entity.setPriority(story.getPriority());
+            entity.setTimeEstimate(story.getTimeEstimate());
+            entity.setBusinessValue(story.getBusinessValue());
+            
+            entity.setTests(null);
+            entity.setTests(story.getTests().stream()
+                .map(test -> {
+                    AcceptanceTestEntity testEntity = new AcceptanceTestEntity();
+                    testEntity.setResult(test.getResult());
+                    testEntity.setStory(entity);
+                    return testEntity;
+                })
+                .collect(Collectors.toList())
+            );
+            
+            em.getTransaction().commit();
+            return StoryMapper.fromEntity(entity);
+        } catch (PersistenceException e) {
+            em.getTransaction().rollback();
+            LOG.error(e);
             throw new RestException("error.server");
         }
     }
@@ -232,19 +283,19 @@ public class StoryServiceImpl implements StoryService {
             .map(StoryMapper::fromEntity)
             .collect(Collectors.toList());
     }
-
+    
     @Override
     public Story updateRealized(String storyId, Story story) {
         validator.assertNotNull(story.isRealized(), "realized", "Story");
-
+        
         StoryEntity entity = getStoryEntityById(storyId)
-                .orElseThrow(() -> new NotFoundException("error.not-found"));
-
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        
         projectAuthorizationService.isProductOwnerOrThrow(
-                entity.getProject().getId(),
-                authContext.getId()
+            entity.getProject().getId(),
+            authContext.getId()
         );
-
+        
         try {
             em.getTransaction().begin();
             entity.setRealized(story.isRealized());
@@ -257,6 +308,33 @@ public class StoryServiceImpl implements StoryService {
             LOG.error(e);
             em.getTransaction().rollback();
             throw new RestException("error.server");
+        }
+    }
+    
+    @Override
+    public void removeStory(String storyId) {
+        getStoryEntityById(storyId).ifPresent(entity -> {
+            validateStoryEdit(entity);
+            
+            try {
+                em.getTransaction().begin();
+                entity.setStatus(SimpleStatus.DISABLED);
+                em.getTransaction().commit();
+            } catch (PersistenceException e) {
+                LOG.error(e);
+                em.getTransaction().rollback();
+                throw new RestException("error.server");
+            }
+        });
+    }
+    
+    private void validateStoryEdit(StoryEntity entity) {
+        projectAuthorizationService.isProjectAdminOrThrow(entity.getProject().getId(), authContext.getId());
+        
+        // TODO: check if in active sprint
+        
+        if (entity.isRealized() != null && entity.isRealized()) {
+            throw new BadRequestException("error.story.realized").setEntity("Story");
         }
     }
     
@@ -289,6 +367,6 @@ public class StoryServiceImpl implements StoryService {
             throw new RestException("error.server");
         }
     }
-
-
+    
+    
 }

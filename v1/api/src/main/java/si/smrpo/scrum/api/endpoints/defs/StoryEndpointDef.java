@@ -9,6 +9,7 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.requests.TaskAssignmentRequest;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.lib.stories.StoryState;
@@ -106,6 +107,28 @@ public interface StoryEndpointDef {
         @APIResponse(responseCode = "204")
     })
     Response requestTaskForUser(@PathParam("storyId") String storyId, @PathParam("taskId") String taskId, TaskAssignmentRequest request);
+    
+    @PATCH
+    @Path("/{storyId}")
+    @Tag(name = "stories")
+    @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
+        schema = @Schema(implementation = CreateStoryRequest.class)))
+    @APIResponses({
+        @APIResponse(responseCode = "200", content =
+        @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+        @Schema(implementation = Story.class)))
+    })
+    Response updateStory(@PathParam("storyId") String storyId, CreateStoryRequest request);
+    
+    @DELETE
+    @Path("/{storyId}")
+    @Tag(name = "stories")
+    @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "204")
+    })
+    Response deleteStory(@PathParam("storyId") String storyId);
     
 }
 

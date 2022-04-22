@@ -67,7 +67,7 @@ public class StoryEntity extends BaseEntity {
     @JoinColumn(name = "project_id", nullable = false)
     private ProjectEntity project;
     
-    @OneToMany(mappedBy = "story")
+    @OneToMany(mappedBy = "story", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<AcceptanceTestEntity> tests;
     
     public String getTitle() {

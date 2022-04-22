@@ -1,9 +1,8 @@
 package si.smrpo.scrum.api.endpoints;
 
 import si.smrpo.scrum.api.endpoints.defs.StoryEndpointDef;
-import si.smrpo.scrum.integrations.auth.Roles;
 import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
-import si.smrpo.scrum.integrations.auth.models.annotations.SysRolesRequired;
+import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.requests.TaskAssignmentRequest;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.lib.stories.StoryState;
@@ -78,6 +77,18 @@ public class StoryEndpoint implements StoryEndpointDef {
     @Override
     public Response requestTaskForUser(String storyId, String taskId, TaskAssignmentRequest request) {
         taskService.requestTaskForUser(taskId, request);
+        return Response.noContent().build();
+    }
+    
+    @Override
+    public Response updateStory(String storyId, CreateStoryRequest request) {
+        Story updatedStory = storyService.updateStory(storyId, request);
+        return Response.ok(updatedStory).build();
+    }
+    
+    @Override
+    public Response deleteStory(String storyId) {
+        storyService.removeStory(storyId);
         return Response.noContent().build();
     }
     

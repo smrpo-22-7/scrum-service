@@ -30,11 +30,15 @@ public interface StoryService {
 
     Story createStory(String projectId, CreateStoryRequest request);
     
+    Story updateStory(String storyId, CreateStoryRequest story);
+    
     Story updateTimeEstimate(String storyId, Story story);
     
     List<AcceptanceTest> getStoryAcceptanceTests(String storyId);
 
     Story updateRealized(String storyId, Story story);
+    
+    void removeStory(String storyId);
     
     boolean checkStoryNameExists(String projectId, ConflictCheckRequest request);
 }
