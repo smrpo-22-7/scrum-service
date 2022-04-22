@@ -118,6 +118,21 @@ public interface UsersEndpointDef {
     @POST
     @Path("/update-credentials")
     @Tag(name = "users")
+    @Operation(summary = "update user own credentials", description = "Updates user's own credentials to given value.")
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(
+        implementation = ChangePasswordRequest.class)
+    ))
+    @APIResponses({
+        @APIResponse(responseCode = "204", description = "credentials updated"),
+        @APIResponse(responseCode = "422", description = "validation failed", content = @Content(
+            mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ExceptionResponse.class)
+        ))
+    })
+    Response updateUserOwnCredentials(ChangePasswordRequest request);
+    
+    @POST
+    @Path("/{userId}/update-credentials")
+    @Tag(name = "users")
     @Operation(summary = "update user credentials", description = "Updates user credentials to given value.")
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(
         implementation = ChangePasswordRequest.class)
@@ -128,7 +143,7 @@ public interface UsersEndpointDef {
             mediaType = MediaType.APPLICATION_JSON, schema = @Schema(implementation = ExceptionResponse.class)
         ))
     })
-    Response updateUserCredentials(ChangePasswordRequest request);
+    Response updateUserCredentials(@PathParam("userId") String userId, ChangePasswordRequest request);
     
     @DELETE
     @Path("/{userId}/disable")

@@ -92,8 +92,15 @@ public class UsersEndpoint implements UsersEndpointDef {
     }
     
     @Override
-    public Response updateUserCredentials(ChangePasswordRequest request) {
+    public Response updateUserOwnCredentials(ChangePasswordRequest request) {
         userService.changePassword(authContext.getId(), request);
+        return Response.noContent().build();
+    }
+    
+    @SysRolesRequired({Roles.ADMIN_ROLE})
+    @Override
+    public Response updateUserCredentials(String userId, ChangePasswordRequest request) {
+        userService.changePassword(userId, request);
         return Response.noContent().build();
     }
     
