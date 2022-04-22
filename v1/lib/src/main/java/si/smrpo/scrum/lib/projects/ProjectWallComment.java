@@ -4,7 +4,7 @@ import si.smrpo.scrum.lib.BaseType;
 import si.smrpo.scrum.lib.UserProfile;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 
-public class ProjectWallPost extends BaseType {
+public class ProjectWallComment extends BaseType {
     
     private String textContent;
     
@@ -18,9 +18,9 @@ public class ProjectWallPost extends BaseType {
     
     private String authorId;
     
-    private String projectId;
+    private ProjectWallPost post;
     
-    private Long numOfComments;
+    private String postId;
     
     public String getTextContent() {
         return textContent;
@@ -46,6 +46,14 @@ public class ProjectWallPost extends BaseType {
         this.htmlContent = htmlContent;
     }
     
+    public SimpleStatus getStatus() {
+        return status;
+    }
+    
+    public void setStatus(SimpleStatus status) {
+        this.status = status;
+    }
+    
     public UserProfile getAuthor() {
         return author;
     }
@@ -62,27 +70,19 @@ public class ProjectWallPost extends BaseType {
         this.authorId = authorId;
     }
     
-    public String getProjectId() {
-        return projectId;
+    public ProjectWallPost getPost() {
+        return post;
     }
     
-    public void setProjectId(String projectId) {
-        this.projectId = projectId;
+    public void setPost(ProjectWallPost post) {
+        this.post = post;
     }
     
-    public SimpleStatus getStatus() {
-        return status;
+    public String getPostId() {
+        return postId;
     }
     
-    public void setStatus(SimpleStatus status) {
-        this.status = status;
-    }
-    
-    public Long getNumOfComments() {
-        return numOfComments;
-    }
-    
-    public void setNumOfComments(Long numOfComments) {
-        this.numOfComments = numOfComments;
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 }

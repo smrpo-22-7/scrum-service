@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd">
+
+    <changeSet id="add-wall-post-comments-table" author="mihaj">
+        <createTable tableName="project_wall_comments">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_project_wall_comments"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="md_content" type="TEXT"/>
+            <column name="text_content" type="TEXT"/>
+            <column name="html_content" type="TEXT"/>
+            <column name="post_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="project_wall_comments" baseColumnNames="post_id" constraintName="fk_project_wall_comments_posts"
+                                 referencedTableName="project_wall_posts"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="project_wall_comments" baseColumnNames="author_id" constraintName="fk_project_wall_comments_users"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+        <createIndex tableName="project_wall_comments" indexName="INDEX_PROJECT_WALL_POSTS">
+            <column name="post_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>

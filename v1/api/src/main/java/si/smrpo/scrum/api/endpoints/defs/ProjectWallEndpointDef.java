@@ -12,10 +12,9 @@ import org.eclipse.microprofile.openapi.annotations.parameters.RequestBody;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import si.smrpo.scrum.lib.projects.ProjectWallComment;
 import si.smrpo.scrum.lib.projects.ProjectWallPost;
-import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.responses.ExtendedStory;
-import si.smrpo.scrum.lib.stories.Story;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -36,6 +35,20 @@ public interface ProjectWallEndpointDef {
         })
     })
     Response getPosts(@PathParam("projectId") String projectId);
+    
+    @GET
+    @Path("/posts/{postId}/comments")
+    @Tag(name = "project-wall")
+    @Operation(summary = "get post's comments")
+    @Parameter(name = "postId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "200", content =
+        @Content(mediaType = MediaType.APPLICATION_JSON, schema =
+        @Schema(implementation = ProjectWallComment.class, type = SchemaType.ARRAY)), headers = {
+            @Header(name = Rest.HttpHeaders.X_TOTAL_COUNT, schema = @Schema(type = SchemaType.INTEGER))
+        })
+    })
+    Response getPostComments(@PathParam("postId") String postId);
     
     @GET
     @Path("/{projectId}/posts/{postId}")
@@ -61,14 +74,36 @@ public interface ProjectWallEndpointDef {
     })
     Response savePost(@PathParam("projectId") String projectId, ProjectWallPost post);
     
+    @POST
+    @Path("/posts/{postId}/comments")
+    @Tag(name = "project-wall")
+    @Operation(summary = "save wall post's comment")
+    @Parameter(name = "postId", in = ParameterIn.PATH, required = true)
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
+        schema = @Schema(implementation = ProjectWallComment.class)))
+    @APIResponses({
+        @APIResponse(responseCode = "204")
+    })
+    Response addComment(@PathParam("postId") String postId, ProjectWallComment comment);
+    
     @DELETE
-    @Path("/{projectId}/posts/{postId}")
+    @Path("/posts/{postId}")
     @Tag(name = "project-wall")
     @Operation(summary = "remove wall post")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "204")
     })
-    Response removePost(@PathParam("projectId") String projectId, @PathParam("postId") String postId);
+    Response removePost(@PathParam("postId") String postId);
+    
+    @DELETE
+    @Path("/posts/comments/{commentId}")
+    @Tag(name = "project-wall")
+    @Operation(summary = "remove wall post")
+    @Parameter(name = "commentId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "204")
+    })
+    Response removeComment(@PathParam("commentId") String commentId);
     
 }

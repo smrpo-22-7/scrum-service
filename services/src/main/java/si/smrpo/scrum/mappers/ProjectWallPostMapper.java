@@ -1,7 +1,9 @@
 package si.smrpo.scrum.mappers;
 
 import si.smrpo.scrum.integrations.auth.mappers.UserMapper;
+import si.smrpo.scrum.lib.projects.ProjectWallComment;
 import si.smrpo.scrum.lib.projects.ProjectWallPost;
+import si.smrpo.scrum.persistence.project.ProjectWallCommentEntity;
 import si.smrpo.scrum.persistence.project.ProjectWallPostEntity;
 
 public class ProjectWallPostMapper {
@@ -26,6 +28,28 @@ public class ProjectWallPostMapper {
             post.setTextContent(entity.getTextContent());
         }
         return post;
+    }
+    
+    public static ProjectWallComment fromEntity(ProjectWallCommentEntity entity, boolean withMarkdown, boolean withHtml, boolean withText) {
+        ProjectWallComment comment = BaseMapper.fromEntity(entity, ProjectWallComment.class);
+        comment.setStatus(entity.getStatus());
+        if (entity.getPost() != null) {
+            comment.setPostId(entity.getPost().getId());
+        }
+        if (entity.getAuthor() != null) {
+            comment.setAuthorId(entity.getAuthor().getId());
+            comment.setAuthor(UserMapper.toSimpleProfile(entity.getAuthor()));
+        }
+        if (withMarkdown) {
+            comment.setMarkdownContent(entity.getMarkdownContent());
+        }
+        if (withHtml) {
+            comment.setHtmlContent(entity.getHtmlContent());
+        }
+        if (withText) {
+            comment.setTextContent(entity.getTextContent());
+        }
+        return comment;
     }
     
 }

@@ -4,6 +4,7 @@ import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.mjamsek.rest.Rest;
 import com.mjamsek.rest.dto.EntityList;
 import si.smrpo.scrum.api.endpoints.defs.ProjectWallEndpointDef;
+import si.smrpo.scrum.lib.projects.ProjectWallComment;
 import si.smrpo.scrum.lib.projects.ProjectWallPost;
 import si.smrpo.scrum.services.ProjectWallService;
 
@@ -36,6 +37,14 @@ public class ProjectWallEndpoint implements ProjectWallEndpointDef {
     }
     
     @Override
+    public Response getPostComments(String postId) {
+        EntityList<ProjectWallComment> comments = projectWallService.getPostComments(postId, queryParameters);
+        return Response.ok(comments.getEntities())
+            .header(Rest.HttpHeaders.X_TOTAL_COUNT, comments.getCount())
+            .build();
+    }
+    
+    @Override
     public Response getPost(String projectId, String postId) {
         return Response.ok(projectWallService.getPost(postId)).build();
     }
@@ -47,8 +56,21 @@ public class ProjectWallEndpoint implements ProjectWallEndpointDef {
     }
     
     @Override
-    public Response removePost(String projectId, String postId) {
+    public Response addComment(String postId, ProjectWallComment comment) {
+        projectWallService.addCommentToPost(postId, comment);
+        return Response.noContent().build();
+    }
+    
+    @Override
+    public Response removePost(String postId) {
         projectWallService.removePost(postId);
         return Response.noContent().build();
     }
+    
+    @Override
+    public Response removeComment(String commentId) {
+        projectWallService.removeComment(commentId);
+        return Response.noContent().build();
+    }
+    
 }
