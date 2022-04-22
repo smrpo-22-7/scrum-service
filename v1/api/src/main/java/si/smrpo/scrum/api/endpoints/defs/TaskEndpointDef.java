@@ -1,5 +1,6 @@
 package si.smrpo.scrum.api.endpoints.defs;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -19,6 +20,7 @@ public interface TaskEndpointDef {
     @PATCH
     @Path("/{taskId}")
     @Tag(name = "tasks")
+    @Operation(summary = "update story task")
     @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = Task.class)))
@@ -33,6 +35,7 @@ public interface TaskEndpointDef {
     @POST
     @Path("/{taskId}/request")
     @Tag(name = "tasks")
+    @Operation(summary = "accept task request")
     @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "204")
@@ -42,6 +45,7 @@ public interface TaskEndpointDef {
     @DELETE
     @Path("/{taskId}/request")
     @Tag(name = "tasks")
+    @Operation(summary = "decline task request")
     @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "204")
@@ -51,6 +55,7 @@ public interface TaskEndpointDef {
     @DELETE
     @Path("/{taskId}/assignee")
     @Tag(name = "tasks")
+    @Operation(summary = "clear assigned user")
     @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "204")
@@ -60,6 +65,7 @@ public interface TaskEndpointDef {
     @DELETE
     @Path("/{taskId}")
     @Tag(name = "tasks")
+    @Operation(summary = "remove task")
     @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "204")

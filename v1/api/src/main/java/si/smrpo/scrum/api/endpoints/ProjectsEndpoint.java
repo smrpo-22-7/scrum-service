@@ -114,7 +114,7 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     }
     
     @Override
-    public Response updateProjectName(String projectId, ProjectRequest project) {
+    public Response updateProject(String projectId, ProjectRequest project) {
         Project updatedProject = projectService.updateProject(projectId, project);
         return Response.ok(updatedProject).build();
     }

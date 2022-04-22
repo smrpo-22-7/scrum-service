@@ -1,5 +1,6 @@
 package si.smrpo.scrum.api.endpoints.defs;
 
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -24,6 +25,7 @@ public interface StoryEndpointDef {
     @GET
     @Path("/{storyId}")
     @Tag(name = "stories")
+    @Operation(summary = "get story")
     @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
     @Parameter(name = "full", in = ParameterIn.QUERY)
     @APIResponses({
@@ -37,6 +39,7 @@ public interface StoryEndpointDef {
     @GET
     @Path("/{storyId}/state")
     @Tag(name = "stories")
+    @Operation(summary = "get story state")
     @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "200", content =
@@ -48,6 +51,7 @@ public interface StoryEndpointDef {
     @PATCH
     @Path("/{storyId}/time-estimate")
     @Tag(name = "stories")
+    @Operation(summary = "update story's time estimate")
     @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = Story.class)))
@@ -62,6 +66,7 @@ public interface StoryEndpointDef {
     @PATCH
     @Path("/{storyId}/realized")
     @Tag(name = "stories")
+    @Operation(summary = "update story's realized status")
     @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = Story.class)))
@@ -75,6 +80,7 @@ public interface StoryEndpointDef {
     @GET
     @Path("/{storyId}/tasks")
     @Tag(name = "tasks")
+    @Operation(summary = "get story tasks")
     @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "200", content =
@@ -86,6 +92,7 @@ public interface StoryEndpointDef {
     @POST
     @Path("/{storyId}/tasks")
     @Tag(name = "tasks")
+    @Operation(summary = "create story task")
     @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = Task.class)))
@@ -99,6 +106,7 @@ public interface StoryEndpointDef {
     @PATCH
     @Path("/{storyId}/tasks/{taskId}/request")
     @Tag(name = "tasks")
+    @Operation(summary = "request task for user")
     @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
     @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
@@ -111,6 +119,7 @@ public interface StoryEndpointDef {
     @PATCH
     @Path("/{storyId}")
     @Tag(name = "stories")
+    @Operation(summary = "update story")
     @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = CreateStoryRequest.class)))
@@ -124,6 +133,7 @@ public interface StoryEndpointDef {
     @DELETE
     @Path("/{storyId}")
     @Tag(name = "stories")
+    @Operation(summary = "delete story")
     @Parameter(name = "storyId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "204")

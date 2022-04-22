@@ -1,6 +1,7 @@
 package si.smrpo.scrum.api.endpoints.defs;
 
 import com.mjamsek.rest.Rest;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.headers.Header;
@@ -27,6 +28,7 @@ public interface SprintEndpointDef {
     @GET
     @Path("/{sprintId}")
     @Tag(name = "sprints")
+    @Operation(summary = "get sprint")
     @Parameter(name = "sprintId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "200", content =
@@ -38,6 +40,7 @@ public interface SprintEndpointDef {
     @GET
     @Path("/{sprintId}/stories")
     @Tag(name = "sprints")
+    @Operation(summary = "get sprint stories")
     @Parameter(name = "sprintId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "200", content =
@@ -52,6 +55,7 @@ public interface SprintEndpointDef {
     @POST
     @Path("/{sprintId}/stories")
     @Tag(name = "sprints")
+    @Operation(summary = "add stories to sprint")
     @Parameter(name = "sprintId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "204")
@@ -61,6 +65,7 @@ public interface SprintEndpointDef {
     @GET
     @Path("/{sprintId}/status")
     @Tag(name = "sprints")
+    @Operation(summary = "get sprint status")
     @Parameter(name = "sprintId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "200", content =

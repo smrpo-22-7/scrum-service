@@ -2,6 +2,7 @@ package si.smrpo.scrum.api.endpoints.defs;
 
 import com.kumuluz.ee.rest.enums.OrderDirection;
 import com.mjamsek.rest.Rest;
+import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.headers.Header;
@@ -37,6 +38,7 @@ public interface ProjectsEndpointDef {
     
     @GET
     @Tag(name = "projects")
+    @Operation(summary = "get projects list")
     @APIResponses({
         @APIResponse(responseCode = "200", content =
         @Content(mediaType = MediaType.APPLICATION_JSON, schema =
@@ -49,6 +51,7 @@ public interface ProjectsEndpointDef {
     @GET
     @Path("/roles")
     @Tag(name = "projects")
+    @Operation(summary = "get project roles")
     @APIResponses({
         @APIResponse(responseCode = "200", content =
         @Content(mediaType = MediaType.APPLICATION_JSON, schema =
@@ -59,6 +62,7 @@ public interface ProjectsEndpointDef {
     @GET
     @Path("/my-projects")
     @Tag(name = "projects")
+    @Operation(summary = "get user projects")
     @APIResponses({
         @APIResponse(responseCode = "200", content =
         @Content(mediaType = MediaType.APPLICATION_JSON, schema =
@@ -71,6 +75,7 @@ public interface ProjectsEndpointDef {
     @GET
     @Path("/{projectId}")
     @Tag(name = "projects")
+    @Operation(summary = "get project")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "200", content =
@@ -81,6 +86,7 @@ public interface ProjectsEndpointDef {
     
     @POST
     @Tag(name = "projects")
+    @Operation(summary = "create project")
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = ProjectRequest.class)))
     @APIResponses({
@@ -93,6 +99,7 @@ public interface ProjectsEndpointDef {
     @POST
     @Path("/name-check")
     @Tag(name = "projects")
+    @Operation(summary = "check project name conflict")
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = ConflictCheckRequest.class)))
     @APIResponses({
@@ -104,6 +111,7 @@ public interface ProjectsEndpointDef {
     @PUT
     @Path("/{projectId}")
     @Tag(name = "projects")
+    @Operation(summary = "update project")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = ProjectRequest.class)))
@@ -112,11 +120,12 @@ public interface ProjectsEndpointDef {
         @Content(mediaType = MediaType.APPLICATION_JSON, schema =
         @Schema(implementation = Project.class)))
     })
-    Response updateProjectName(@PathParam("projectId") String projectId, ProjectRequest request);
+    Response updateProject(@PathParam("projectId") String projectId, ProjectRequest request);
     
     @DELETE
     @Path("/{projectId}/disable")
     @Tag(name = "projects")
+    @Operation(summary = "disable project")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "204")
@@ -126,6 +135,7 @@ public interface ProjectsEndpointDef {
     @POST
     @Path("/{projectId}/activate")
     @Tag(name = "projects")
+    @Operation(summary = "reactivate project")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "204")
@@ -135,6 +145,7 @@ public interface ProjectsEndpointDef {
     @GET
     @Path("/{projectId}/roles/count")
     @Tag(name = "projects")
+    @Operation(summary = "get project roles count")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "200", content =
@@ -146,6 +157,7 @@ public interface ProjectsEndpointDef {
     @GET
     @Path("/{projectId}/roles/user")
     @Tag(name = "projects")
+    @Operation(summary = "get user project role")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "200", content =
@@ -157,6 +169,7 @@ public interface ProjectsEndpointDef {
     @POST
     @Path("/{projectId}/users")
     @Tag(name = "projects")
+    @Operation(summary = "add user to project")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = ProjectMember.class)))
@@ -168,6 +181,7 @@ public interface ProjectsEndpointDef {
     @DELETE
     @Path("/{projectId}/users/{userId}")
     @Tag(name = "projects")
+    @Operation(summary = "remove user from project")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @Parameter(name = "userId", in = ParameterIn.PATH, required = true)
     @APIResponses({
@@ -178,6 +192,7 @@ public interface ProjectsEndpointDef {
     @PATCH
     @Path("/{projectId}/users/{userId}")
     @Tag(name = "projects")
+    @Operation(summary = "update user project role")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @Parameter(name = "userId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
@@ -190,6 +205,7 @@ public interface ProjectsEndpointDef {
     @GET
     @Path("/{projectId}/stories")
     @Tag(name = "stories")
+    @Operation(summary = "get project stories (extended)")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @Parameter(name = "numberIdSort", in = ParameterIn.QUERY, schema = @Schema(implementation = OrderDirection.class))
     @Parameter(name = "filterRealized", in = ParameterIn.QUERY, schema = @Schema(implementation = Boolean.class))
@@ -208,6 +224,7 @@ public interface ProjectsEndpointDef {
     @POST
     @Path("/{projectId}/stories")
     @Tag(name = "stories")
+    @Operation(summary = "create story")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = CreateStoryRequest.class)))
@@ -221,6 +238,7 @@ public interface ProjectsEndpointDef {
     @GET
     @Path("/{projectId}/sprints")
     @Tag(name = "sprints")
+    @Operation(summary = "get project sprints")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @Parameter(name = "active", in = ParameterIn.QUERY, schema = @Schema(type = SchemaType.BOOLEAN))
     @Parameter(name = "future", in = ParameterIn.QUERY, schema = @Schema(type = SchemaType.BOOLEAN))
@@ -235,6 +253,7 @@ public interface ProjectsEndpointDef {
     @POST
     @Path("/{projectId}/sprints")
     @Tag(name = "sprints")
+    @Operation(summary = "create sprint")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = Sprint.class)))
@@ -248,6 +267,7 @@ public interface ProjectsEndpointDef {
     @POST
     @Path("/{projectId}/sprints/check")
     @Tag(name = "stories")
+    @Operation(summary = "check sprint date conflicts")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = SprintConflictCheckRequest.class)))
@@ -260,6 +280,7 @@ public interface ProjectsEndpointDef {
     @POST
     @Path("/{projectId}/stories/name-check")
     @Tag(name = "stories")
+    @Operation(summary = "check story name conflict")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
         schema = @Schema(implementation = ConflictCheckRequest.class)))
@@ -272,6 +293,7 @@ public interface ProjectsEndpointDef {
     @GET
     @Path("/{projectId}/members")
     @Tag(name = "projects")
+    @Operation(summary = "get project members")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "200", content =
@@ -285,6 +307,7 @@ public interface ProjectsEndpointDef {
     @GET
     @Path("/{projectId}/members/query")
     @Tag(name = "projects")
+    @Operation(summary = "query project members")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "200", content =
@@ -297,6 +320,7 @@ public interface ProjectsEndpointDef {
     @GET
     @Path("/{projectId}/sprints/status")
     @Tag(name = "projects")
+    @Operation(summary = "get project's active sprint's status")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
     @APIResponses({
         @APIResponse(responseCode = "200", content =
