@@ -45,7 +45,7 @@ public class ProjectWallEndpoint implements ProjectWallEndpointDef {
     }
     
     @Override
-    public Response getPost(String projectId, String postId) {
+    public Response getPost(String postId) {
         return Response.ok(projectWallService.getPost(postId)).build();
     }
     

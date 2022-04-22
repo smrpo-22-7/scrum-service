@@ -51,7 +51,7 @@ public interface ProjectWallEndpointDef {
     Response getPostComments(@PathParam("postId") String postId);
     
     @GET
-    @Path("/{projectId}/posts/{postId}")
+    @Path("/posts/{postId}")
     @Tag(name = "project-wall")
     @Operation(summary = "get wall post")
     @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
@@ -60,7 +60,7 @@ public interface ProjectWallEndpointDef {
         @Content(mediaType = MediaType.APPLICATION_JSON, schema =
         @Schema(implementation = ExtendedStory.class)))
     })
-    Response getPost(@PathParam("projectId") String projectId, @PathParam("postId") String postId);
+    Response getPost(@PathParam("postId") String postId);
     
     @POST
     @Path("/{projectId}/posts")
