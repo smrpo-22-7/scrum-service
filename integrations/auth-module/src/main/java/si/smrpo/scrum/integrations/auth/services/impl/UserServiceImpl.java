@@ -251,17 +251,17 @@ public class UserServiceImpl implements UserService {
     
     @Override
     public User updateUser(String userId, User user) {
-        UserEntity entity = getUserEntityById(userId)
-            .orElseThrow(() -> new NotFoundException("error.not-found"));
-        
-        if (user.getUsername() != null && !user.getUsername().isBlank()) {
-            if (getUserEntityByUsername(user.getUsername()).isPresent()) {
-                throw new ConflictException("users.error.validation.taken-username");
-            }
-        }
-        
         try {
             em.getTransaction().begin();
+    
+            UserEntity entity = getUserEntityById(userId)
+                .orElseThrow(() -> new NotFoundException("error.not-found"));
+            
+            if (user.getUsername() != null && !user.getUsername().equals(entity.getUsername())) {
+                if (getUserEntityByUsername(user.getUsername()).isPresent()) {
+                    throw new ConflictException("users.error.validation.taken-username");
+                }
+            }
             
             setIfNotNull(user.getUsername(), entity::setUsername);
             setIfNotNull(user.getEmail(), entity::setEmail);
@@ -271,6 +271,9 @@ public class UserServiceImpl implements UserService {
             setIfNotNull(user.getAvatar(), entity::setAvatar);
             
             em.getTransaction().commit();
+            
+            roleService.updateUserRoles(userId, user.getGrantedRoles());
+            
             return UserMapper.fromEntity(entity);
         } catch (PersistenceException e) {
             em.getTransaction().rollback();
