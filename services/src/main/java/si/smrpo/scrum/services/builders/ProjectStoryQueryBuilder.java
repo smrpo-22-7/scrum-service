@@ -33,11 +33,11 @@ public class ProjectStoryQueryBuilder {
             "FROM StoryEntity s " +
             "LEFT JOIN SprintStoryEntity ss ON ss.id.story = s " +
             "LEFT JOIN SprintEntity sp ON ss.id.sprint = sp AND sp.endDate >= :now AND sp.startDate <= :now " +
-            "WHERE s.project.id = :projectId";
+            "WHERE s.project.id = :projectId AND s.status = 'ACTIVE'";
         String countSql = "SELECT COUNT(s) FROM StoryEntity s " +
             "LEFT JOIN SprintStoryEntity ss ON ss.id.story = s " +
             "LEFT JOIN SprintEntity sp ON ss.id.sprint = sp AND sp.endDate >= :now AND sp.startDate <= :now " +
-            "WHERE s.project.id = :projectId";
+            "WHERE s.project.id = :projectId AND s.status = 'ACTIVE'";
         
         if (filters.getFilterRealized() != null) {
             sql += " AND s.realized = :realized";
