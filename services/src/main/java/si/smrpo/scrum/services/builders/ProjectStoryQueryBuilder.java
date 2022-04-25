@@ -4,8 +4,10 @@ import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
 import com.mjamsek.rest.dto.EntityList;
 import com.mjamsek.rest.exceptions.RestException;
+import si.smrpo.scrum.lib.enums.StoryStatus;
 import si.smrpo.scrum.lib.params.ProjectStoriesFilters;
 import si.smrpo.scrum.lib.responses.ExtendedStory;
+import si.smrpo.scrum.lib.stories.StoryState;
 import si.smrpo.scrum.mappers.StoryMapper;
 import si.smrpo.scrum.persistence.BaseEntity;
 import si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated;
@@ -61,8 +63,8 @@ public class ProjectStoryQueryBuilder {
             "WHERE s.project.id = :projectId AND s.status = 'ACTIVE'";
         
         if (filters.getFilterRealized() != null) {
-            sql += " AND s.realized = :realized";
-            countSql += " AND s.realized = :realized";
+            sql += " AND s.storyStatus IN :storyStatuses";
+            countSql += " AND s.storyStatus IN :storyStatuses";
         }
         if (filters.getFilterAssigned() != null) {
             sql += " AND (CASE WHEN (ss.id IS NOT NULL) THEN true ELSE false END) = :activeSprintOnly";
@@ -78,8 +80,11 @@ public class ProjectStoryQueryBuilder {
         countQuery.setParameter("projectId", projectId);
         
         if (filters.getFilterRealized() != null) {
-            query.setParameter("realized", filters.getFilterRealized());
-            countQuery.setParameter("realized", filters.getFilterRealized());
+            List<StoryStatus> filterState = filters.getFilterRealized() ?
+                List.of(StoryStatus.REALIZED) :
+                List.of(StoryStatus.REJECTED, StoryStatus.WAITING);
+            query.setParameter("storyStatuses", filterState);
+            countQuery.setParameter("storyStatuses", filterState);
         }
         if (filters.getFilterAssigned() != null) {
             query.setParameter("activeSprintOnly", filters.getFilterAssigned());
