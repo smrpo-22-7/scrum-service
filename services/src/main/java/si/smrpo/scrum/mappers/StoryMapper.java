@@ -19,7 +19,8 @@ public class StoryMapper {
         story.setNumberId(entity.getNumberId());
         story.setTimeEstimate(entity.getTimeEstimate());
         story.setRejectComment(entity.getRejectComment());
-        story.setRealized(entity.isRealized());
+        story.setStoryStatus(entity.getStoryStatus());
+        
         if (entity.getTests() != null) {
             story.setTests(entity.getTests().stream().map(StoryMapper::fromEntity).collect(Collectors.toList()));
         }

@@ -3,6 +3,7 @@ package si.smrpo.scrum.lib.stories;
 import si.smrpo.scrum.lib.BaseType;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.enums.StoryPriority;
+import si.smrpo.scrum.lib.enums.StoryStatus;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class Story extends BaseType {
     
     protected StoryPriority priority;
     
-    protected Boolean realized;
+    protected StoryStatus storyStatus;
     
     protected String rejectComment;
     
@@ -100,9 +101,6 @@ public class Story extends BaseType {
         this.numberId = numberId;
     }
 
-    public Boolean isRealized() {return realized;}
-
-    public void setRealized(Boolean realized) {this.realized = realized;}
     
     public Boolean getAssigned() {
         return assigned;
@@ -126,5 +124,13 @@ public class Story extends BaseType {
     
     public void setRejectComment(String rejectComment) {
         this.rejectComment = rejectComment;
+    }
+    
+    public StoryStatus getStoryStatus() {
+        return storyStatus;
+    }
+    
+    public void setStoryStatus(StoryStatus storyStatus) {
+        this.storyStatus = storyStatus;
     }
 }

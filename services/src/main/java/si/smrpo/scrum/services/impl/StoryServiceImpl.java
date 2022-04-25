@@ -13,9 +13,9 @@ import com.mjamsek.rest.exceptions.RestException;
 import com.mjamsek.rest.exceptions.ValidationException;
 import com.mjamsek.rest.services.Validator;
 import com.mjamsek.rest.utils.QueryUtil;
-import liquibase.sqlgenerator.core.LockDatabaseChangeLogGenerator;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
+import si.smrpo.scrum.lib.enums.StoryStatus;
 import si.smrpo.scrum.lib.params.ProjectStoriesFilters;
 import si.smrpo.scrum.lib.requests.ConflictCheckRequest;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
@@ -117,7 +117,7 @@ public class StoryServiceImpl implements StoryService {
         StoryState state = new StoryState();
         state.setId(story.getId());
         state.setEstimated(story.getTimeEstimate() != null);
-        state.setRealized(story.isRealized());
+        state.setStoryStatus(story.getStoryStatus());
         
         TypedQuery<Boolean> query = em.createNamedQuery(StoryEntity.CHECK_IN_SPRINT, Boolean.class);
         Date now = new Date();
@@ -286,7 +286,7 @@ public class StoryServiceImpl implements StoryService {
     
     @Override
     public Story updateRealized(String storyId, Story story) {
-        validator.assertNotNull(story.isRealized(), "realized", "Story");
+        validator.assertNotNull(story.getStoryStatus(), "realized", "Story");
         
         StoryEntity entity = getStoryEntityById(storyId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
@@ -295,11 +295,21 @@ public class StoryServiceImpl implements StoryService {
             entity.getProject().getId(),
             authContext.getId()
         );
+    
+        if (entity.getStoryStatus().equals(StoryStatus.REALIZED)) {
+            throw new BadRequestException("error.bad-request");
+        }
+        
+        if (entity.getStoryStatus().equals(StoryStatus.REJECTED) &&
+            !story.getStoryStatus().equals(StoryStatus.REALIZED)) {
+            throw new BadRequestException("error.bad-request");
+        }
         
         try {
             em.getTransaction().begin();
-            entity.setRealized(story.isRealized());
-            if (story.getRejectComment() != null && !story.isRealized()) {
+            
+            entity.setStoryStatus(story.getStoryStatus());
+            if (story.getRejectComment() != null && story.getStoryStatus().equals(StoryStatus.REJECTED)) {
                 entity.setRejectComment(story.getRejectComment());
             }
             em.getTransaction().commit();
@@ -333,7 +343,7 @@ public class StoryServiceImpl implements StoryService {
         
         // TODO: check if in active sprint
         
-        if (entity.isRealized()) {
+        if (entity.getStoryStatus().equals(StoryStatus.REALIZED)) {
             throw new BadRequestException("error.story.realized").setEntity("Story");
         }
     }

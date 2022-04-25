@@ -2,6 +2,7 @@ package si.smrpo.scrum.persistence.story;
 
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.enums.StoryPriority;
+import si.smrpo.scrum.lib.enums.StoryStatus;
 import si.smrpo.scrum.persistence.BaseEntity;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 
@@ -54,11 +55,12 @@ public class StoryEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     protected StoryPriority priority;
     
+    @Column(name = "story_status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    protected StoryStatus storyStatus;
+    
     @Column(name = "time_estimate")
     protected Integer timeEstimate;
-    
-    @Column(name = "realized")
-    protected boolean realized;
     
     @Column(name = "reject_comment", columnDefinition = "TEXT")
     protected String rejectComment;
@@ -142,13 +144,6 @@ public class StoryEntity extends BaseEntity {
         this.numberId = numberId;
     }
     
-    public boolean isRealized() {
-        return realized;
-    }
-    
-    public void setRealized(boolean realized) {
-        this.realized = realized;
-    }
     
     public String getRejectComment() {
         return rejectComment;
@@ -156,6 +151,14 @@ public class StoryEntity extends BaseEntity {
     
     public void setRejectComment(String rejectComment) {
         this.rejectComment = rejectComment;
+    }
+    
+    public StoryStatus getStoryStatus() {
+        return storyStatus;
+    }
+    
+    public void setStoryStatus(StoryStatus storyStatus) {
+        this.storyStatus = storyStatus;
     }
 }
 

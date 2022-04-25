@@ -1,12 +1,14 @@
 package si.smrpo.scrum.lib.stories;
 
+import si.smrpo.scrum.lib.enums.StoryStatus;
+
 public class StoryState {
     
     private String id;
     
     private boolean inActiveSprint;
     
-    private boolean realized;
+    private StoryStatus storyStatus;
     
     private boolean estimated;
     
@@ -26,13 +28,6 @@ public class StoryState {
         this.inActiveSprint = inActiveSprint;
     }
     
-    public boolean isRealized() {
-        return realized;
-    }
-    
-    public void setRealized(boolean realized) {
-        this.realized = realized;
-    }
     
     public boolean isEstimated() {
         return estimated;
@@ -40,5 +35,13 @@ public class StoryState {
     
     public void setEstimated(boolean estimated) {
         this.estimated = estimated;
+    }
+    
+    public StoryStatus getStoryStatus() {
+        return storyStatus;
+    }
+    
+    public void setStoryStatus(StoryStatus storyStatus) {
+        this.storyStatus = storyStatus;
     }
 }
