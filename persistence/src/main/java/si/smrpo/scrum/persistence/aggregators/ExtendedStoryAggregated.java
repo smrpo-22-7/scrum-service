@@ -2,6 +2,8 @@ package si.smrpo.scrum.persistence.aggregators;
 
 import si.smrpo.scrum.persistence.story.StoryEntity;
 
+import java.util.Objects;
+
 public class ExtendedStoryAggregated {
     
     private StoryEntity story;
@@ -42,5 +44,18 @@ public class ExtendedStoryAggregated {
     
     public void setAssignedTo(String assignedTo) {
         this.assignedTo = assignedTo;
+    }
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ExtendedStoryAggregated that = (ExtendedStoryAggregated) o;
+        return story.getId().equals(that.story.getId());
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(story.getId());
     }
 }

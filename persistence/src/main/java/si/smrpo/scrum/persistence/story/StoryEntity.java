@@ -35,40 +35,40 @@ public class StoryEntity extends BaseEntity {
     
     
     @Column(name = "title", nullable = false)
-    private String title;
+    protected String title;
     
     @Column(name = "description", columnDefinition = "TEXT")
-    private String description;
+    protected String description;
     
     @Column(name = "number_id", unique = true, nullable = false, updatable = false)
-    private int numberId;
+    protected int numberId;
     
     @Column(name = "status", nullable = false)
     @Enumerated(EnumType.STRING)
-    private SimpleStatus status;
+    protected SimpleStatus status;
     
     @Column(name = "business_value")
-    private Integer businessValue;
+    protected Integer businessValue;
     
     @Column(name = "priority", nullable = false)
     @Enumerated(EnumType.STRING)
-    private StoryPriority priority;
+    protected StoryPriority priority;
     
     @Column(name = "time_estimate")
-    private Integer timeEstimate;
+    protected Integer timeEstimate;
     
     @Column(name = "realized")
-    private Boolean realized;
+    protected Boolean realized;
     
     @Column(name = "reject_comment", columnDefinition = "TEXT")
-    private String rejectComment;
+    protected String rejectComment;
     
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
-    private ProjectEntity project;
+    protected ProjectEntity project;
     
     @OneToMany(mappedBy = "story", cascade = {CascadeType.ALL}, orphanRemoval = true)
-    private List<AcceptanceTestEntity> tests;
+    protected List<AcceptanceTestEntity> tests;
     
     public String getTitle() {
         return title;

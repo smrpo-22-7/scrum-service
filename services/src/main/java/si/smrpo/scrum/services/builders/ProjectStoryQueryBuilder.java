@@ -1,26 +1,38 @@
 package si.smrpo.scrum.services.builders;
 
+import com.kumuluz.ee.logs.LogManager;
+import com.kumuluz.ee.logs.Logger;
 import com.mjamsek.rest.dto.EntityList;
+import com.mjamsek.rest.exceptions.RestException;
 import si.smrpo.scrum.lib.params.ProjectStoriesFilters;
 import si.smrpo.scrum.lib.responses.ExtendedStory;
 import si.smrpo.scrum.mappers.StoryMapper;
 import si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated;
+import si.smrpo.scrum.persistence.sprint.SprintEntity;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ProjectStoryQueryBuilder {
+    
+    private static final Logger LOG = LogManager.getLogger(ProjectStoryQueryBuilder.class.getName());
     
     public static ProjectStoryQueryBuilder newBuilder(EntityManager em) {
         return new ProjectStoryQueryBuilder(em);
     }
     
+    
     private final EntityManager em;
     
     private TypedQuery<ExtendedStoryAggregated> query;
+    
+    private TypedQuery<SprintEntity> activeSprintQuery;
     
     private TypedQuery<Long> countQuery;
     
@@ -29,14 +41,22 @@ public class ProjectStoryQueryBuilder {
     }
     
     public ProjectStoryQueryBuilder build(String projectId, ProjectStoriesFilters filters) {
-        String sql = "SELECT new si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated(s, sp.id IS NOT NULL, sp.id) " +
+        Date now = new Date();
+        
+        String activeSprintSql = "SELECT s FROM SprintEntity s " +
+            "WHERE s.endDate >= :now AND s.startDate <= :now " +
+            "AND s.project.id = :projectId AND s.status = 'ACTIVE'";
+        activeSprintQuery = em.createQuery(activeSprintSql, SprintEntity.class);
+        activeSprintQuery.setParameter("projectId", projectId);
+        activeSprintQuery.setParameter("now", now);
+        
+        String sql = "SELECT new si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated(s, ss.id IS NOT NULL, ss.id.sprint.id) " +
             "FROM StoryEntity s " +
-            "LEFT JOIN SprintStoryEntity ss ON ss.id.story = s " +
-            "LEFT JOIN SprintEntity sp ON ss.id.sprint = sp AND sp.endDate >= :now AND sp.startDate <= :now " +
+            "LEFT JOIN SprintStoryEntity ss ON ss.id.story = s AND ss.id.sprint.id = :sprintId " +
             "WHERE s.project.id = :projectId AND s.status = 'ACTIVE'";
+        
         String countSql = "SELECT COUNT(s) FROM StoryEntity s " +
-            "LEFT JOIN SprintStoryEntity ss ON ss.id.story = s " +
-            "LEFT JOIN SprintEntity sp ON ss.id.sprint = sp AND sp.endDate >= :now AND sp.startDate <= :now " +
+            "LEFT JOIN SprintStoryEntity ss ON ss.id.story = s AND ss.id.sprint.id = :sprintId " +
             "WHERE s.project.id = :projectId AND s.status = 'ACTIVE'";
         
         if (filters.getFilterRealized() != null) {
@@ -44,8 +64,8 @@ public class ProjectStoryQueryBuilder {
             countSql += " AND s.realized = :realized";
         }
         if (filters.getFilterAssigned() != null) {
-            sql += " AND (CASE WHEN (sp.id IS NOT NULL) THEN true ELSE false END) = :activeSprintOnly";
-            countSql += " AND (CASE WHEN (sp.id IS NOT NULL) THEN true ELSE false END) = :activeSprintOnly";
+            sql += " AND (CASE WHEN (ss.id IS NOT NULL) THEN true ELSE false END) = :activeSprintOnly";
+            countSql += " AND (CASE WHEN (ss.id IS NOT NULL) THEN true ELSE false END) = :activeSprintOnly";
         }
         
         sql += " ORDER BY s.numberId " + (filters.getNumberIdSortAsc() ? "ASC" : "DESC");
@@ -53,11 +73,8 @@ public class ProjectStoryQueryBuilder {
         query = em.createQuery(sql, ExtendedStoryAggregated.class);
         countQuery = em.createQuery(countSql, Long.class);
         
-        Date now = new Date();
         query.setParameter("projectId", projectId);
-        query.setParameter("now", now);
         countQuery.setParameter("projectId", projectId);
-        countQuery.setParameter("now", now);
         
         if (filters.getFilterRealized() != null) {
             query.setParameter("realized", filters.getFilterRealized());
@@ -75,18 +92,34 @@ public class ProjectStoryQueryBuilder {
     }
     
     public EntityList<ExtendedStory> getQueryResult() {
-        List<ExtendedStory> stories = query.getResultStream()
-            .map(entity -> {
-                ExtendedStory story = new ExtendedStory(StoryMapper.fromEntity(entity.getStory()));
-                story.setAssignedSprintId(entity.getAssignedTo());
-                story.setInActiveSprint(entity.isAssigned());
-                return story;
-            })
-            .collect(Collectors.toList());
-        
-        Long storyCount = countQuery.getSingleResult();
-        
-        return new EntityList<>(stories, storyCount);
+        return getActiveSprint().map(activeSprint -> {
+            query.setParameter("sprintId", activeSprint.getId());
+            countQuery.setParameter("sprintId", activeSprint.getId());
+            
+            List<ExtendedStory> stories = query.getResultStream()
+                .distinct()
+                .map(entity -> {
+                    ExtendedStory story = new ExtendedStory(StoryMapper.fromEntity(entity.getStory()));
+                    story.setAssignedSprintId(entity.getAssignedTo());
+                    story.setInActiveSprint(entity.isAssigned());
+                    return story;
+                })
+                .collect(Collectors.toList());
+            
+            Long storyCount = countQuery.getSingleResult();
+            
+            return new EntityList<>(stories, storyCount);
+        }).orElseGet(EntityList::new);
     }
     
+    private Optional<SprintEntity> getActiveSprint() {
+        try {
+            return Optional.of(activeSprintQuery.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
 }
