@@ -7,6 +7,7 @@ import com.mjamsek.rest.exceptions.RestException;
 import si.smrpo.scrum.lib.params.ProjectStoriesFilters;
 import si.smrpo.scrum.lib.responses.ExtendedStory;
 import si.smrpo.scrum.mappers.StoryMapper;
+import si.smrpo.scrum.persistence.BaseEntity;
 import si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated;
 import si.smrpo.scrum.persistence.sprint.SprintEntity;
 
@@ -92,24 +93,25 @@ public class ProjectStoryQueryBuilder {
     }
     
     public EntityList<ExtendedStory> getQueryResult() {
-        return getActiveSprint().map(activeSprint -> {
-            query.setParameter("sprintId", activeSprint.getId());
-            countQuery.setParameter("sprintId", activeSprint.getId());
-            
-            List<ExtendedStory> stories = query.getResultStream()
-                .distinct()
-                .map(entity -> {
-                    ExtendedStory story = new ExtendedStory(StoryMapper.fromEntity(entity.getStory()));
-                    story.setAssignedSprintId(entity.getAssignedTo());
-                    story.setInActiveSprint(entity.isAssigned());
-                    return story;
-                })
-                .collect(Collectors.toList());
-            
-            Long storyCount = countQuery.getSingleResult();
-            
-            return new EntityList<>(stories, storyCount);
-        }).orElseGet(EntityList::new);
+        String sprintId =  getActiveSprint().map(BaseEntity::getId)
+            .orElse(null);
+    
+        query.setParameter("sprintId", sprintId);
+        countQuery.setParameter("sprintId", sprintId);
+    
+        List<ExtendedStory> stories = query.getResultStream()
+            .distinct()
+            .map(entity -> {
+                ExtendedStory story = new ExtendedStory(StoryMapper.fromEntity(entity.getStory()));
+                story.setAssignedSprintId(entity.getAssignedTo());
+                story.setInActiveSprint(entity.isAssigned());
+                return story;
+            })
+            .collect(Collectors.toList());
+    
+        Long storyCount = countQuery.getSingleResult();
+    
+        return new EntityList<>(stories, storyCount);
     }
     
     private Optional<SprintEntity> getActiveSprint() {

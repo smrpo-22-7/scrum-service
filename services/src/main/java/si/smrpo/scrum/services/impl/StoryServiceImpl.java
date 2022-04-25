@@ -333,7 +333,7 @@ public class StoryServiceImpl implements StoryService {
         
         // TODO: check if in active sprint
         
-        if (entity.isRealized() != null && entity.isRealized()) {
+        if (entity.isRealized()) {
             throw new BadRequestException("error.story.realized").setEntity("Story");
         }
     }

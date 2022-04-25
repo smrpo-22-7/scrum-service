@@ -58,7 +58,7 @@ public class StoryEntity extends BaseEntity {
     protected Integer timeEstimate;
     
     @Column(name = "realized")
-    protected Boolean realized;
+    protected boolean realized;
     
     @Column(name = "reject_comment", columnDefinition = "TEXT")
     protected String rejectComment;
@@ -142,11 +142,11 @@ public class StoryEntity extends BaseEntity {
         this.numberId = numberId;
     }
     
-    public Boolean isRealized() {
+    public boolean isRealized() {
         return realized;
     }
     
-    public void setRealized(Boolean realized) {
+    public void setRealized(boolean realized) {
         this.realized = realized;
     }
     
