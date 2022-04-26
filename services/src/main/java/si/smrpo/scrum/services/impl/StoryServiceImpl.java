@@ -180,6 +180,7 @@ public class StoryServiceImpl implements StoryService {
         entity.setTitle(request.getTitle());
         entity.setDescription(request.getDescription());
         entity.setPriority(request.getPriority());
+        entity.setStoryStatus(StoryStatus.WAITING);
         entity.setBusinessValue(request.getBusinessValue());
         if (request.getTimeEstimate() != null) {
             entity.setTimeEstimate(request.getTimeEstimate());
