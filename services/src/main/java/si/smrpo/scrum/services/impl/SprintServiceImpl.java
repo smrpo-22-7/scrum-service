@@ -15,6 +15,7 @@ import com.mjamsek.rest.services.Validator;
 import com.mjamsek.rest.utils.QueryUtil;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
+import si.smrpo.scrum.lib.enums.StoryStatus;
 import si.smrpo.scrum.lib.requests.AddStoryRequest;
 import si.smrpo.scrum.lib.requests.SprintConflictCheckRequest;
 import si.smrpo.scrum.lib.responses.SprintStatus;
@@ -259,7 +260,7 @@ public class SprintServiceImpl implements SprintService {
         QueryUtil.overrideFilterParam(new QueryFilter("id", FilterOperation.IN, request.getStoryIds()), q);
         QueryUtil.overrideFilterParam(new QueryFilter("status", FilterOperation.EQ, SimpleStatus.ACTIVE.name()), q);
         QueryUtil.overrideFilterParam(new QueryFilter("timeEstimate", FilterOperation.ISNOTNULL), q);
-        QueryUtil.overrideFilterParam(new QueryFilter("realized", FilterOperation.EQ, String.valueOf(false)), q);
+        QueryUtil.overrideFilterParam(new QueryFilter("storyStatus", FilterOperation.NEQ, StoryStatus.REALIZED.name()), q);
         
         List<StoryEntity> stories = JPAUtils.queryEntities(em, StoryEntity.class, q);
         
