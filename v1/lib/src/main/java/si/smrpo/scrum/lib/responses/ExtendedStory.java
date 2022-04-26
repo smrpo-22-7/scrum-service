@@ -8,6 +8,8 @@ public class ExtendedStory extends Story {
     
     private String assignedSprintId;
     
+    private boolean isCompleted;
+    
     public ExtendedStory() {
     
     }
@@ -47,5 +49,13 @@ public class ExtendedStory extends Story {
     
     public void setAssignedSprintId(String assignedSprintId) {
         this.assignedSprintId = assignedSprintId;
+    }
+    
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+    
+    public void setCompleted(boolean completed) {
+        isCompleted = completed;
     }
 }

@@ -12,14 +12,26 @@ public class ExtendedStoryAggregated {
     
     private String assignedTo;
     
+    private Long totalTasks;
+    
+    private Long completedTasks;
+    
     public ExtendedStoryAggregated() {
     
     }
     
-    public ExtendedStoryAggregated(StoryEntity story, boolean isAssigned, String assignedTo) {
+    public ExtendedStoryAggregated(
+        StoryEntity story,
+        boolean isAssigned,
+        String assignedTo,
+        Long totalTasks,
+        Long completedTasks
+    ) {
         this.story = story;
         this.isAssigned = isAssigned;
         this.assignedTo = assignedTo;
+        this.totalTasks = totalTasks;
+        this.completedTasks = completedTasks;
     }
     
     public StoryEntity getStory() {
@@ -44,6 +56,22 @@ public class ExtendedStoryAggregated {
     
     public void setAssignedTo(String assignedTo) {
         this.assignedTo = assignedTo;
+    }
+    
+    public Long getTotalTasks() {
+        return totalTasks;
+    }
+    
+    public void setTotalTasks(Long totalTasks) {
+        this.totalTasks = totalTasks;
+    }
+    
+    public Long getCompletedTasks() {
+        return completedTasks;
+    }
+    
+    public void setCompletedTasks(Long completedTasks) {
+        this.completedTasks = completedTasks;
     }
     
     @Override

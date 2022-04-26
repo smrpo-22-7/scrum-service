@@ -7,7 +7,6 @@ import com.mjamsek.rest.exceptions.RestException;
 import si.smrpo.scrum.lib.enums.StoryStatus;
 import si.smrpo.scrum.lib.params.ProjectStoriesFilters;
 import si.smrpo.scrum.lib.responses.ExtendedStory;
-import si.smrpo.scrum.lib.stories.StoryState;
 import si.smrpo.scrum.mappers.StoryMapper;
 import si.smrpo.scrum.persistence.BaseEntity;
 import si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated;
@@ -19,6 +18,7 @@ import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -53,7 +53,11 @@ public class ProjectStoryQueryBuilder {
         activeSprintQuery.setParameter("projectId", projectId);
         activeSprintQuery.setParameter("now", now);
         
-        String sql = "SELECT new si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated(s, ss.id IS NOT NULL, ss.id.sprint.id) " +
+        String sql = "SELECT new si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated(" +
+            "s, ss.id IS NOT NULL, ss.id.sprint.id, " +
+            "(SELECT COUNT(t) FROM TaskEntity t WHERE t.story = s), " +
+            "(SELECT COUNT(t) FROM TaskEntity t WHERE t.story = s AND t.completed = true) " +
+            ") " +
             "FROM StoryEntity s " +
             "LEFT JOIN SprintStoryEntity ss ON ss.id.story = s AND ss.id.sprint.id = :sprintId " +
             "WHERE s.project.id = :projectId AND s.status = 'ACTIVE'";
@@ -98,24 +102,25 @@ public class ProjectStoryQueryBuilder {
     }
     
     public EntityList<ExtendedStory> getQueryResult() {
-        String sprintId =  getActiveSprint().map(BaseEntity::getId)
+        String sprintId = getActiveSprint().map(BaseEntity::getId)
             .orElse(null);
-    
+        
         query.setParameter("sprintId", sprintId);
         countQuery.setParameter("sprintId", sprintId);
-    
+        
         List<ExtendedStory> stories = query.getResultStream()
             .distinct()
             .map(entity -> {
                 ExtendedStory story = new ExtendedStory(StoryMapper.fromEntity(entity.getStory()));
                 story.setAssignedSprintId(entity.getAssignedTo());
                 story.setInActiveSprint(entity.isAssigned());
+                story.setCompleted(entity.getTotalTasks() <= 0 || entity.getCompletedTasks().equals(entity.getTotalTasks()));
                 return story;
             })
             .collect(Collectors.toList());
-    
+        
         Long storyCount = countQuery.getSingleResult();
-    
+        
         return new EntityList<>(stories, storyCount);
     }
     
