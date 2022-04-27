@@ -6,17 +6,17 @@ import si.smrpo.scrum.lib.enums.SimpleStatus;
 
 public class Task extends BaseType {
     
-    private String description;
+    protected String description;
     
-    private Double estimate;
+    protected Double estimate;
     
-    private Boolean completed;
+    protected Boolean completed;
     
-    private String storyId;
+    protected String storyId;
     
-    private TaskAssignment assignment;
+    protected TaskAssignment assignment;
     
-    private SimpleStatus status;
+    protected SimpleStatus status;
     
     public String getDescription() {
         return description;

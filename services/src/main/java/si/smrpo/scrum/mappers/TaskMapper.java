@@ -42,7 +42,9 @@ public class TaskMapper {
                 entity.getTask().getId(),
                 entity.getTask().getDescription(),
                 entity.getTask().getStory().getProject().getId(),
-                entity.getTask().getStory().getProject().getName()
+                entity.getTask().getStory().getProject().getName(),
+                entity.getTask().getStory().getId(),
+                entity.getTask().getStory().getNumberId()
             );
             work.setTask(task);
         }

@@ -59,7 +59,12 @@ public class TaskWorkSpent extends BaseType {
     
     public static class ProjectTask {
         private String taskId;
+        
         private String taskDescription;
+        
+        private String storyId;
+        
+        private int storyNumberId;
         
         private String projectId;
         
@@ -69,13 +74,33 @@ public class TaskWorkSpent extends BaseType {
         
         }
         
-        public ProjectTask(String id, String description, String projectId, String projectTitle) {
+        public ProjectTask(String id, String description,
+                           String projectId, String projectTitle,
+                           String storyId, int storyNumberId) {
             this.taskId = id;
             this.taskDescription = description;
             this.projectId = projectId;
             this.projectTitle = projectTitle;
+            this.storyId = storyId;
+            this.storyNumberId = storyNumberId;
         }
-        
+    
+        public String getStoryId() {
+            return storyId;
+        }
+    
+        public void setStoryId(String storyId) {
+            this.storyId = storyId;
+        }
+    
+        public int getStoryNumberId() {
+            return storyNumberId;
+        }
+    
+        public void setStoryNumberId(int storyNumberId) {
+            this.storyNumberId = storyNumberId;
+        }
+    
         public String getTaskId() {
             return taskId;
         }

@@ -4,6 +4,7 @@ import si.smrpo.scrum.api.endpoints.defs.StoryEndpointDef;
 import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
 import si.smrpo.scrum.lib.requests.CreateStoryRequest;
 import si.smrpo.scrum.lib.requests.TaskAssignmentRequest;
+import si.smrpo.scrum.lib.stories.ExtendedTask;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.lib.stories.StoryState;
 import si.smrpo.scrum.lib.stories.Task;
@@ -64,7 +65,7 @@ public class StoryEndpoint implements StoryEndpointDef {
     
     @Override
     public Response getStoryTasks(String storyId) {
-        List<Task> tasks = taskService.getStoryTasks(storyId);
+        List<ExtendedTask> tasks = taskService.getStoryTasks(storyId);
         return Response.ok(tasks).build();
     }
     

@@ -16,6 +16,7 @@ import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.integrations.auth.services.UserService;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.TaskAssignmentRequest;
+import si.smrpo.scrum.lib.stories.ExtendedTask;
 import si.smrpo.scrum.lib.stories.Task;
 import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 import si.smrpo.scrum.mappers.TaskMapper;
@@ -65,13 +66,22 @@ public class TaskServiceImpl implements TaskService {
     private AuthContext authContext;
     
     @Override
-    public List<Task> getStoryTasks(String storyId) {
+    public List<ExtendedTask> getStoryTasks(String storyId) {
         TypedQuery<TaskEntity> query = em.createNamedQuery(TaskEntity.GET_BY_STORY, TaskEntity.class);
         query.setParameter("storyId", storyId);
+        
+        String activeTaskId = getUserActiveTask()
+            .map(taskHour -> taskHour.getTask().getId())
+            .orElse(null);
         
         try {
             return query.getResultStream()
                 .map(TaskMapper::fromEntity)
+                .map(task -> {
+                    ExtendedTask extendedTask = new ExtendedTask(task);
+                    extendedTask.setActive(task.getId().equals(activeTaskId));
+                    return extendedTask;
+                })
                 .collect(Collectors.toList());
         } catch (PersistenceException e) {
             LOG.error(e);
@@ -325,7 +335,7 @@ public class TaskServiceImpl implements TaskService {
     
     @Override
     public void endWorkOnTask() {
-        TaskHourEntity task = getActiveTask()
+        TaskHourEntity task = getUserActiveTask()
             .orElseThrow(() -> new BadRequestException("error.bad-request"));
         
         try {
@@ -336,7 +346,7 @@ public class TaskServiceImpl implements TaskService {
             double quarterlyAmount = Math.max(quarterlyDiff, 0.25);
             task.setAmount(quarterlyAmount);
             
-            getTaskWork(task.getStartDate())
+            getTaskWork(task.getTask().getId())
                 .ifPresentOrElse(prevWork -> {
                     prevWork.setAmount(prevWork.getAmount() + quarterlyAmount);
                 }, () -> {
@@ -357,7 +367,7 @@ public class TaskServiceImpl implements TaskService {
     }
     
     @Override
-    public Optional<TaskHourEntity> getActiveTask() {
+    public Optional<TaskHourEntity> getUserActiveTask() {
         TypedQuery<TaskHourEntity> query = em.createNamedQuery(TaskHourEntity.GET_ACTIVE_TASK, TaskHourEntity.class);
         query.setParameter("userId", authContext.getId());
         
@@ -375,6 +385,7 @@ public class TaskServiceImpl implements TaskService {
     public EntityList<TaskWorkSpent> getUserTaskWorkSpent(String projectId, String userId, QueryParameters queryParameters) {
         QueryUtil.setDefaultOrderParam(new QueryOrder("workDate", OrderDirection.DESC), queryParameters);
         QueryUtil.overrideFilterParam(new QueryFilter("task.story.project.id", FilterOperation.EQ, projectId), queryParameters);
+        QueryUtil.overrideFilterParam(new QueryFilter("user.id", FilterOperation.EQ, authContext.getId()), queryParameters);
         
         List<TaskWorkSpent> hours = JPAUtils.getEntityStream(em, TaskWorkSpentEntity.class, queryParameters)
             .map(TaskMapper::fromEntity)
@@ -390,10 +401,10 @@ public class TaskServiceImpl implements TaskService {
         return getUserTaskWorkSpent(projectId, authContext.getId(), queryParameters);
     }
     
-    private Optional<TaskWorkSpentEntity> getTaskWork(Date date) {
-        TypedQuery<TaskWorkSpentEntity> query = em.createNamedQuery(TaskWorkSpentEntity.GET_BY_DATE, TaskWorkSpentEntity.class);
+    private Optional<TaskWorkSpentEntity> getTaskWork(String taskId) {
+        TypedQuery<TaskWorkSpentEntity> query = em.createNamedQuery(TaskWorkSpentEntity.GET_BY_TASK_ID, TaskWorkSpentEntity.class);
         query.setParameter("userId", authContext.getId());
-        query.setParameter("workDate", DateUtils.truncateTime(date));
+        query.setParameter("taskId", taskId);
         
         try {
             return Optional.of(query.getSingleResult());

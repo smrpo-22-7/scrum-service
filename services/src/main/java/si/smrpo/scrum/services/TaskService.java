@@ -3,6 +3,7 @@ package si.smrpo.scrum.services;
 import com.kumuluz.ee.rest.beans.QueryParameters;
 import com.mjamsek.rest.dto.EntityList;
 import si.smrpo.scrum.lib.requests.TaskAssignmentRequest;
+import si.smrpo.scrum.lib.stories.ExtendedTask;
 import si.smrpo.scrum.lib.stories.Task;
 import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 import si.smrpo.scrum.persistence.story.TaskEntity;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 public interface TaskService {
     
-    List<Task> getStoryTasks(String storyId);
+    List<ExtendedTask> getStoryTasks(String storyId);
     
     Optional<TaskEntity> getTaskEntityById(String taskId);
     
@@ -35,7 +36,7 @@ public interface TaskService {
     
     void endWorkOnTask();
     
-    Optional<TaskHourEntity> getActiveTask();
+    Optional<TaskHourEntity> getUserActiveTask();
     
     EntityList<TaskWorkSpent> getUserTaskWorkSpent(String projectId, String userId, QueryParameters queryParameters);
     

@@ -9,13 +9,13 @@ import java.util.Date;
 @Entity
 @Table(name = "task_work_spent")
 @NamedQueries({
-    @NamedQuery(name = TaskWorkSpentEntity.GET_BY_DATE,
+    @NamedQuery(name = TaskWorkSpentEntity.GET_BY_TASK_ID,
         query = "SELECT t FROM TaskWorkSpentEntity t WHERE t.user.id = :userId AND " +
-            "t.workDate = :workDate")
+            "t.task.id = :taskId")
 })
 public class TaskWorkSpentEntity extends BaseEntity {
     
-    public static final String GET_BY_DATE = "TaskWorkSpentEntity.getByDate";
+    public static final String GET_BY_TASK_ID = "TaskWorkSpentEntity.getByTaskId";
     
     @Column(name = "work_date")
     @Temporal(TemporalType.TIMESTAMP)
