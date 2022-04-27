@@ -72,4 +72,23 @@ public interface TaskEndpointDef {
     })
     Response removeTask(@PathParam("taskId") String taskId);
     
+    @POST
+    @Path("/{taskId}/start-work")
+    @Tag(name = "tasks")
+    @Operation(summary = "start working on task")
+    @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "204")
+    })
+    Response startWorkingOnTask(@PathParam("taskId") String taskId);
+    
+    @POST
+    @Path("/end-active-task")
+    @Tag(name = "tasks")
+    @Operation(summary = "stop working on task")
+    @APIResponses({
+        @APIResponse(responseCode = "204")
+    })
+    Response startWorkingOnTask();
+    
 }

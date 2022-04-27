@@ -2,30 +2,41 @@ package si.smrpo.scrum.services.impl;
 
 import com.kumuluz.ee.logs.LogManager;
 import com.kumuluz.ee.logs.Logger;
-import com.mjamsek.rest.exceptions.ForbiddenException;
-import com.mjamsek.rest.exceptions.NotFoundException;
-import com.mjamsek.rest.exceptions.RestException;
-import com.mjamsek.rest.exceptions.ValidationException;
+import com.kumuluz.ee.rest.beans.QueryFilter;
+import com.kumuluz.ee.rest.beans.QueryOrder;
+import com.kumuluz.ee.rest.beans.QueryParameters;
+import com.kumuluz.ee.rest.enums.FilterOperation;
+import com.kumuluz.ee.rest.enums.OrderDirection;
+import com.kumuluz.ee.rest.utils.JPAUtils;
+import com.mjamsek.rest.dto.EntityList;
+import com.mjamsek.rest.exceptions.*;
 import com.mjamsek.rest.services.Validator;
+import com.mjamsek.rest.utils.QueryUtil;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.integrations.auth.services.UserService;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.TaskAssignmentRequest;
 import si.smrpo.scrum.lib.stories.Task;
+import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 import si.smrpo.scrum.mappers.TaskMapper;
 import si.smrpo.scrum.persistence.story.StoryEntity;
 import si.smrpo.scrum.persistence.story.TaskEntity;
+import si.smrpo.scrum.persistence.story.TaskHourEntity;
+import si.smrpo.scrum.persistence.story.TaskWorkSpentEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
 import si.smrpo.scrum.services.ProjectAuthorizationService;
 import si.smrpo.scrum.services.StoryService;
 import si.smrpo.scrum.services.TaskService;
+import si.smrpo.scrum.utils.DateUtils;
 import si.smrpo.scrum.utils.SetterUtil;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -138,7 +149,7 @@ public class TaskServiceImpl implements TaskService {
         
         TaskEntity entity = getTaskEntityById(taskId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
-    
+        
         if (!projAuth.isScrumMaster(entity.getStory().getProject().getId(), authContext.getId()) &
             !projAuth.isProjectMember(entity.getStory().getProject().getId(), authContext.getId())) {
             throw new ForbiddenException("error.forbidden");
@@ -161,7 +172,7 @@ public class TaskServiceImpl implements TaskService {
             SetterUtil.setIfNotNull(task.getDescription(), entity::setDescription);
             SetterUtil.setIfNotNull(task.getEstimate(), entity::setEstimate);
             SetterUtil.setIfNotNull(task.getCompleted(), entity::setCompleted);
-    
+            
             if (task.getAssignment() != null) {
                 if (task.getAssignment().getAssigneeId() != null) {
                     entity.setAssignee(user);
@@ -270,7 +281,7 @@ public class TaskServiceImpl implements TaskService {
     public void clearAssignee(String taskId) {
         TaskEntity task = getTaskEntityById(taskId)
             .orElseThrow(() -> new NotFoundException("error.not-found"));
-    
+        
         if (!projAuth.isScrumMaster(task.getStory().getProject().getId(), authContext.getId()) &
             !projAuth.isProjectMember(task.getStory().getProject().getId(), authContext.getId())) {
             throw new ForbiddenException("error.forbidden");
@@ -284,6 +295,112 @@ public class TaskServiceImpl implements TaskService {
         } catch (PersistenceException e) {
             LOG.error(e);
             em.getTransaction().rollback();
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
+    public void startWorkOnTask(String taskId) {
+        TaskEntity task = getTaskEntityById(taskId)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        
+        UserEntity user = userService.getUserEntityById(authContext.getId())
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        
+        TaskHourEntity taskEntity = new TaskHourEntity();
+        taskEntity.setTask(task);
+        taskEntity.setStartDate(new Date());
+        taskEntity.setUser(user);
+        
+        try {
+            em.getTransaction().begin();
+            em.persist(taskEntity);
+            em.getTransaction().commit();
+        } catch (PersistenceException e) {
+            em.getTransaction().rollback();
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
+    public void endWorkOnTask() {
+        TaskHourEntity task = getActiveTask()
+            .orElseThrow(() -> new BadRequestException("error.bad-request"));
+        
+        try {
+            em.getTransaction().begin();
+            Date now = new Date();
+            task.setEndDate(now);
+            double quarterlyDiff = DateUtils.getQuarterHourDiff(now, task.getStartDate());
+            double quarterlyAmount = Math.max(quarterlyDiff, 0.25);
+            task.setAmount(quarterlyAmount);
+            
+            getTaskWork(task.getStartDate())
+                .ifPresentOrElse(prevWork -> {
+                    prevWork.setAmount(prevWork.getAmount() + quarterlyAmount);
+                }, () -> {
+                    TaskWorkSpentEntity prevWork = new TaskWorkSpentEntity();
+                    prevWork.setAmount(quarterlyAmount);
+                    prevWork.setWorkDate(task.getStartDate());
+                    prevWork.setTask(task.getTask());
+                    prevWork.setUser(task.getUser());
+                    em.persist(prevWork);
+                });
+            
+            em.getTransaction().commit();
+        } catch (PersistenceException e) {
+            em.getTransaction().rollback();
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
+    public Optional<TaskHourEntity> getActiveTask() {
+        TypedQuery<TaskHourEntity> query = em.createNamedQuery(TaskHourEntity.GET_ACTIVE_TASK, TaskHourEntity.class);
+        query.setParameter("userId", authContext.getId());
+        
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
+    public EntityList<TaskWorkSpent> getUserTaskWorkSpent(String projectId, String userId, QueryParameters queryParameters) {
+        QueryUtil.setDefaultOrderParam(new QueryOrder("workDate", OrderDirection.DESC), queryParameters);
+        QueryUtil.overrideFilterParam(new QueryFilter("task.story.project.id", FilterOperation.EQ, projectId), queryParameters);
+        
+        List<TaskWorkSpent> hours = JPAUtils.getEntityStream(em, TaskWorkSpentEntity.class, queryParameters)
+            .map(TaskMapper::fromEntity)
+            .collect(Collectors.toList());
+        
+        long hoursCount = JPAUtils.queryEntitiesCount(em, TaskWorkSpentEntity.class, queryParameters);
+        
+        return new EntityList<>(hours, hoursCount);
+    }
+    
+    @Override
+    public EntityList<TaskWorkSpent> getCurrentUserTaskWorkSpent(String projectId, QueryParameters queryParameters) {
+        return getUserTaskWorkSpent(projectId, authContext.getId(), queryParameters);
+    }
+    
+    private Optional<TaskWorkSpentEntity> getTaskWork(Date date) {
+        TypedQuery<TaskWorkSpentEntity> query = em.createNamedQuery(TaskWorkSpentEntity.GET_BY_DATE, TaskWorkSpentEntity.class);
+        query.setParameter("userId", authContext.getId());
+        query.setParameter("workDate", DateUtils.truncateTime(date));
+        
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        } catch (PersistenceException e) {
+            LOG.error(e);
             throw new RestException("error.server");
         }
     }

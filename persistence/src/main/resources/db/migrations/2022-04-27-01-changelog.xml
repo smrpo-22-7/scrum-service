@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd">
+
+    <changeSet id="add-task-hours-table" author="mihaj">
+        <createTable tableName="tasks_hours">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_task_hours"/>
+            </column>
+            <column name="created_at" type="DATETIME"/>
+            <column name="updated_at" type="DATETIME"/>
+            <column name="amount" type="DOUBLE"/>
+            <column name="start_date" type="DATETIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="end_date" type="DATETIME"/>
+            <column name="task_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="tasks_hours" baseColumnNames="user_id" constraintName="fk_task_hours_users"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="tasks_hours" baseColumnNames="task_id" constraintName="fk_task_hours_tasks"
+                                 referencedTableName="tasks"
+                                 referencedColumnNames="id"/>
+
+        <createIndex tableName="tasks_hours" indexName="INDEX_TASK_HOURS_USER_ID">
+            <column name="user_id"></column>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

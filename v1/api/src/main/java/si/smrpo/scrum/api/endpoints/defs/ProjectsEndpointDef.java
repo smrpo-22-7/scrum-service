@@ -29,6 +29,7 @@ import si.smrpo.scrum.lib.responses.SprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
+import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -328,4 +329,19 @@ public interface ProjectsEndpointDef {
         @Schema(implementation = SprintStatus.class)))
     })
     Response getProjectsActiveSprintStatus(@PathParam("projectId") String projectId);
+    
+    @GET
+    @Path("/{projectId}/hours")
+    @Tag(name = "hours")
+    @Operation(summary = "get user hours")
+    @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "200", description = "returns user's hours", content = @Content(
+            mediaType = MediaType.APPLICATION_JSON,
+            schema = @Schema(implementation = TaskWorkSpent.class, type = SchemaType.ARRAY)),
+            headers = {
+                @Header(name = Rest.HttpHeaders.X_TOTAL_COUNT, description = "Number of all elements matching query", schema = @Schema(type = SchemaType.INTEGER))
+            })
+    })
+    Response getUserHours(@PathParam("projectId") String projectId);
 }

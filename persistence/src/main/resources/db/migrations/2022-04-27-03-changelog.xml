@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.7.xsd">
+
+    <changeSet id="fix-task-work-spent-column" author="mihaj">
+        <renameColumn tableName="task_work_spent" oldColumnName="work_date" newColumnName="work_date_old"/>
+
+        <addColumn tableName="task_work_spent">
+            <column name="work_date" type="DATETIME"/>
+        </addColumn>
+
+        <sql>
+            UPDATE task_work_spent SET work_date = work_date_old::timestamp;
+        </sql>
+
+        <addNotNullConstraint tableName="task_work_spent" columnName="work_date"/>
+
+        <dropColumn tableName="task_work_spent" columnName="work_date_old"/>
+    </changeSet>
+
+</databaseChangeLog>

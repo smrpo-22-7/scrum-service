@@ -2,6 +2,7 @@ package si.smrpo.scrum.api.endpoints;
 
 
 import com.kumuluz.ee.rest.beans.QueryParameters;
+import com.mjamsek.rest.Rest;
 import com.mjamsek.rest.dto.EntityList;
 import si.smrpo.scrum.api.endpoints.defs.ProjectsEndpointDef;
 import si.smrpo.scrum.api.params.ProjectSprintFilters;
@@ -25,6 +26,7 @@ import si.smrpo.scrum.lib.responses.SprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
+import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 import si.smrpo.scrum.services.*;
 
 import javax.enterprise.context.RequestScoped;
@@ -64,6 +66,9 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     
     @Inject
     private SprintService sprintService;
+    
+    @Inject
+    private TaskService taskService;
     
     @Inject
     private ProjectAuthorizationService projectAuthorizationService;
@@ -225,4 +230,11 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
         return Response.ok(stories.getEntities()).header(X_TOTAL_COUNT, stories.getCount()).build();
     }
     
+    @Override
+    public Response getUserHours(String projectId) {
+        EntityList<TaskWorkSpent> hours = taskService.getCurrentUserTaskWorkSpent(projectId, queryParameters);
+        return Response.ok(hours.getEntities())
+            .header(Rest.HttpHeaders.X_TOTAL_COUNT, hours.getCount())
+            .build();
+    }
 }

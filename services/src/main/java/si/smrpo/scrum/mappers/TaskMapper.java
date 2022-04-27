@@ -2,7 +2,9 @@ package si.smrpo.scrum.mappers;
 
 import si.smrpo.scrum.integrations.auth.mappers.UserMapper;
 import si.smrpo.scrum.lib.stories.Task;
+import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 import si.smrpo.scrum.persistence.story.TaskEntity;
+import si.smrpo.scrum.persistence.story.TaskWorkSpentEntity;
 
 public class TaskMapper {
     
@@ -24,6 +26,27 @@ public class TaskMapper {
             task.setStoryId(entity.getStory().getId());
         }
         return task;
+    }
+    
+    public static TaskWorkSpent fromEntity(TaskWorkSpentEntity entity) {
+        TaskWorkSpent work = BaseMapper.fromEntity(entity, TaskWorkSpent.class);
+        work.setAmount(entity.getAmount());
+        if (entity.getWorkDate() != null) {
+            work.setWorkDate(entity.getWorkDate().toInstant());
+        }
+        if (entity.getUser() != null) {
+            work.setUserId(entity.getUser().getId());
+        }
+        if (entity.getTask() != null) {
+            TaskWorkSpent.ProjectTask task = new TaskWorkSpent.ProjectTask(
+                entity.getTask().getId(),
+                entity.getTask().getDescription(),
+                entity.getTask().getStory().getProject().getId(),
+                entity.getTask().getStory().getProject().getName()
+            );
+            work.setTask(task);
+        }
+        return work;
     }
     
 }
