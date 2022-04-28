@@ -267,7 +267,9 @@ public class UserServiceImpl implements UserService {
             setIfNotNull(user.getEmail(), entity::setEmail);
             setIfNotNull(user.getFirstName(), entity::setFirstName);
             setIfNotNull(user.getLastName(), entity::setLastName);
-            setIfNotNull(user.getPhoneNumber(), entity::setPhoneNumber);
+            if (user.getPhoneNumber() != null) {
+                entity.setPhoneNumber(user.getPhoneNumber());
+            }
             setIfNotNull(user.getAvatar(), entity::setAvatar);
             
             em.getTransaction().commit();
