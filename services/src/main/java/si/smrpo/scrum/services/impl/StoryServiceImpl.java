@@ -40,10 +40,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequestScoped
@@ -227,7 +224,7 @@ public class StoryServiceImpl implements StoryService {
             entity.setTimeEstimate(story.getTimeEstimate());
             entity.setBusinessValue(story.getBusinessValue());
             
-            /*entity.setTests(story.getTests()
+            entity.setTests(story.getTests()
                 .stream()
                 .map(test -> {
                     AcceptanceTestEntity testEntity = new AcceptanceTestEntity();
@@ -236,7 +233,7 @@ public class StoryServiceImpl implements StoryService {
                     return testEntity;
                 })
                 .collect(Collectors.toList())
-            );*/
+            );
             
             em.getTransaction().commit();
             return StoryMapper.fromEntity(entity);
