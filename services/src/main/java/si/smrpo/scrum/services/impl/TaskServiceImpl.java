@@ -389,6 +389,38 @@ public class TaskServiceImpl implements TaskService {
     }
     
     @Override
+    public TaskWorkSpent updateTaskHours(String hourId, TaskWorkSpent taskWork) {
+        TaskWorkSpentEntity workEntity = getTaskWorkEntity(hourId)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+        
+        try {
+            em.getTransaction().begin();
+            workEntity.setAmount(taskWork.getAmount());
+            em.getTransaction().commit();
+            return TaskMapper.fromEntity(workEntity);
+        } catch (PersistenceException e) {
+            em.getTransaction().rollback();
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
+    public void removeTaskHours(String hourId) {
+        getTaskWorkEntity(hourId).ifPresent(entity -> {
+            try {
+                em.getTransaction().begin();
+                em.remove(entity);
+                em.getTransaction().commit();
+            } catch (PersistenceException e) {
+                em.getTransaction().rollback();
+                LOG.error(e);
+                throw new RestException("error.server");
+            }
+        });
+    }
+    
+    @Override
     public Optional<TaskHourEntity> getUserActiveTaskEntity(String projectId) {
         TypedQuery<TaskHourEntity> query = em.createNamedQuery(TaskHourEntity.GET_ACTIVE_TASK, TaskHourEntity.class);
         query.setParameter("userId", authContext.getId());
@@ -452,5 +484,9 @@ public class TaskServiceImpl implements TaskService {
             LOG.error(e);
             throw new RestException("error.server");
         }
+    }
+    
+    private Optional<TaskWorkSpentEntity> getTaskWorkEntity(String hourId) {
+        return Optional.ofNullable(em.find(TaskWorkSpentEntity.class, hourId));
     }
 }
