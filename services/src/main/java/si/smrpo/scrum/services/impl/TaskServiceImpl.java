@@ -365,7 +365,8 @@ public class TaskServiceImpl implements TaskService {
                 }, () -> {
                     TaskWorkSpentEntity prevWork = new TaskWorkSpentEntity();
                     prevWork.setAmount(quarterlyAmount);
-                    double remainingAmount = Math.max(NumberUtils.roundToQuarter(task.getTask().getEstimate()), 0.25);
+                    double timeEstimate = Math.max(NumberUtils.roundToQuarter(task.getTask().getEstimate()), 0.25);
+                    double remainingAmount = timeEstimate - quarterlyAmount;
                     prevWork.setRemainingAmount(remainingAmount);
                     prevWork.setWorkDate(task.getStartDate());
                     prevWork.setTask(task.getTask());
