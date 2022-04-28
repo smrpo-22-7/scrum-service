@@ -36,6 +36,7 @@ public class RestService extends Application {
         classes.add(ProjectWallEndpoint.class);
         classes.add(DocumentationEndpoint.class);
         classes.add(TaskEndpoint.class);
+        classes.add(HoursEndpoint.class);
         
         // exception mappers
         classes.add(DefaultExceptionMapper.class);
