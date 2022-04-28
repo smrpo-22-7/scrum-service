@@ -18,7 +18,6 @@ import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -113,7 +112,7 @@ public class ProjectStoryQueryBuilder {
                 ExtendedStory story = new ExtendedStory(StoryMapper.fromEntity(entity.getStory()));
                 story.setAssignedSprintId(entity.getAssignedTo());
                 story.setInActiveSprint(entity.isAssigned());
-                story.setCompleted(entity.getTotalTasks() <= 0 || entity.getCompletedTasks().equals(entity.getTotalTasks()));
+                story.setCompleted(entity.getTotalTasks() > 0 && entity.getCompletedTasks().equals(entity.getTotalTasks()));
                 return story;
             })
             .collect(Collectors.toList());
