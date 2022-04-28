@@ -24,6 +24,7 @@ import si.smrpo.scrum.lib.stories.AcceptanceTest;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.lib.stories.StoryState;
 import si.smrpo.scrum.mappers.StoryMapper;
+import si.smrpo.scrum.persistence.BaseEntity;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 import si.smrpo.scrum.persistence.sprint.SprintStoryEntity;
 import si.smrpo.scrum.persistence.story.AcceptanceTestEntity;
@@ -226,8 +227,8 @@ public class StoryServiceImpl implements StoryService {
             entity.setTimeEstimate(story.getTimeEstimate());
             entity.setBusinessValue(story.getBusinessValue());
             
-            entity.setTests(null);
-            entity.setTests(story.getTests().stream()
+            /*entity.setTests(story.getTests()
+                .stream()
                 .map(test -> {
                     AcceptanceTestEntity testEntity = new AcceptanceTestEntity();
                     testEntity.setResult(test.getResult());
@@ -235,11 +236,12 @@ public class StoryServiceImpl implements StoryService {
                     return testEntity;
                 })
                 .collect(Collectors.toList())
-            );
+            );*/
             
             em.getTransaction().commit();
             return StoryMapper.fromEntity(entity);
         } catch (PersistenceException e) {
+            e.printStackTrace();
             em.getTransaction().rollback();
             LOG.error(e);
             throw new RestException("error.server");
@@ -296,7 +298,7 @@ public class StoryServiceImpl implements StoryService {
             entity.getProject().getId(),
             authContext.getId()
         );
-    
+        
         if (entity.getStoryStatus().equals(StoryStatus.REALIZED)) {
             throw new BadRequestException("error.bad-request");
         }
