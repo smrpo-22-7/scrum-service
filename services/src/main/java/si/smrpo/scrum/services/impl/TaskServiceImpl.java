@@ -32,6 +32,7 @@ import si.smrpo.scrum.services.SocketService;
 import si.smrpo.scrum.services.StoryService;
 import si.smrpo.scrum.services.TaskService;
 import si.smrpo.scrum.utils.DateUtils;
+import si.smrpo.scrum.utils.NumberUtils;
 import si.smrpo.scrum.utils.SetterUtil;
 
 import javax.enterprise.context.RequestScoped;
@@ -395,7 +396,8 @@ public class TaskServiceImpl implements TaskService {
         
         try {
             em.getTransaction().begin();
-            workEntity.setAmount(taskWork.getAmount());
+            double amount = Math.max(NumberUtils.roundToQuarter(taskWork.getAmount()), 0.25);
+            workEntity.setAmount(amount);
             em.getTransaction().commit();
             return TaskMapper.fromEntity(workEntity);
         } catch (PersistenceException e) {

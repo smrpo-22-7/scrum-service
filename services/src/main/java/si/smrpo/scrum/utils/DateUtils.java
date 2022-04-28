@@ -29,6 +29,6 @@ public class DateUtils {
     public static double getQuarterHourDiff(Date date1, Date date2) {
         long diff = date2.getTime() - date1.getTime();
         double hours = (double)diff / 1000 / 60 / 60;
-        return Math.round(hours * 4 ) / 4f;
+        return NumberUtils.roundToQuarter(hours);
     }
 }
