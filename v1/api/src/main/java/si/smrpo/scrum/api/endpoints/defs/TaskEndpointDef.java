@@ -82,13 +82,5 @@ public interface TaskEndpointDef {
     })
     Response startWorkingOnTask(@PathParam("taskId") String taskId);
     
-    @POST
-    @Path("/end-active-task")
-    @Tag(name = "tasks")
-    @Operation(summary = "stop working on task")
-    @APIResponses({
-        @APIResponse(responseCode = "204")
-    })
-    Response startWorkingOnTask();
     
 }

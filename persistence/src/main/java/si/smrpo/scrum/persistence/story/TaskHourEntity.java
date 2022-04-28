@@ -11,11 +11,17 @@ import java.util.Date;
     @Index(name = "INDEX_TASK_HOURS_USER_ID", columnList = "user_id")
 })
 @NamedQueries({
-    @NamedQuery(name = TaskHourEntity.GET_ACTIVE_TASK, query = "SELECT t FROM TaskHourEntity t WHERE t.endDate IS NULL AND t.user.id = :userId")
+    @NamedQuery(name = TaskHourEntity.GET_ACTIVE_TASK, query = "SELECT t FROM TaskHourEntity t " +
+        "WHERE t.endDate IS NULL AND t.user.id = :userId AND " +
+        "t.task.story.project.id = :projectId"),
+    @NamedQuery(name = TaskHourEntity.GET_ACTIVE_TASK_BY_STORY, query = "SELECT t FROM TaskHourEntity t " +
+        "WHERE t.endDate IS NULL AND t.user.id = :userId AND " +
+        "t.task.story.id = :storyId")
 })
 public class TaskHourEntity extends BaseEntity {
     
     public static final String GET_ACTIVE_TASK = "TaskHourEntity.getActiveTask";
+    public static final String GET_ACTIVE_TASK_BY_STORY = "TaskHourEntity.getActiveTaskByStory";
     
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "start_date")

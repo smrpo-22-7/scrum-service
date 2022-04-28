@@ -26,6 +26,7 @@ import si.smrpo.scrum.lib.responses.SprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
+import si.smrpo.scrum.lib.stories.TaskHour;
 import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 import si.smrpo.scrum.services.*;
 
@@ -236,5 +237,16 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
         return Response.ok(hours.getEntities())
             .header(Rest.HttpHeaders.X_TOTAL_COUNT, hours.getCount())
             .build();
+    }
+    
+    @Override
+    public Response getActiveTask(String projectId) {
+        return Response.ok(taskService.getUserActiveTask(projectId)).build();
+    }
+    
+    @Override
+    public Response stopWorkingOnTask(String projectId) {
+        taskService.endWorkOnTask(projectId);
+        return Response.noContent().build();
     }
 }

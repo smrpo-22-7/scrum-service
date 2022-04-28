@@ -5,6 +5,7 @@ import com.mjamsek.rest.dto.EntityList;
 import si.smrpo.scrum.lib.requests.TaskAssignmentRequest;
 import si.smrpo.scrum.lib.stories.ExtendedTask;
 import si.smrpo.scrum.lib.stories.Task;
+import si.smrpo.scrum.lib.stories.TaskHour;
 import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 import si.smrpo.scrum.persistence.story.TaskEntity;
 import si.smrpo.scrum.persistence.story.TaskHourEntity;
@@ -34,9 +35,11 @@ public interface TaskService {
     
     void startWorkOnTask(String taskId);
     
-    void endWorkOnTask();
+    void endWorkOnTask(String projectId);
     
-    Optional<TaskHourEntity> getUserActiveTask();
+    TaskHour getUserActiveTask(String projectId);
+    
+    Optional<TaskHourEntity> getUserActiveTaskEntity(String projectId);
     
     EntityList<TaskWorkSpent> getUserTaskWorkSpent(String projectId, String userId, QueryParameters queryParameters);
     

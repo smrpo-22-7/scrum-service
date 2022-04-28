@@ -43,6 +43,10 @@
             <artifactId>kumuluzee-jax-rs-jersey</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.kumuluz.ee</groupId>
+            <artifactId>kumuluzee-websocket-jetty</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.kumuluz.ee.rest</groupId>
             <artifactId>kumuluzee-rest-core</artifactId>
         </dependency>

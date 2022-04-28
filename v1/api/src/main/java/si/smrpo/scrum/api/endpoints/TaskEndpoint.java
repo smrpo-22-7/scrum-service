@@ -1,12 +1,8 @@
 package si.smrpo.scrum.api.endpoints;
 
-import com.kumuluz.ee.rest.beans.QueryParameters;
-import com.mjamsek.rest.Rest;
-import com.mjamsek.rest.dto.EntityList;
 import si.smrpo.scrum.api.endpoints.defs.TaskEndpointDef;
 import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
 import si.smrpo.scrum.lib.stories.Task;
-import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 import si.smrpo.scrum.services.TaskService;
 
 import javax.enterprise.context.RequestScoped;
@@ -26,9 +22,6 @@ public class TaskEndpoint implements TaskEndpointDef {
     
     @Inject
     private TaskService taskService;
-    
-    @Inject
-    private QueryParameters queryParameters;
     
     @Override
     public Response updateStoryTask(String taskId, Task task) {
@@ -66,9 +59,4 @@ public class TaskEndpoint implements TaskEndpointDef {
         return Response.noContent().build();
     }
     
-    @Override
-    public Response startWorkingOnTask() {
-        taskService.endWorkOnTask();
-        return Response.noContent().build();
-    }
 }

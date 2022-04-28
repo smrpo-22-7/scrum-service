@@ -18,7 +18,9 @@ import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.requests.TaskAssignmentRequest;
 import si.smrpo.scrum.lib.stories.ExtendedTask;
 import si.smrpo.scrum.lib.stories.Task;
+import si.smrpo.scrum.lib.stories.TaskHour;
 import si.smrpo.scrum.lib.stories.TaskWorkSpent;
+import si.smrpo.scrum.lib.ws.SocketMessage;
 import si.smrpo.scrum.mappers.TaskMapper;
 import si.smrpo.scrum.persistence.story.StoryEntity;
 import si.smrpo.scrum.persistence.story.TaskEntity;
@@ -26,6 +28,7 @@ import si.smrpo.scrum.persistence.story.TaskHourEntity;
 import si.smrpo.scrum.persistence.story.TaskWorkSpentEntity;
 import si.smrpo.scrum.persistence.users.UserEntity;
 import si.smrpo.scrum.services.ProjectAuthorizationService;
+import si.smrpo.scrum.services.SocketService;
 import si.smrpo.scrum.services.StoryService;
 import si.smrpo.scrum.services.TaskService;
 import si.smrpo.scrum.utils.DateUtils;
@@ -57,6 +60,9 @@ public class TaskServiceImpl implements TaskService {
     private UserService userService;
     
     @Inject
+    private SocketService socketService;
+    
+    @Inject
     private Validator validator;
     
     @Inject
@@ -70,7 +76,7 @@ public class TaskServiceImpl implements TaskService {
         TypedQuery<TaskEntity> query = em.createNamedQuery(TaskEntity.GET_BY_STORY, TaskEntity.class);
         query.setParameter("storyId", storyId);
         
-        String activeTaskId = getUserActiveTask()
+        String activeTaskId = getUserStoryActiveTaskEntity(storyId)
             .map(taskHour -> taskHour.getTask().getId())
             .orElse(null);
         
@@ -326,6 +332,11 @@ public class TaskServiceImpl implements TaskService {
             em.getTransaction().begin();
             em.persist(taskEntity);
             em.getTransaction().commit();
+    
+            SocketMessage message = new SocketMessage();
+            message.setType("TIMER_START");
+            message.setPayload(taskEntity.getStartDate().toInstant().toString());
+            socketService.sendMessage(message, authContext.getId());
         } catch (PersistenceException e) {
             em.getTransaction().rollback();
             LOG.error(e);
@@ -334,8 +345,8 @@ public class TaskServiceImpl implements TaskService {
     }
     
     @Override
-    public void endWorkOnTask() {
-        TaskHourEntity task = getUserActiveTask()
+    public void endWorkOnTask(String projectId) {
+        TaskHourEntity task = getUserActiveTaskEntity(projectId)
             .orElseThrow(() -> new BadRequestException("error.bad-request"));
         
         try {
@@ -359,6 +370,10 @@ public class TaskServiceImpl implements TaskService {
                 });
             
             em.getTransaction().commit();
+    
+            SocketMessage message = new SocketMessage();
+            message.setType("TIMER_END");
+            socketService.sendMessage(message, authContext.getId());
         } catch (PersistenceException e) {
             em.getTransaction().rollback();
             LOG.error(e);
@@ -367,9 +382,32 @@ public class TaskServiceImpl implements TaskService {
     }
     
     @Override
-    public Optional<TaskHourEntity> getUserActiveTask() {
+    public TaskHour getUserActiveTask(String projectId) {
+        return getUserActiveTaskEntity(projectId)
+            .map(TaskMapper::fromEntity)
+            .orElseThrow(() -> new NotFoundException("error.not-found"));
+    }
+    
+    @Override
+    public Optional<TaskHourEntity> getUserActiveTaskEntity(String projectId) {
         TypedQuery<TaskHourEntity> query = em.createNamedQuery(TaskHourEntity.GET_ACTIVE_TASK, TaskHourEntity.class);
         query.setParameter("userId", authContext.getId());
+        query.setParameter("projectId", projectId);
+        
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    private Optional<TaskHourEntity> getUserStoryActiveTaskEntity(String storyId) {
+        TypedQuery<TaskHourEntity> query = em.createNamedQuery(TaskHourEntity.GET_ACTIVE_TASK_BY_STORY, TaskHourEntity.class);
+        query.setParameter("userId", authContext.getId());
+        query.setParameter("storyId", storyId);
         
         try {
             return Optional.of(query.getSingleResult());

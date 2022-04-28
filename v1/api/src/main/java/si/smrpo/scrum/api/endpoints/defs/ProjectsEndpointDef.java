@@ -29,6 +29,7 @@ import si.smrpo.scrum.lib.responses.SprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
+import si.smrpo.scrum.lib.stories.TaskHour;
 import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 
 import javax.ws.rs.*;
@@ -344,4 +345,26 @@ public interface ProjectsEndpointDef {
             })
     })
     Response getUserHours(@PathParam("projectId") String projectId);
+    
+    @GET
+    @Path("/{projectId}/active-task")
+    @Tag(name = "tasks")
+    @Operation(summary = "get active task")
+    @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "200", description = "returns user's active task", content = @Content(
+            mediaType = MediaType.APPLICATION_JSON,
+            schema = @Schema(implementation = TaskHour.class)))
+    })
+    Response getActiveTask(@PathParam("projectId") String projectId);
+    
+    @POST
+    @Path("/{projectId}/end-active-task")
+    @Tag(name = "tasks")
+    @Operation(summary = "stop working on task")
+    @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "204")
+    })
+    Response stopWorkingOnTask(@PathParam("projectId") String projectId);
 }
