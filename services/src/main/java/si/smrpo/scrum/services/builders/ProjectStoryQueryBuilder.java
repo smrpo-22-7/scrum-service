@@ -55,8 +55,8 @@ public class ProjectStoryQueryBuilder {
         
         String sql = "SELECT new si.smrpo.scrum.persistence.aggregators.ExtendedStoryAggregated(" +
             "s, ss.id IS NOT NULL, ss.id.sprint.id, " +
-            "(SELECT COUNT(t) FROM TaskEntity t WHERE t.story = s), " +
-            "(SELECT COUNT(t) FROM TaskEntity t WHERE t.story = s AND t.completed = true) " +
+            "(SELECT COUNT(t) FROM TaskEntity t WHERE t.story = s AND t.status = 'ACTIVE'), " +
+            "(SELECT COUNT(t) FROM TaskEntity t WHERE t.story = s AND t.completed = true AND t.status = 'ACTIVE') " +
             ") " +
             "FROM StoryEntity s " +
             "LEFT JOIN SprintStoryEntity ss ON ss.id.story = s AND ss.id.sprint.id = :sprintId " +
