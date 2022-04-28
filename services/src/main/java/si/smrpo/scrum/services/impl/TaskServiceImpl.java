@@ -22,6 +22,7 @@ import si.smrpo.scrum.lib.stories.TaskHour;
 import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 import si.smrpo.scrum.lib.ws.SocketMessage;
 import si.smrpo.scrum.mappers.TaskMapper;
+import si.smrpo.scrum.persistence.sprint.SprintEntity;
 import si.smrpo.scrum.persistence.story.StoryEntity;
 import si.smrpo.scrum.persistence.story.TaskEntity;
 import si.smrpo.scrum.persistence.story.TaskHourEntity;
@@ -31,6 +32,7 @@ import si.smrpo.scrum.services.ProjectAuthorizationService;
 import si.smrpo.scrum.services.SocketService;
 import si.smrpo.scrum.services.StoryService;
 import si.smrpo.scrum.services.TaskService;
+import si.smrpo.scrum.services.builders.ProjectTasksQueryBuilder;
 import si.smrpo.scrum.utils.DateUtils;
 import si.smrpo.scrum.utils.NumberUtils;
 import si.smrpo.scrum.utils.SetterUtil;
@@ -94,6 +96,13 @@ public class TaskServiceImpl implements TaskService {
             LOG.error(e);
             throw new RestException("error.server");
         }
+    }
+    
+    @Override
+    public EntityList<ExtendedTask> getActiveSprintTasks(String projectId, QueryParameters queryParameters) {
+        return ProjectTasksQueryBuilder.newBuilder(em)
+            .build(projectId, queryParameters)
+            .getQueryResult(authContext.getId());
     }
     
     @Override
@@ -333,7 +342,7 @@ public class TaskServiceImpl implements TaskService {
             em.getTransaction().begin();
             em.persist(taskEntity);
             em.getTransaction().commit();
-    
+            
             SocketMessage message = new SocketMessage();
             message.setType("TIMER_START");
             message.setPayload(taskEntity.getStartDate().toInstant().toString());
@@ -375,7 +384,7 @@ public class TaskServiceImpl implements TaskService {
                 });
             
             em.getTransaction().commit();
-    
+            
             SocketMessage message = new SocketMessage();
             message.setType("TIMER_END");
             socketService.sendMessage(message, authContext.getId());

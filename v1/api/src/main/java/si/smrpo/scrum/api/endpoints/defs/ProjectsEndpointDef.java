@@ -28,6 +28,7 @@ import si.smrpo.scrum.lib.responses.ProjectRolesCount;
 import si.smrpo.scrum.lib.responses.SprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
+import si.smrpo.scrum.lib.stories.ExtendedTask;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.lib.stories.TaskHour;
 import si.smrpo.scrum.lib.stories.TaskWorkSpent;
@@ -367,4 +368,16 @@ public interface ProjectsEndpointDef {
         @APIResponse(responseCode = "204")
     })
     Response stopWorkingOnTask(@PathParam("projectId") String projectId);
+    
+    @GET
+    @Path("/{projectId}/tasks")
+    @Tag(name = "tasks")
+    @Operation(summary = "get project's active sprint task")
+    @Parameter(name = "projectId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "200", description = "returns project's task", content = @Content(
+            mediaType = MediaType.APPLICATION_JSON,
+            schema = @Schema(implementation = ExtendedTask.class)))
+    })
+    Response getProjectTasks(@PathParam("projectId") String projectId);
 }

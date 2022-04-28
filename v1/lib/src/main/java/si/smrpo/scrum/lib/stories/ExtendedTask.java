@@ -4,6 +4,8 @@ public class ExtendedTask extends Task {
     
     private boolean isActive;
     
+    private Story story;
+    
     public ExtendedTask() {
     
     }
@@ -26,5 +28,13 @@ public class ExtendedTask extends Task {
     
     public void setActive(boolean active) {
         isActive = active;
+    }
+    
+    public Story getStory() {
+        return story;
+    }
+    
+    public void setStory(Story story) {
+        this.story = story;
     }
 }

@@ -13,11 +13,19 @@ import javax.persistence.*;
 @NamedQueries({
     @NamedQuery(name = TaskEntity.GET_BY_STORY,
         query = "SELECT t FROM TaskEntity t WHERE t.story.id = :storyId " +
-            "AND t.status = 'ACTIVE' ORDER BY t.createdAt")
+            "AND t.status = 'ACTIVE' ORDER BY t.createdAt"),
+    @NamedQuery(name = TaskEntity.GET_BY_PROJECT,
+        query = "SELECT t FROM TaskEntity t WHERE t.story.project.id = :projectId " +
+            "AND t.status = 'ACTIVE' ORDER BY t.createdAt"),
+    @NamedQuery(name = TaskEntity.COUNT_BY_PROJECT,
+        query = "SELECT COUNT(t) FROM TaskEntity t WHERE t.story.project.id = :projectId " +
+            "AND t.status = 'ACTIVE'"),
 })
 public class TaskEntity extends BaseEntity {
     
     public static final String GET_BY_STORY = "TaskEntity.getByStory";
+    public static final String GET_BY_PROJECT = "TaskEntity.getByProject";
+    public static final String COUNT_BY_PROJECT = "TaskEntity.countByProject";
     
     @Column(name = "description", nullable = false)
     private String description;

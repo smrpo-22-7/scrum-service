@@ -17,6 +17,8 @@ public interface TaskService {
     
     List<ExtendedTask> getStoryTasks(String storyId);
     
+    EntityList<ExtendedTask> getActiveSprintTasks(String projectId, QueryParameters queryParameters);
+    
     Optional<TaskEntity> getTaskEntityById(String taskId);
     
     Task createTask(String storyId, Task task);

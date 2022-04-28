@@ -30,7 +30,6 @@ public class ProjectStoryQueryBuilder {
         return new ProjectStoryQueryBuilder(em);
     }
     
-    
     private final EntityManager em;
     
     private TypedQuery<ExtendedStoryAggregated> query;

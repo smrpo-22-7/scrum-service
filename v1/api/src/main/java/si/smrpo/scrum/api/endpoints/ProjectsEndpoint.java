@@ -26,7 +26,6 @@ import si.smrpo.scrum.lib.responses.SprintStatus;
 import si.smrpo.scrum.lib.responses.SprintListResponse;
 import si.smrpo.scrum.lib.sprints.Sprint;
 import si.smrpo.scrum.lib.stories.Story;
-import si.smrpo.scrum.lib.stories.TaskHour;
 import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 import si.smrpo.scrum.services.*;
 
@@ -49,19 +48,19 @@ import static com.mjamsek.rest.Rest.HttpHeaders.X_TOTAL_COUNT;
 @Produces(MediaType.APPLICATION_JSON)
 @RequestScoped
 public class ProjectsEndpoint implements ProjectsEndpointDef {
-
+    
     @Inject
     private QueryParameters queryParameters;
-
+    
     @Inject
     private AuthContext authContext;
-
+    
     @Inject
     private ProjectService projectService;
     
     @Inject
     private ProjectMembershipService projectMembershipService;
-
+    
     @Inject
     private StoryService storyService;
     
@@ -73,14 +72,14 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     
     @Inject
     private ProjectAuthorizationService projectAuthorizationService;
-
+    
     @SysRolesRequired({Roles.ADMIN_ROLE})
     @Override
     public Response getProjectsList() {
         EntityList<Project> projects = projectService.getProjects(queryParameters);
         return Response.ok(projects.getEntities())
-                .header(X_TOTAL_COUNT, projects.getCount())
-                .build();
+            .header(X_TOTAL_COUNT, projects.getCount())
+            .build();
     }
     
     @Override
@@ -93,8 +92,8 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     public Response getUserProjects() {
         EntityList<Project> projects = projectService.getUserProjects(authContext.getId(), queryParameters);
         return Response.ok(projects.getEntities())
-                .header(X_TOTAL_COUNT, projects.getCount())
-                .build();
+            .header(X_TOTAL_COUNT, projects.getCount())
+            .build();
     }
     
     @Override
@@ -102,7 +101,7 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
         Project project = projectService.getProjectById(projectId);
         return Response.ok(project).build();
     }
-
+    
     @SysRolesRequired({Roles.ADMIN_ROLE})
     @Override
     public Response createProject(ProjectRequest request) {
@@ -166,7 +165,7 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
         projectMembershipService.updateUserProjectRole(projectId, userId, member);
         return Response.noContent().build();
     }
-
+    
     
     @Override
     public Response createStory(String projectId, CreateStoryRequest request) {
@@ -248,5 +247,13 @@ public class ProjectsEndpoint implements ProjectsEndpointDef {
     public Response stopWorkingOnTask(String projectId) {
         taskService.endWorkOnTask(projectId);
         return Response.noContent().build();
+    }
+    
+    @Override
+    public Response getProjectTasks(String projectId) {
+        var list = taskService.getActiveSprintTasks(projectId, queryParameters);
+        return Response.ok(list.getEntities())
+            .header(X_TOTAL_COUNT, list.getCount())
+            .build();
     }
 }
