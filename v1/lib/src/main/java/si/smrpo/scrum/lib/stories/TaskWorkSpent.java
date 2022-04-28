@@ -9,7 +9,9 @@ public class TaskWorkSpent extends BaseType {
     
     private Instant workDate;
     
-    private double amount;
+    private Double amount;
+    
+    private Double remainingAmount;
     
     private UserProfile user;
     
@@ -25,11 +27,11 @@ public class TaskWorkSpent extends BaseType {
         this.workDate = workDate;
     }
     
-    public double getAmount() {
+    public Double getAmount() {
         return amount;
     }
     
-    public void setAmount(double amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
     
@@ -57,6 +59,14 @@ public class TaskWorkSpent extends BaseType {
         this.task = task;
     }
     
+    public Double getRemainingAmount() {
+        return remainingAmount;
+    }
+    
+    public void setRemainingAmount(Double remainingAmount) {
+        this.remainingAmount = remainingAmount;
+    }
+    
     public static class ProjectTask {
         private String taskId;
         
@@ -70,19 +80,22 @@ public class TaskWorkSpent extends BaseType {
         
         private String projectTitle;
         
+        private boolean completed;
+        
         public ProjectTask() {
         
         }
         
         public ProjectTask(String id, String description,
                            String projectId, String projectTitle,
-                           String storyId, int storyNumberId) {
+                           String storyId, int storyNumberId, boolean completed) {
             this.taskId = id;
             this.taskDescription = description;
             this.projectId = projectId;
             this.projectTitle = projectTitle;
             this.storyId = storyId;
             this.storyNumberId = storyNumberId;
+            this.completed = completed;
         }
     
         public String getStoryId() {
@@ -131,6 +144,14 @@ public class TaskWorkSpent extends BaseType {
     
         public void setProjectTitle(String projectTitle) {
             this.projectTitle = projectTitle;
+        }
+    
+        public boolean isCompleted() {
+            return completed;
+        }
+    
+        public void setCompleted(boolean completed) {
+            this.completed = completed;
         }
     }
 }

@@ -24,6 +24,9 @@ public class TaskWorkSpentEntity extends BaseEntity {
     @Column(name = "amount")
     private double amount;
     
+    @Column(name = "remaining_amount")
+    private double remainingAmount;
+    
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
@@ -62,5 +65,13 @@ public class TaskWorkSpentEntity extends BaseEntity {
     
     public void setTask(TaskEntity task) {
         this.task = task;
+    }
+    
+    public double getRemainingAmount() {
+        return remainingAmount;
+    }
+    
+    public void setRemainingAmount(double remainingAmount) {
+        this.remainingAmount = remainingAmount;
     }
 }

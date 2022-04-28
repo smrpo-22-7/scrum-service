@@ -33,6 +33,7 @@ public class TaskMapper {
     public static TaskWorkSpent fromEntity(TaskWorkSpentEntity entity) {
         TaskWorkSpent work = BaseMapper.fromEntity(entity, TaskWorkSpent.class);
         work.setAmount(entity.getAmount());
+        work.setRemainingAmount(entity.getRemainingAmount());
         if (entity.getWorkDate() != null) {
             work.setWorkDate(entity.getWorkDate().toInstant());
         }
@@ -46,7 +47,8 @@ public class TaskMapper {
                 entity.getTask().getStory().getProject().getId(),
                 entity.getTask().getStory().getProject().getName(),
                 entity.getTask().getStory().getId(),
-                entity.getTask().getStory().getNumberId()
+                entity.getTask().getStory().getNumberId(),
+                entity.getTask().isCompleted()
             );
             work.setTask(task);
         }

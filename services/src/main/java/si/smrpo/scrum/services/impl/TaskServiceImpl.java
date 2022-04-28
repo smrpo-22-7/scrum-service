@@ -361,9 +361,12 @@ public class TaskServiceImpl implements TaskService {
             getTaskWork(task.getTask().getId())
                 .ifPresentOrElse(prevWork -> {
                     prevWork.setAmount(prevWork.getAmount() + quarterlyAmount);
+                    prevWork.setRemainingAmount(prevWork.getRemainingAmount() - quarterlyAmount);
                 }, () -> {
                     TaskWorkSpentEntity prevWork = new TaskWorkSpentEntity();
                     prevWork.setAmount(quarterlyAmount);
+                    double remainingAmount = Math.max(NumberUtils.roundToQuarter(task.getTask().getEstimate()), 0.25);
+                    prevWork.setRemainingAmount(remainingAmount);
                     prevWork.setWorkDate(task.getStartDate());
                     prevWork.setTask(task.getTask());
                     prevWork.setUser(task.getUser());
@@ -396,8 +399,14 @@ public class TaskServiceImpl implements TaskService {
         
         try {
             em.getTransaction().begin();
-            double amount = Math.max(NumberUtils.roundToQuarter(taskWork.getAmount()), 0.25);
-            workEntity.setAmount(amount);
+            if (taskWork.getAmount() != null) {
+                double amount = Math.max(NumberUtils.roundToQuarter(taskWork.getAmount()), 0.25);
+                workEntity.setAmount(amount);
+            }
+            if (taskWork.getRemainingAmount() != null) {
+                double remainingAmount = Math.max(NumberUtils.roundToQuarter(taskWork.getRemainingAmount()), 0.25);
+                workEntity.setRemainingAmount(remainingAmount);
+            }
             em.getTransaction().commit();
             return TaskMapper.fromEntity(workEntity);
         } catch (PersistenceException e) {

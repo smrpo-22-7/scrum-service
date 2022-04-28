@@ -32,5 +32,7 @@
     <include file="2022-04-27-01-changelog.xml" relativeToChangelogFile="true"/>
     <include file="2022-04-27-02-changelog.xml" relativeToChangelogFile="true"/>
     <include file="2022-04-27-03-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="2022-04-28-01-changelog.xml" relativeToChangelogFile="true"/>
+    <include file="2022-04-28-02-changelog.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
