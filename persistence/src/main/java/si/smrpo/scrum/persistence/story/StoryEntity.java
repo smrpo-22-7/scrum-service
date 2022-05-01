@@ -4,6 +4,7 @@ import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.enums.StoryPriority;
 import si.smrpo.scrum.lib.enums.StoryStatus;
 import si.smrpo.scrum.persistence.BaseEntity;
+import si.smrpo.scrum.persistence.partials.MarkdownContentPartialEntity;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 
 import javax.persistence.*;
@@ -62,8 +63,13 @@ public class StoryEntity extends BaseEntity {
     @Column(name = "time_estimate")
     protected Integer timeEstimate;
     
-    @Column(name = "reject_comment", columnDefinition = "TEXT")
-    protected String rejectComment;
+    @Embedded
+    @AttributeOverrides({
+        @AttributeOverride( name = "textContent", column = @Column(name = "reject_comment_text")),
+        @AttributeOverride( name = "markdownContent", column = @Column(name = "reject_comment_md")),
+        @AttributeOverride( name = "htmlContent", column = @Column(name = "reject_comment_html"))
+    })
+    protected MarkdownContentPartialEntity rejectComment;
     
     @ManyToOne
     @JoinColumn(name = "project_id", nullable = false)
@@ -144,21 +150,20 @@ public class StoryEntity extends BaseEntity {
         this.numberId = numberId;
     }
     
-    
-    public String getRejectComment() {
-        return rejectComment;
-    }
-    
-    public void setRejectComment(String rejectComment) {
-        this.rejectComment = rejectComment;
-    }
-    
     public StoryStatus getStoryStatus() {
         return storyStatus;
     }
     
     public void setStoryStatus(StoryStatus storyStatus) {
         this.storyStatus = storyStatus;
+    }
+    
+    public MarkdownContentPartialEntity getRejectComment() {
+        return rejectComment;
+    }
+    
+    public void setRejectComment(MarkdownContentPartialEntity rejectComment) {
+        this.rejectComment = rejectComment;
     }
 }
 

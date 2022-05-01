@@ -14,6 +14,7 @@ import com.mjamsek.rest.exceptions.ValidationException;
 import com.mjamsek.rest.services.Validator;
 import com.mjamsek.rest.utils.QueryUtil;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
+import si.smrpo.scrum.integrations.markdown.MarkdownRenderService;
 import si.smrpo.scrum.lib.enums.SimpleStatus;
 import si.smrpo.scrum.lib.enums.StoryStatus;
 import si.smrpo.scrum.lib.params.ProjectStoriesFilters;
@@ -24,7 +25,7 @@ import si.smrpo.scrum.lib.stories.AcceptanceTest;
 import si.smrpo.scrum.lib.stories.Story;
 import si.smrpo.scrum.lib.stories.StoryState;
 import si.smrpo.scrum.mappers.StoryMapper;
-import si.smrpo.scrum.persistence.BaseEntity;
+import si.smrpo.scrum.persistence.partials.MarkdownContentPartialEntity;
 import si.smrpo.scrum.persistence.project.ProjectEntity;
 import si.smrpo.scrum.persistence.sprint.SprintStoryEntity;
 import si.smrpo.scrum.persistence.story.AcceptanceTestEntity;
@@ -40,7 +41,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequestScoped
@@ -59,6 +63,9 @@ public class StoryServiceImpl implements StoryService {
     
     @Inject
     private Validator validator;
+    
+    @Inject
+    private MarkdownRenderService markdownRenderService;
     
     @Inject
     private AuthContext authContext;
@@ -310,7 +317,13 @@ public class StoryServiceImpl implements StoryService {
             
             entity.setStoryStatus(story.getStoryStatus());
             if (story.getRejectComment() != null && story.getStoryStatus().equals(StoryStatus.REJECTED)) {
-                entity.setRejectComment(story.getRejectComment());
+                MarkdownContentPartialEntity markdownContent = new MarkdownContentPartialEntity();
+                String htmlContent = markdownRenderService.convertMarkdownToHtml(story.getRejectComment());
+                markdownContent.setHtmlContent(htmlContent);
+                String textContent = markdownRenderService.convertMarkdownToText(story.getRejectComment());
+                markdownContent.setTextContent(textContent);
+                markdownContent.setMarkdownContent(story.getRejectComment());
+                entity.setRejectComment(markdownContent);
             }
             em.getTransaction().commit();
             return StoryMapper.fromEntity(entity);
