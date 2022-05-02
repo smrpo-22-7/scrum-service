@@ -19,4 +19,4 @@ ENV KUMULUZEE_DATASOURCES0_PASSWORD=not_set
 
 EXPOSE 8080
 
-CMD ["java", "-server", "-cp", "classes:dependency/*", "com.kumuluz.ee.EeApplication"]
+CMD ["java", "-Xms1024m", "-Xmx1024m", "-server", "-cp", "classes:dependency/*", "com.kumuluz.ee.EeApplication"]
