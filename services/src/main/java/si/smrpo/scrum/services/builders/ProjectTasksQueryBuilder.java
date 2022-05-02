@@ -81,7 +81,7 @@ public class ProjectTasksQueryBuilder {
         countQuery.setParameter("projectId", projectId);
         
         String taskWorkSql = "SELECT new si.smrpo.scrum.persistence.aggregators.TaskWorkAggregated(" +
-            "t.task.id, COALESCE(SUM(t.amount), 0.0)" +
+            "t.task.id, COALESCE(SUM(t.amount), 0.0), COALESCE(SUM(t.remainingAmount), 0.0)" +
             ") " +
             "FROM TaskWorkSpentEntity t " +
             "WHERE t.task.id IN :taskIds " +
