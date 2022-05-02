@@ -22,7 +22,6 @@ import si.smrpo.scrum.lib.stories.TaskHour;
 import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 import si.smrpo.scrum.lib.ws.SocketMessage;
 import si.smrpo.scrum.mappers.TaskMapper;
-import si.smrpo.scrum.persistence.sprint.SprintEntity;
 import si.smrpo.scrum.persistence.story.StoryEntity;
 import si.smrpo.scrum.persistence.story.TaskEntity;
 import si.smrpo.scrum.persistence.story.TaskHourEntity;
@@ -33,6 +32,7 @@ import si.smrpo.scrum.services.SocketService;
 import si.smrpo.scrum.services.StoryService;
 import si.smrpo.scrum.services.TaskService;
 import si.smrpo.scrum.services.builders.ProjectTasksQueryBuilder;
+import si.smrpo.scrum.services.builders.StoryTasksQueryBuilder;
 import si.smrpo.scrum.utils.DateUtils;
 import si.smrpo.scrum.utils.NumberUtils;
 import si.smrpo.scrum.utils.SetterUtil;
@@ -76,7 +76,7 @@ public class TaskServiceImpl implements TaskService {
     
     @Override
     public List<ExtendedTask> getStoryTasks(String storyId) {
-        TypedQuery<TaskEntity> query = em.createNamedQuery(TaskEntity.GET_BY_STORY, TaskEntity.class);
+        /*TypedQuery<TaskEntity> query = em.createNamedQuery(TaskEntity.GET_BY_STORY, TaskEntity.class);
         query.setParameter("storyId", storyId);
         
         String activeTaskId = getUserStoryActiveTaskEntity(storyId)
@@ -95,7 +95,10 @@ public class TaskServiceImpl implements TaskService {
         } catch (PersistenceException e) {
             LOG.error(e);
             throw new RestException("error.server");
-        }
+        }*/
+        return StoryTasksQueryBuilder.newBuilder(em)
+            .build(storyId)
+            .getQueryResult(authContext.getId());
     }
     
     @Override
@@ -424,6 +427,16 @@ public class TaskServiceImpl implements TaskService {
             LOG.error(e);
             throw new RestException("error.server");
         }
+    }
+    
+    @Override
+    public List<TaskHour> getTaskHours(String taskId) {
+        QueryParameters q = new QueryParameters();
+        QueryUtil.overrideFilterParam(new QueryFilter("task.id", FilterOperation.EQ, taskId), q);
+        QueryUtil.overrideFilterParam(new QueryFilter("user.id", FilterOperation.EQ, authContext.getId()), q);
+        return JPAUtils.getEntityStream(em, TaskHourEntity.class, q)
+            .map(TaskMapper::fromEntity)
+            .collect(Collectors.toList());
     }
     
     @Override

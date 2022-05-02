@@ -6,6 +6,9 @@ public class ExtendedTask extends Task {
     
     private Story story;
     
+    private double amountWorked;
+    private double amountRemaining;
+    
     public ExtendedTask() {
     
     }
@@ -36,5 +39,21 @@ public class ExtendedTask extends Task {
     
     public void setStory(Story story) {
         this.story = story;
+    }
+    
+    public double getAmountWorked() {
+        return amountWorked;
+    }
+    
+    public void setAmountWorked(double amountWorked) {
+        this.amountWorked = amountWorked;
+    }
+    
+    public double getAmountRemaining() {
+        return amountRemaining;
+    }
+    
+    public void setAmountRemaining(double amountRemaining) {
+        this.amountRemaining = amountRemaining;
     }
 }

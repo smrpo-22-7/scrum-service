@@ -43,6 +43,8 @@ public interface TaskService {
     
     TaskWorkSpent updateTaskHours(String hourId, TaskWorkSpent taskWork);
     
+    List<TaskHour> getTaskHours(String taskId);
+    
     void removeTaskHours(String hourId);
     
     Optional<TaskHourEntity> getUserActiveTaskEntity(String projectId);

@@ -2,6 +2,7 @@ package si.smrpo.scrum.api.endpoints.defs;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.ParameterIn;
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.parameters.Parameter;
@@ -10,6 +11,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import si.smrpo.scrum.lib.stories.Task;
+import si.smrpo.scrum.lib.stories.TaskHour;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -82,5 +84,16 @@ public interface TaskEndpointDef {
     })
     Response startWorkingOnTask(@PathParam("taskId") String taskId);
     
+    @GET
+    @Path("/{taskId}/hours")
+    @Tag(name = "hours")
+    @Operation(summary = "get task's hours")
+    @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
+    @APIResponses({
+        @APIResponse(responseCode = "200", description = "returns user's hours", content = @Content(
+            mediaType = MediaType.APPLICATION_JSON,
+            schema = @Schema(implementation = TaskHour.class, type = SchemaType.ARRAY)))
+    })
+    Response getTaskHours(@PathParam("taskId") String taskId);
     
 }

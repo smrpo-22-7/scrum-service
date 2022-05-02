@@ -59,4 +59,9 @@ public class TaskEndpoint implements TaskEndpointDef {
         return Response.noContent().build();
     }
     
+    @Override
+    public Response getTaskHours(String taskId) {
+        return Response.ok(taskService.getTaskHours(taskId)).build();
+    }
+    
 }
