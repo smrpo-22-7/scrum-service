@@ -231,7 +231,8 @@ public class StoryServiceImpl implements StoryService {
             entity.setTimeEstimate(story.getTimeEstimate());
             entity.setBusinessValue(story.getBusinessValue());
             
-            entity.setTests(story.getTests()
+            entity.getTests().clear();
+            entity.getTests().addAll(story.getTests()
                 .stream()
                 .map(test -> {
                     AcceptanceTestEntity testEntity = new AcceptanceTestEntity();
@@ -239,8 +240,7 @@ public class StoryServiceImpl implements StoryService {
                     testEntity.setStory(entity);
                     return testEntity;
                 })
-                .collect(Collectors.toList())
-            );
+                .collect(Collectors.toList()));
             
             em.getTransaction().commit();
             return StoryMapper.fromEntity(entity);
