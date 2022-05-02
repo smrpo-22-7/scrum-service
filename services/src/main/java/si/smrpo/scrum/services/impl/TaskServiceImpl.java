@@ -373,12 +373,12 @@ public class TaskServiceImpl implements TaskService {
             getTaskWork(task.getTask().getId())
                 .ifPresentOrElse(prevWork -> {
                     prevWork.setAmount(prevWork.getAmount() + quarterlyAmount);
-                    prevWork.setRemainingAmount(prevWork.getRemainingAmount() - quarterlyAmount);
+                    prevWork.setRemainingAmount(Math.max(prevWork.getRemainingAmount() - quarterlyAmount, 0));
                 }, () -> {
                     TaskWorkSpentEntity prevWork = new TaskWorkSpentEntity();
                     prevWork.setAmount(quarterlyAmount);
                     double timeEstimate = Math.max(NumberUtils.roundToQuarter(task.getTask().getEstimate()), 0.25);
-                    double remainingAmount = timeEstimate - quarterlyAmount;
+                    double remainingAmount = Math.max(timeEstimate - quarterlyAmount, 0);
                     prevWork.setRemainingAmount(remainingAmount);
                     prevWork.setWorkDate(task.getStartDate());
                     prevWork.setTask(task.getTask());
@@ -417,7 +417,7 @@ public class TaskServiceImpl implements TaskService {
                 workEntity.setAmount(amount);
             }
             if (taskWork.getRemainingAmount() != null) {
-                double remainingAmount = Math.max(NumberUtils.roundToQuarter(taskWork.getRemainingAmount()), 0.25);
+                double remainingAmount = Math.max(NumberUtils.roundToQuarter(taskWork.getRemainingAmount()), 0);
                 workEntity.setRemainingAmount(remainingAmount);
             }
             em.getTransaction().commit();
@@ -430,11 +430,11 @@ public class TaskServiceImpl implements TaskService {
     }
     
     @Override
-    public List<TaskHour> getTaskHours(String taskId) {
+    public List<TaskWorkSpent> getTaskHours(String taskId) {
         QueryParameters q = new QueryParameters();
         QueryUtil.overrideFilterParam(new QueryFilter("task.id", FilterOperation.EQ, taskId), q);
         QueryUtil.overrideFilterParam(new QueryFilter("user.id", FilterOperation.EQ, authContext.getId()), q);
-        return JPAUtils.getEntityStream(em, TaskHourEntity.class, q)
+        return JPAUtils.getEntityStream(em, TaskWorkSpentEntity.class, q)
             .map(TaskMapper::fromEntity)
             .collect(Collectors.toList());
     }

@@ -43,7 +43,7 @@ public interface TaskService {
     
     TaskWorkSpent updateTaskHours(String hourId, TaskWorkSpent taskWork);
     
-    List<TaskHour> getTaskHours(String taskId);
+    List<TaskWorkSpent> getTaskHours(String taskId);
     
     void removeTaskHours(String hourId);
     
