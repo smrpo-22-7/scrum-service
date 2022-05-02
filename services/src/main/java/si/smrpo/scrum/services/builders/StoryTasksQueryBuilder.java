@@ -89,7 +89,7 @@ public class StoryTasksQueryBuilder {
                 task.setAmountRemaining(aggregated.getRemainingHoursSum());
             } else {
                 task.setAmountWorked(0.0);
-                task.setAmountRemaining(0.0);
+                task.setAmountRemaining(task.getEstimate());
             }
         });
         

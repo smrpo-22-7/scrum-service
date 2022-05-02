@@ -3,6 +3,7 @@ package si.smrpo.scrum.api.endpoints;
 import si.smrpo.scrum.api.endpoints.defs.TaskEndpointDef;
 import si.smrpo.scrum.integrations.auth.models.annotations.SecureResource;
 import si.smrpo.scrum.lib.stories.Task;
+import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 import si.smrpo.scrum.services.TaskService;
 
 import javax.enterprise.context.RequestScoped;
@@ -62,6 +63,12 @@ public class TaskEndpoint implements TaskEndpointDef {
     @Override
     public Response getTaskHours(String taskId) {
         return Response.ok(taskService.getTaskHours(taskId)).build();
+    }
+    
+    @Override
+    public Response updateTaskHours(String taskId, TaskWorkSpent taskWork) {
+        this.taskService.updateTaskHoursByDate(taskId, taskWork);
+        return Response.noContent().build();
     }
     
 }

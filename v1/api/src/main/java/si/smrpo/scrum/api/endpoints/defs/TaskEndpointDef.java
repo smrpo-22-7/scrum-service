@@ -12,6 +12,7 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import si.smrpo.scrum.lib.stories.Task;
 import si.smrpo.scrum.lib.stories.TaskHour;
+import si.smrpo.scrum.lib.stories.TaskWorkSpent;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -95,5 +96,19 @@ public interface TaskEndpointDef {
             schema = @Schema(implementation = TaskHour.class, type = SchemaType.ARRAY)))
     })
     Response getTaskHours(@PathParam("taskId") String taskId);
+    
+    @PATCH
+    @Path("/{taskId}/hours")
+    @Tag(name = "hours")
+    @Operation(summary = "update task's hours")
+    @Parameter(name = "taskId", in = ParameterIn.PATH, required = true)
+    @RequestBody(required = true, content = @Content(mediaType = MediaType.APPLICATION_JSON,
+        schema = @Schema(implementation = TaskWorkSpent.class)))
+    @APIResponses({
+        @APIResponse(responseCode = "200", description = "returns user's hours", content = @Content(
+            mediaType = MediaType.APPLICATION_JSON,
+            schema = @Schema(implementation = TaskHour.class, type = SchemaType.ARRAY)))
+    })
+    Response updateTaskHours(@PathParam("taskId") String taskId, TaskWorkSpent taskWork);
     
 }

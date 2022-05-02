@@ -11,6 +11,7 @@ import com.kumuluz.ee.rest.utils.JPAUtils;
 import com.mjamsek.rest.dto.EntityList;
 import com.mjamsek.rest.exceptions.*;
 import com.mjamsek.rest.services.Validator;
+import com.mjamsek.rest.utils.DatetimeUtil;
 import com.mjamsek.rest.utils.QueryUtil;
 import si.smrpo.scrum.integrations.auth.models.AuthContext;
 import si.smrpo.scrum.integrations.auth.services.UserService;
@@ -430,6 +431,50 @@ public class TaskServiceImpl implements TaskService {
     }
     
     @Override
+    public void updateTaskHoursByDate(String taskId, TaskWorkSpent taskWork) {
+        
+        try {
+            em.getTransaction().begin();
+    
+            getTaskWorkByDate(taskId, Date.from(taskWork.getWorkDate()))
+                .ifPresentOrElse(savedHours -> {
+                    SetterUtil.setIfNotNull(taskWork.getAmount(), savedHours::setAmount);
+                    SetterUtil.setIfNotNull(taskWork.getRemainingAmount(), savedHours::setRemainingAmount);
+                }, () -> {
+                    TaskEntity task = getTaskEntityById(taskId)
+                        .orElseThrow(() -> new NotFoundException("error.not-found"));
+    
+                    TaskWorkSpentEntity prevWork = new TaskWorkSpentEntity();
+                    double quarterlyAmount = 0.0;
+                    if (taskWork.getAmount() != null) {
+                        quarterlyAmount = Math.max(NumberUtils.roundToQuarter(taskWork.getAmount()), 0.25);
+                        prevWork.setAmount(quarterlyAmount);
+                    } else {
+                        prevWork.setAmount(0.0);
+                    }
+                    if (taskWork.getRemainingAmount() != null) {
+                        prevWork.setRemainingAmount(taskWork.getRemainingAmount());
+                    } else if (prevWork.getRemainingAmount() == null) {
+                        double timeEstimate = Math.max(NumberUtils.roundToQuarter(task.getEstimate()), 0.25);
+                        double remainingAmount = Math.max(timeEstimate - quarterlyAmount, 0);
+                        prevWork.setRemainingAmount(remainingAmount);
+                    }
+                    
+                    prevWork.setWorkDate(Date.from(DateUtils.truncateTime(taskWork.getWorkDate())));
+                    prevWork.setTask(task);
+                    prevWork.setUser(task.getAssignee());
+                    em.persist(prevWork);
+                });
+            
+            em.getTransaction().commit();
+        } catch (PersistenceException e) {
+            em.getTransaction().rollback();
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    @Override
     public List<TaskWorkSpent> getTaskHours(String taskId) {
         QueryParameters q = new QueryParameters();
         QueryUtil.overrideFilterParam(new QueryFilter("task.id", FilterOperation.EQ, taskId), q);
@@ -510,6 +555,22 @@ public class TaskServiceImpl implements TaskService {
         query.setParameter("userId", authContext.getId());
         query.setParameter("taskId", taskId);
         
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        } catch (PersistenceException e) {
+            LOG.error(e);
+            throw new RestException("error.server");
+        }
+    }
+    
+    private Optional<TaskWorkSpentEntity> getTaskWorkByDate(String taskId, Date date) {
+        TypedQuery<TaskWorkSpentEntity> query = em.createNamedQuery(TaskWorkSpentEntity.GET_BY_DATE_AND_TASK_ID, TaskWorkSpentEntity.class);
+        query.setParameter("userId", authContext.getId());
+        query.setParameter("taskId", taskId);
+        query.setParameter("date", DateUtils.truncateTime(date));
+    
         try {
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {

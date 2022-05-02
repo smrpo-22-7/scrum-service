@@ -11,21 +11,27 @@ import java.util.Date;
 @NamedQueries({
     @NamedQuery(name = TaskWorkSpentEntity.GET_BY_TASK_ID,
         query = "SELECT t FROM TaskWorkSpentEntity t WHERE t.user.id = :userId AND " +
-            "t.task.id = :taskId")
+            "t.task.id = :taskId"),
+    @NamedQuery(name = TaskWorkSpentEntity.GET_BY_DATE_AND_TASK_ID,
+        query = "SELECT t FROM TaskWorkSpentEntity t " +
+            "WHERE t.workDate = :date " +
+            "AND t.user.id = :userId " +
+            "AND t.task.id = :taskId")
 })
 public class TaskWorkSpentEntity extends BaseEntity {
     
     public static final String GET_BY_TASK_ID = "TaskWorkSpentEntity.getByTaskId";
+    public static final String GET_BY_DATE_AND_TASK_ID = "TaskWorkSpentEntity.getByDateAndTaskId";
     
     @Column(name = "work_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date workDate;
     
     @Column(name = "amount")
-    private double amount;
+    private Double amount;
     
     @Column(name = "remaining_amount")
-    private double remainingAmount;
+    private Double remainingAmount;
     
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -43,11 +49,11 @@ public class TaskWorkSpentEntity extends BaseEntity {
         this.workDate = workDate;
     }
     
-    public double getAmount() {
+    public Double getAmount() {
         return amount;
     }
     
-    public void setAmount(double amount) {
+    public void setAmount(Double amount) {
         this.amount = amount;
     }
     
@@ -67,11 +73,11 @@ public class TaskWorkSpentEntity extends BaseEntity {
         this.task = task;
     }
     
-    public double getRemainingAmount() {
+    public Double getRemainingAmount() {
         return remainingAmount;
     }
     
-    public void setRemainingAmount(double remainingAmount) {
+    public void setRemainingAmount(Double remainingAmount) {
         this.remainingAmount = remainingAmount;
     }
 }
