@@ -307,11 +307,6 @@ public class StoryServiceImpl implements StoryService {
             throw new BadRequestException("error.bad-request");
         }
         
-        if (entity.getStoryStatus().equals(StoryStatus.REJECTED) &&
-            !story.getStoryStatus().equals(StoryStatus.REALIZED)) {
-            throw new BadRequestException("error.bad-request");
-        }
-        
         try {
             em.getTransaction().begin();
             
